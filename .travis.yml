@@ -18,12 +18,11 @@ before_deploy:
   - ls -ltra
   - grunt build
   - ls -ltra
-  # remove all files except the dist folder
-  - find . ! -name 'dist' -type d -exec rm -rf {} +
+  - rm -rf server client .tmp e2e package.json
   - ls -ltra
   - mv dist/* .
   - ls -ltra
-  - rm -r dist
+  - rm -rf dist
   - ls -ltra
 
 deploy:
