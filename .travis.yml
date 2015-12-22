@@ -17,9 +17,14 @@ services: mongodb
 before_deploy:
   - ls -ltra
   - grunt build
-  - rm -r server client .tmp e2e package.json
+  - ls -ltra
+  # remove all files except the dist folder
+  - find . ! -name 'dist' -type d -exec rm -rf {} +
+  - ls -ltra
   - mv dist/* .
+  - ls -ltra
   - rm -r dist
+  - ls -ltra
 
 deploy:
   provider: heroku
