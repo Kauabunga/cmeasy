@@ -31,3 +31,9 @@ deploy:
   api_key:
     secure: KEI+Q8pnB/u9UKfH0LKgkf4gikMyyxWNv0FNkv2h1B+FbayuXq8uM3g/Ej6moLc2A6n0BLBoObSwq9yCEcj/kVRwCjGos69gF6FCNnbkTUurBXiUpnrHrLYYsVeaAyNzUsjJt/PAOZ4UnolGg8GkdMo9rVvx9eJ6DHCKchlghcTwg6FS/IyddVGR/uSf0eUs6jsJJvDZz0LKE7TI/GMyBKnLf7rVpNQ4QnGzKUBZqb9KqjHKtnc/EVB19cq1i/UpU/owAPqzaD6g/jeRpf77iJUv0VunvFabz3O0KUmqZJzuCjBEBNItM3LCssFMJCcsOTKzGiqmYQ+dqKd9pC+mGhVIUcURVmzPdKIOBNjzl10+1qO+eBKfwZ4Bo4JK+u1Aw+hO48noqSqnTY0AMVWek95VdGwtJPuAjrEooCScDu9iI0XsK86/sTqooBUuURWDxl0av83wm1VCTeo5NeAZtFNgzBDm2LkgvTsTetuewXlYiAVXpTYvKDcL5Uo+o9eHtSd6JUWyRszXNxE3I/eIjrnQixGhULCops0ZAwzFwUH9+IM3ENz9g1/TjlYIDTeFNgFUZJ8tbedKuLUFVqW769EG77Q5pEGsTIugTqp6FyNYT8/42wIlNNmZ7pGD0DmaMNSrjBup8xgK7ZEz/s9qvxr4OUObx6X2A2VnKKmNbfo=
 
+after_script:
+  - codeclimate-test-reporter < ./coverage/server/unit/lcov.info
+
+addons:
+    code_climate:
+        repo_token: c0f8ef3f1117d8416655a3aa7c8f89f2afec95569c1deb67d5be1168be4d4674
