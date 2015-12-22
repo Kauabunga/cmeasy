@@ -15,7 +15,11 @@ before_script:
 services: mongodb
 
 before_deploy:
-  - rm -rf ./server ./client ./.tmp ./e2e ./package.json & mv ./dist/* . & rm -rf ./dist
+  - ls -ltra
+  - grunt build
+  - rm -r server client .tmp e2e package.json
+  - mv dist/* .
+  - rm -r dist
 
 deploy:
   provider: heroku
