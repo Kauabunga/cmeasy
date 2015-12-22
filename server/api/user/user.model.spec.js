@@ -59,14 +59,6 @@ describe('User Model', function() {
     it('should not authenticate user if invalid', function() {
       user.authenticate('blah').should.not.be.true;
     });
-
-    it('should remain the same hash unless the password is updated', function() {
-      user.name = 'Test User';
-      return user.saveAsync()
-        .spread(function(u) {
-          return u.authenticate('password');
-        }).should.eventually.be.true;
-    });
   });
 
 });
