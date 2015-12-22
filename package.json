@@ -1,6 +1,6 @@
 {
   "name": "cmeasy",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "main": "server/app.js",
   "dependencies": {
     "babel-runtime": "^5.8.20",
@@ -106,7 +106,7 @@
   "scripts": {
     "start": "node server",
     "test": "grunt test",
-    "pre-commit-hook": "printf '#!/bin/sh\n# Lint stuff before committing\ngrunt jshint\nnpm version patch --git-tag-version=false' > ./.git/hooks/pre-commit && chmod +x .git/hooks/pre-commit",
+    "pre-commit-hook": "printf '#!/bin/sh\n# Lint stuff before committing\ngrunt jshint' > ./.git/hooks/pre-commit && chmod +x .git/hooks/pre-commit",
     "drop-dev-database": "mongo cmeasy-dev --eval \"db.dropDatabase();\"",
     "update-webdriver": "node node_modules/grunt-protractor-runner/node_modules/protractor/bin/webdriver-manager update"
   },
