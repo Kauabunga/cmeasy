@@ -107,6 +107,7 @@
     "start": "node server",
     "test": "grunt test",
     "pre-commit-hook": "printf '#!/bin/sh\n# Lint stuff before committing\ngrunt jshint' > ./.git/hooks/pre-commit && chmod +x .git/hooks/pre-commit",
+    "pre-push-hook": "printf '#!/bin/sh\n# Bump patch version on push\nnpm version patch' > ./.git/hooks/pre-push && chmod +x .git/hooks/pre-push",
     "drop-dev-database": "mongo cmeasy-dev --eval \"db.dropDatabase();\"",
     "update-webdriver": "node node_modules/grunt-protractor-runner/node_modules/protractor/bin/webdriver-manager update"
   },
