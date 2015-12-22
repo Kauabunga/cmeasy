@@ -20,7 +20,7 @@ angular.module('cmeasyApp')
          *
          */
         function gotoContent(){
-          $state.go(appConfig.state.content)
+          $state.go(appConfig.state.content);
         }
 
       }

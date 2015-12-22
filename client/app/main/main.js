@@ -61,6 +61,6 @@ angular.module('cmeasyApp')
             template: '<h1>Login state</h1>'
           }
         }
-      })
+      });
 
   });

@@ -106,6 +106,7 @@
   "scripts": {
     "start": "node server",
     "test": "grunt test",
+    "pre-commit-hook": "printf '#!/bin/sh\n# Lint stuff before committing\ngrunt jshint' > ./.git/hooks/pre-commit && chmod +x .git/hooks/pre-commit",
     "drop-dev-database": "mongo cmeasy-dev --eval \"db.dropDatabase();\"",
     "update-webdriver": "node node_modules/grunt-protractor-runner/node_modules/protractor/bin/webdriver-manager update"
   },

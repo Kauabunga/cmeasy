@@ -19,7 +19,7 @@ angular.module('cmeasyApp')
           scope.user = {
             email: 'admin@admin.com',
             password: 'admin'
-          }
+          };
         }
 
 

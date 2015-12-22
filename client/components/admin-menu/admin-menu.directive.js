@@ -34,7 +34,7 @@ angular.module('cmeasyApp')
          * @returns {*}
          */
         function getIndexState(index){
-          return _($state.get()).filter(function(state){return state && state.menuIndex === index}).first();
+          return _($state.get()).filter(function(state){return state && state.menuIndex === index;}).first();
         }
 
         /**
@@ -42,7 +42,7 @@ angular.module('cmeasyApp')
          */
         function handleStateChangeSuccess(event, toState, toParams, fromState, fromParams){
           $log.debug('to state', toState);
-          scope.menuIndexWatcher && scope.menuIndexWatcher();
+          scope.menuIndexWatcher && scope.menuIndexWatcher(); //jshint ignore:line
           scope.menuIndex = toState.menuIndex;
           scope.menuIndexWatcher = scope.$watch('menuIndex', handleMenuIndexChange);
         }

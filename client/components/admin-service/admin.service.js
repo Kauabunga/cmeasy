@@ -39,7 +39,7 @@ angular.module('cmeasyApp')
       return getModels()
         .then(function(models){
           return _(models).filter(function(model){return model._cmeasyId === id;}).first();
-        })
+        });
     }
 
     /**
