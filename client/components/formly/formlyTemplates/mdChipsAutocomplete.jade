@@ -1,0 +1,7 @@
+
+label(class='{{to.cssClass}}') {{to.label}}
+md-chips(ng-model='model[options.key]', md-autocomplete-snap='', md-require-match='true', class='{{to.cssClass}}')
+  md-autocomplete(id='{{id}}-autocomplete', md-selected-item='selectedItem', md-search-text='searchText', md-items='item in querySearch(searchText)', md-item-text='item.name', placeholder='{{::to.autocompleteLabel}}')
+    span(md-highlight-text='searchText', ng-repeat='label in to.autocompleteChip track by $index')  {{item[label]}}
+  md-chip-template
+    span(ng-repeat='label in to.autocompleteChip track by $index')  {{$chip[label]}}

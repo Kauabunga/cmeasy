@@ -1,0 +1,26 @@
+
+collapsible.collapsible-red.variation.no-collapsible-margin(collapsible-label='{{::to.label}}',
+    is-checkbox-disabled='model[to.clauseId][options.key].variationDisabled'
+    collapsible-checkbox-click='variationOnSelect', is-checkbox-collapsible='true',
+    collapsible-checkbox-model='model[to.clauseId][options.key]', collapsible-checkbox-model-property='variationSelected',
+    is-collapsible-open='isVariationOpenObject.isOpen'
+    on-collapsible-open='variationOpened()', on-collapsible-close='variationClosed()')
+
+
+  .variation-errors.ng-hide(ng-show='model[to.clauseId][options.key].variationInvalid')
+    h5
+      warning-svg
+      strong Inline error:&nbsp;
+      | Something doesn't look right! Change it!
+
+
+  .variation-disabled(ng-if='model[to.clauseId][options.key].variationDisabled')
+    h4.disabled-header
+      warning-svg
+      | This is disabled due to your selections in clauses listed below:
+    h5.disabled-subheader Click on the clause name to navigate there.
+    md-list
+      md-list-item.variation-disabled-clause(ng-click='gotoClause($event, incompatibility.clauseId)', ng-repeat='incompatibility in variationIncompatibilities track by $index')
+        .disabled-clause-link {{incompatibility.clauseTitle}}
+
+  formly-form.variation-formly-form(fields='to.fields', model='model[to.clauseId]', form='form')

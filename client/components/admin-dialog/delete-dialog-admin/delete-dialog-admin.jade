@@ -1,0 +1,21 @@
+md-dialog.dialog.delete-admin-dialog
+
+  h1 {{::deleteTitle}}
+
+  h5 This action is not reversible
+
+  form(name='deleteAdminForm', ng-submit='confirmDelete(deleteAdminForm)', novalidate='true')
+
+    md-input-container
+      label Type "Delete" to confirm
+      input(id='delete-comment-input', autocomplete='off', ng-pattern='/^delete$/i' name='confirmDeleteMessage', ng-model='model.confirmDeleteMessage', ng-required='true'
+      ng-init='isDeleteFocused = false' ng-focus='isDeleteFocused = true', ng-blur='isDeleteFocused = false')
+      .error-message.messages(ng-messages='deleteAdminForm.confirmDeleteMessage.$error',
+      ng-show='(deleteAdminForm.confirmDeleteMessage.$touched || deleteAdminForm.$submitted) && ! isDeleteFocused')
+        .message(ng-message='pattern') You need to type 'delete'
+        .message(ng-message='required') We need to confirm your delete
+
+
+    .buttons.center-align
+      md-button.cancel-button(id='cancel-delete-button', type='button', ng-click='cancel()') Cancel
+      md-button.yes-button(id='submit-delete-button', type='submit') Delete

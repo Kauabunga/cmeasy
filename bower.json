@@ -1,0 +1,26 @@
+{
+  "name": "cmeasy",
+  "version": "0.0.0",
+  "dependencies": {
+    "angular": "~1.4.8",
+    "json3": "~3.3.1",
+    "es5-shim": "~3.0.1",
+    "angular-resource": "~1.4.0",
+    "angular-cookies": "~1.4.0",
+    "angular-sanitize": "~1.4.0",
+    "font-awesome": ">=4.1.0",
+    "lodash": "~2.4.1",
+    "angular-socket-io": "~0.7.0",
+    "angular-ui-router": "~0.2.15",
+    "angular-validation-match": "~1.5.2",
+    "angular-material": "~1.0.1",
+    "api-check": "~7.5.5",
+    "angular-formly": "~7.3.9",
+    "angular-messages": "~1.4.8",
+    "moment": "~2.10.6",
+    "ngstorage": "~0.3.10"
+  },
+  "devDependencies": {
+    "angular-mocks": "~1.4.0"
+  }
+}

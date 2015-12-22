@@ -1,0 +1,14 @@
+
+.admin-repeat-container(class='{{hideRepeat + " " + to.cssClass}}')
+  .repeatsection(ng-repeat='element in model[options.key]', ng-init='fields = copyFields(to.fields)')
+
+    formly-form(fields='fields', model='element', form='form')
+
+    .repeat-remove-container
+      md-button.md-raised.md-warn(type='button', ng-click='model[options.key].splice($index, 1)')
+        | Remove
+
+    hr
+
+.repeat-add-new-button-container
+  md-button.md-raised.md-primary(type='button', ng-click='addNew()') Add {{options.key}}

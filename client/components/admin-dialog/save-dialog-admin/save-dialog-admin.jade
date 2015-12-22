@@ -1,0 +1,15 @@
+md-dialog.dialog.save-admin-dialog(id='save-admin-dialog')
+
+  h1 Confirm save
+
+  form(name='saveAdminForm', ng-submit='save(saveAdminForm)', novalidate='true')
+
+    md-input-container
+      label Add a comment about the change
+      textarea(id='publish-comment-input', name='publishComment', ng-required='true', ng-model='model.comment')
+    .messages.ng-hide(ng-messages='saveAdminForm.publishComment.$error', ng-show='saveAdminForm.publishComment.$touched || saveAdminForm.$submitted')
+      .message(ng-message='required') Need a comment about the change before you can publish
+
+    .buttons.center-align
+      md-button.cancel-button(id='cancel-publish-button', type='button', ng-click='cancel()') Cancel
+      md-button.yes-button(id='submit-publish-button', type='submit') Publish

@@ -1,0 +1,19 @@
+
+
+md-content
+
+  form(name='loginForm', ng-submit='login(user)', novalidate='')
+
+    md-input-container
+      label Email
+      input(name='email', ng-model='user.email', type='email', autocomplete='off')
+
+    md-input-container
+      label Password
+      input(name='password', ng-model='user.password', type='password', autocomplete='off')
+
+
+    md-button(type='submit') Login
+
+
+

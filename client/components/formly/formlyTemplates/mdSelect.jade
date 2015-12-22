@@ -1,0 +1,5 @@
+
+md-input-container(class='{{to.cssClass}}')
+  label {{::to.label}}
+  md-select(ng-model='model[options.key]')
+    md-option(ng-repeat='selectOption in ::to.selectOptions track by $index' value='{{::selectOption}}') {{::selectOption}}

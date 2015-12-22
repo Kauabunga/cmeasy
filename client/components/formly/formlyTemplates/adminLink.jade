@@ -1,0 +1,6 @@
+
+div(class='{{to.cssClass}}')
+  label {{ ::to.label }}
+  md-list
+    md-list-item.repeat-admin-link(ng-repeat='element in model[options.key]', ng-click='selectLink($event, element)')
+      span {{ ::getElementDisplay(element) }}
