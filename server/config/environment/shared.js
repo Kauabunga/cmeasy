@@ -11,7 +11,8 @@ exports = module.exports = {
 
   //TODO should move to non-generated appConfig (or extend appConfig)
   adminRoute: 'admin',
-  apiRoute: '/admin/api/v1',
+  apiRoute: '/admin/api/v1/content',
+  usersRoute: '/admin/api/v1/users',
   authRoute: '/admin/auth/local',
   itemIdKey: '_cmeasyId',
   state: {

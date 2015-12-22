@@ -11,9 +11,13 @@
 
 import _ from 'lodash';
 
+
+/**
+ * TODO rename to controller.model
+ */
 export default function(originalModel){
 
-  var mongoModel = originalModel.getMongoModel();
+  var mongoModel = originalModel.getModel();
 
   return {
     index: index,

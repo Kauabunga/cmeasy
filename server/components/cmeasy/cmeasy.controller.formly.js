@@ -4,29 +4,13 @@
 import _ from 'lodash';
 import {Promise} from 'bluebird';
 
-export default function(originalModel){
+export default function(model){
 
   return {
-    createModelFormlyFields: createModelFormlyFields,
-    createModelColumns: createModelColumns
+    createModelFormlyFields: createModelFormlyFields(model),
+    createModelColumns: createModelColumns(model)
   };
 
-
-  /**
-   *
-   */
-  function createModelFormlyFields(){
-    return getFormlyFields(originalModel);
-  }
-
-  /**
-   *
-   * @returns {String}
-   */
-  function createModelColumns(){
-    return getColumns(originalModel);
-  }
-
 }
 
 
@@ -34,29 +18,32 @@ export default function(originalModel){
  *
  * @param model
  */
-function getColumns(model){
-  return _(model.definition)
-    .map(function(path, key){
-      return path.displayColumn ? key : undefined;
-    })
-  .filter()
-  .value();
+function createModelColumns(model){
+  return function(){
+    return model.getSchemaController().show(model.getId())
+      .then(function(modelSchema){
+        return _(modelSchema)
+          .map(shouldDisplayColumn)
+          .filter()
+          .value();
+      });
+  };
 }
 
 /**
  *
  * @param model
  */
-function getFormlyFields(model){
-
-  console.log(model);
-  console.log(model);
-
-  return _(model.definition)
-    .map(getPathField)
-    .filter()
-    .value();
-
+function createModelFormlyFields(model){
+  return function(){
+    return model.getSchemaController().show(model.getId())
+      .then(function(modelSchema){
+        return _(modelSchema)
+          .map(getPathField)
+          .filter()
+          .value();
+      });
+  }
 }
 
 /**
@@ -133,11 +120,20 @@ function convertPathToLabel(text){
  *
  */
 function unCamelCase(text){
-
   // insert a space before all caps
   return text.replace(/([A-Z])/g, ' $1')
     // uppercase the first character
     .replace(/^./, function(str){ return str.toUpperCase(); });
+}
+
+/**
+ *
+ * @param path
+ * @param key
+ * @returns {*}
+ */
+function shouldDisplayColumn(path, key){
+  return path.displayColumn ? key : undefined;
 }
 
 /**

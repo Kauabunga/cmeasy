@@ -76,7 +76,7 @@ function connectToMongo(cmeasy){
   });
 
   // Populate databases with sample data
-  if (config.seedDB) { require('./config/seed'); }
+  if (config.seedDB) { require('./config/seed')(); }
 
   return mongoose;
 }

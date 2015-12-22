@@ -13,6 +13,8 @@ angular.module('cmeasyApp')
          *
          */
         function init(){
+
+          scope.goHome = $state.go.bind($state, appConfig.state.main);
           scope.$on('$destroy', $rootScope.$on('$stateChangeSuccess', handleStateChangeSuccess));
           handleStateChangeSuccess({}, $state.current, $stateParams, {}, {});
         }

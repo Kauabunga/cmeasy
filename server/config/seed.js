@@ -24,7 +24,7 @@ export default function(){
         password: 'admin'
       })
         .then((users) => {
-          console.log('finished populating users');
+          console.log('Finished populating users');
           return users;
         });
     });

@@ -26,8 +26,8 @@ function createModelRoute(model, router){
 
   let crudController = createCrudController(model);
 
-  router.get(`/${config.modelFormlyRoute}`, gettify(model.getFormly().createModelFormlyFields));
-  router.get(`/${config.modelColumnRoute}`, gettify(model.getFormly().createModelColumns));
+  router.get(`/${config.modelFormlyRoute}`, gettifyPromise(model.getFormly().createModelFormlyFields()));
+  router.get(`/${config.modelColumnRoute}`, gettifyPromise(model.getFormly().createModelColumns()));
 
   router.get('/', crudController.index);
   router.get('/:id', crudController.show);
@@ -44,8 +44,14 @@ function createModelRoute(model, router){
  * @param fn
  * @returns {Function}
  */
-function gettify(fn){
+function gettifyPromise(promise){
   return function(req, res){
-    return res.status(200).send(fn());
+    return promise.then((payload)=>{
+      return res.status(200).json(payload);
+    })
+    .catch((err) => {
+        console.error('Error gettifying promise', err);
+      return res.status(500);
+      });
   }
 }

@@ -21,19 +21,23 @@ export function isAuthenticated() {
     .use(function(req, res, next) {
       // allow access_token to be passed through query parameter as well
       if (req.query && req.query.hasOwnProperty('access_token')) {
-        req.headers.authorization = 'Bearer ' + req.query.access_token;
+        return req.headers.authorization = 'Bearer ' + req.query.access_token; //jshint ignore:line
       }
-      validateJwt(req, res, next);
+      else {
+        return validateJwt(req, res, next);
+      }
     })
     // Attach user to request
     .use(function(req, res, next) {
-      User.findByIdAsync(req.user._id)
+      return User.findByIdAsync(req.user._id)
         .then(user => {
           if (!user) {
             return res.status(401).end();
           }
-          req.user = user;
-          next();
+          else {
+            req.user = user;
+            return next();
+          }
         })
         .catch(err => next(err));
     });
@@ -52,9 +56,9 @@ export function hasRole(roleRequired) {
     .use(function meetsRequirements(req, res, next) {
       if (config.userRoles.indexOf(req.user.role) >=
           config.userRoles.indexOf(roleRequired)) {
-        next();
+        return next();
       } else {
-        res.status(403).send('Forbidden');
+        return res.status(403).send('Forbidden');
       }
     });
 }
@@ -75,7 +79,9 @@ export function setTokenCookie(req, res) {
   if (!req.user) {
     return res.status(404).send('It looks like you aren\'t logged in, please try again.');
   }
-  var token = signToken(req.user._id, req.user.role);
-  res.cookie('token', token);
-  res.redirect('/');
+  else {
+    var token = signToken(req.user._id, req.user.role);
+    res.cookie('token', token);
+    return res.redirect('/');
+  }
 }

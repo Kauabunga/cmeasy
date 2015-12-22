@@ -31,7 +31,7 @@ function respondWith(res, statusCode) {
  * restriction: 'admin'
  */
 export function index(req, res) {
-  User.findAsync({}, '-salt -password')
+  return User.findAsync({}, '-salt -password')
     .then(users => {
       res.status(200).json(users);
     })
@@ -45,7 +45,7 @@ export function create(req, res, next) {
   var newUser = new User(req.body);
   newUser.provider = 'local';
   newUser.role = 'user';
-  newUser.saveAsync()
+  return newUser.saveAsync()
     .spread(function(user) {
       var token = jwt.sign({ _id: user._id }, config.secrets.session, {
         expiresIn: 60 * 60 * 5
@@ -61,7 +61,7 @@ export function create(req, res, next) {
 export function show(req, res, next) {
   var userId = req.params.id;
 
-  User.findByIdAsync(userId)
+  return User.findByIdAsync(userId)
     .then(user => {
       if (!user) {
         return res.status(404).end();
@@ -76,7 +76,7 @@ export function show(req, res, next) {
  * restriction: 'admin'
  */
 export function destroy(req, res) {
-  User.findByIdAndRemoveAsync(req.params.id)
+  return User.findByIdAndRemoveAsync(req.params.id)
     .then(function() {
       res.status(204).end();
     })
@@ -91,7 +91,7 @@ export function changePassword(req, res, next) {
   var oldPass = String(req.body.oldPassword);
   var newPass = String(req.body.newPassword);
 
-  User.findByIdAsync(userId)
+  return User.findByIdAsync(userId)
     .then(user => {
       if (user.authenticate(oldPass)) {
         user.password = newPass;
@@ -112,12 +112,15 @@ export function changePassword(req, res, next) {
 export function me(req, res, next) {
   var userId = req.user._id;
 
-  User.findOneAsync({ _id: userId }, '-salt -password')
+  return User.findOneAsync({ _id: userId }, '-salt -password')
     .then(user => { // don't ever give out the password or salt
       if (!user) {
         return res.status(401).end();
       }
-      res.json(user);
+      else {
+        return res.json(user);
+      }
+
     })
     .catch(err => next(err));
 }
@@ -126,5 +129,5 @@ export function me(req, res, next) {
  * Authentication callback
  */
 export function authCallback(req, res, next) {
-  res.redirect('/');
+  return res.redirect('/');
 }

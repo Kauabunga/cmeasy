@@ -3,7 +3,7 @@
 (function() {
 
 function UserResource($resource, appConfig) {
-  return $resource(`${appConfig.apiRoute}/users/:id/:controller`, {
+  return $resource(`${appConfig.usersRoute}/:id/:controller`, {
     id: '@_id'
   }, {
     changePassword: {

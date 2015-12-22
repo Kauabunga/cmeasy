@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('cmeasyApp')
-  .directive('adminLogin', function (Auth, $state) {
+  .directive('adminLogin', function (Auth, $state, $log) {
     return {
       templateUrl: 'components/admin-login/admin-login.html',
       restrict: 'E',
@@ -27,12 +27,16 @@ angular.module('cmeasyApp')
          *
          */
         function login(user){
+
+          $log.debug('logging in');
+
           return Auth.login(user)
             .then(() => {
               // Logged in, redirect to home
               $state.go('admin.main');
             })
             .catch(err => {
+              $log.debug('Error logging in', err);
               //this.errors.other = err.message;
             });
         }

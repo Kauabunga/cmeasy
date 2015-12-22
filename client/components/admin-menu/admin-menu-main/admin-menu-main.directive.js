@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('cmeasyApp')
-  .directive('adminMenuMain', function ($rootScope, $log, $state, $stateParams, appConfig) {
+  .directive('adminMenuMain', function ($rootScope, $log, $state, $stateParams, appConfig, Auth) {
     return {
       templateUrl: 'components/admin-menu/admin-menu-main/admin-menu-main.html',
       restrict: 'E',
@@ -13,14 +13,8 @@ angular.module('cmeasyApp')
          *
          */
         function init(){
-          scope.gotoContent = gotoContent;
-        }
-
-        /**
-         *
-         */
-        function gotoContent(){
-          $state.go(appConfig.state.content);
+          scope.gotoContent = $state.go.bind($state, appConfig.state.content);
+          scope.logout = _.compose($state.go.bind($state, appConfig.state.login), Auth.logout);
         }
 
       }

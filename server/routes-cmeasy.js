@@ -7,7 +7,6 @@
 import renderIndex from './components/render-index';
 import auth from './auth';
 import user from './api/user';
-import generated from './api/generated';
 import _ from 'lodash';
 
 /**
@@ -15,11 +14,17 @@ import _ from 'lodash';
  */
 export default function(app, cmeasy) {
 
-  //TODO create get all content endpoint. route via config
-
-  _(cmeasy.getModels()).map(createContentRoute(app, cmeasy)).value();
-  app.use(`/${cmeasy.getRootRoute()}/api/v1/users`, user);
   app.use(`/${cmeasy.getRootRoute()}/auth`, auth);
+  app.use(`/${cmeasy.getApiRoute()}/v1/users`, user);
+  app.use(`/${cmeasy.getApiRoute()}/v1/content/:type`, routeContentRequest(cmeasy));
+
+
+  //TODO crud on the models/schemas themselves
+  //app.use(`/${cmeasy.getApiRoute()}/v1/createcontent/:type`, routeContentRequest(cmeasy));
+  //app.use(`/${cmeasy.getApiRoute()}/v1/updatecontent/:type`, routeContentRequest(cmeasy));
+  //app.use(`/${cmeasy.getApiRoute()}/v1/deletecontent/:type`, routeContentRequest(cmeasy));
+
+
   app.use(`/${cmeasy.getRootRoute()}`, renderIndex(app, cmeasy));
 
 }
@@ -27,26 +32,9 @@ export default function(app, cmeasy) {
 /**
  *
  */
-function createContentRoute(app, cmeasy){
-  return function(model){
-    //TODO make use of this namespace
-    let routeName = getRoute(cmeasy.getRootRoute(), model);
-    console.info('Creating route', routeName);
-    return app.use(routeName, generated(model));
-
+function routeContentRequest(cmeasy){
+  return function(req, res, next){
+    //get content type from req
+    return cmeasy.getModel(req.params.type).getCrud()(req, res, next);
   }
-}
-
-/**
- *
- */
-function getRoute(route, model){
-  return `/${route}/api/v1/${getRouteFromModel(model)}`;
-}
-
-/**
- *
- */
-function getRouteFromModel(model){
-  return _.camelCase(model.name.toString());
 }
