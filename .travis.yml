@@ -1,22 +1,29 @@
 language: node_js
+
 node_js:
 - 4.2.3
+
 matrix:
   fast_finish: true
   allow_failures:
   - node_js: 5.1.1
+
 before_script:
 - npm install -g bower grunt-cli
 - bower install
-services: mongodb
 
-#after_success:
-# compress dist directory and upload as tarball for heroku deployment
-#- tar -cvzf ./dist/dist.tar.gz ./dist
-#- curl
+services: mongodb
 
 deploy:
   provider: heroku
+  skip_cleanup: true
+  before_deploy:
+  - rm -rf ./server
+  - rm -rf ./client
+  - rm -rf ./.tmp
+  - rm -rf ./e2e
+  - rm ./package.json
+  - mv -r ./dist .
   api_key:
     secure: KEI+Q8pnB/u9UKfH0LKgkf4gikMyyxWNv0FNkv2h1B+FbayuXq8uM3g/Ej6moLc2A6n0BLBoObSwq9yCEcj/kVRwCjGos69gF6FCNnbkTUurBXiUpnrHrLYYsVeaAyNzUsjJt/PAOZ4UnolGg8GkdMo9rVvx9eJ6DHCKchlghcTwg6FS/IyddVGR/uSf0eUs6jsJJvDZz0LKE7TI/GMyBKnLf7rVpNQ4QnGzKUBZqb9KqjHKtnc/EVB19cq1i/UpU/owAPqzaD6g/jeRpf77iJUv0VunvFabz3O0KUmqZJzuCjBEBNItM3LCssFMJCcsOTKzGiqmYQ+dqKd9pC+mGhVIUcURVmzPdKIOBNjzl10+1qO+eBKfwZ4Bo4JK+u1Aw+hO48noqSqnTY0AMVWek95VdGwtJPuAjrEooCScDu9iI0XsK86/sTqooBUuURWDxl0av83wm1VCTeo5NeAZtFNgzBDm2LkgvTsTetuewXlYiAVXpTYvKDcL5Uo+o9eHtSd6JUWyRszXNxE3I/eIjrnQixGhULCops0ZAwzFwUH9+IM3ENz9g1/TjlYIDTeFNgFUZJ8tbedKuLUFVqW769EG77Q5pEGsTIugTqp6FyNYT8/42wIlNNmZ7pGD0DmaMNSrjBup8xgK7ZEz/s9qvxr4OUObx6X2A2VnKKmNbfo=
 
