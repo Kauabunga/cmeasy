@@ -30,7 +30,7 @@ describe('User API:', function() {
 
     before(function(done) {
       request(app)
-        .post('/auth/local')
+        .post('/admin/auth/local')
         .send({
           email: 'test@example.com',
           password: 'password'
@@ -45,7 +45,7 @@ describe('User API:', function() {
 
     it('should respond with a user profile when authenticated', function(done) {
       request(app)
-        .get('/api/users/me')
+        .get('/admin/api/v1/users/me')
         .set('authorization', 'Bearer ' + token)
         .expect(200)
         .expect('Content-Type', /json/)
@@ -57,7 +57,7 @@ describe('User API:', function() {
 
     it('should respond with a 401 when not authenticated', function(done) {
       request(app)
-        .get('/api/users/me')
+        .get('/admin/api/v1/users/me')
         .expect(401)
         .end(done);
     });

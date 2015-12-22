@@ -5,6 +5,7 @@ import request from 'supertest';
 
 var newGenerated;
 
+/*
 describe('Generated API:', function() {
 
   describe('GET /api/generated', function() {
@@ -145,3 +146,4 @@ describe('Generated API:', function() {
   });
 
 });
+*/
