@@ -53,11 +53,13 @@ function getBlogModel(){
   return {
     name: 'Blog Post',
     singleton: false,
+    disableDelete: false,
 
     definition: {
       title: {
         type: String,
-        label: 'Blog Title'
+        label: 'Blog Title',
+        displayColumn: true
       },
       content: {
         type: String,

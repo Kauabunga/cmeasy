@@ -10,10 +10,13 @@
 'use strict';
 
 import _ from 'lodash';
+import Promise from 'bluebird';
 
 
 /**
  * TODO rename to controller.model
+ *
+ * TODO catch and rethrow for ensured logging
  */
 export default function(model){
 
@@ -46,6 +49,11 @@ export default function(model){
    */
   function show(id) {
     //TODO add limit(1) here? Does it make a difference?
+
+    //TODO for non-singletons we need to search a different property
+
+    console.log(`Show:Start:${model.getId()}:${id}`);
+
     return mongoModel.find(getIdQuery(id)).sort(getSortQuery()).execAsync()
       .then(function(items){
         //if this item is a singleton and there isn't one -> go and create it
@@ -55,6 +63,10 @@ export default function(model){
         else {
           return _(items).first();
         }
+      })
+      .then(function(item){
+        console.log(`Show:Finish:${model.getId()}:${id}:${item}`);
+        return item;
       });
   }
 
@@ -65,24 +77,39 @@ export default function(model){
    */
   function create(item = {}) {
 
-    //TODO validate value types from schema
+    console.log(`Create:Start:${model.getId()}:${item[model.getInstanceKey()] || ''}:${item || ''}`);
 
-    return model.getSchemaController()
-      .show(model.getId())
-      .then(function(schema){
-          return mongoModel.createAsync(getCreateItem(schema, item));
-        });
+    return Promise.all(getCreateResolve(item))
+      .then(function([schema, currentItem]){
+        return mongoModel.createAsync(getCreateItem(schema, item, currentItem));
+      })
+      .then(function(createdItem){
+        console.log(`Create:Finish:${model.getId()}:${item[model.getInstanceKey()] || ''}:${createdItem || ''}`);
+        return createdItem;
+      });
 
   }
 
   /**
    *
-   * @param schema
-   * @param item
+   */
+  function getCreateResolve(item){
+    var resolve = [ model.getSchemaController().show(model.getId()) ];
+
+    //If the model is not a singleton then we need to go fetch the previous instance (if one exists)
+    if( ! model.isSingleton() && item[model.getInstanceKey()]){
+      resolve.push(show(item[model.getInstanceKey()]).then(getModelAsObject));
+    }
+    return resolve;
+  }
+
+  /**
+   *
    * @returns {Object}
    */
-  function getCreateItem(schema, item){
-    return _.merge(getDefaultItem(schema), getValidItem(schema, item));
+  function getCreateItem(schema, item, currentItem = {}){
+
+    return _.merge(getDefaultItem(schema), getStrippedCurrentItem(currentItem), getValidItem(schema, item));
   }
 
   /**
@@ -98,6 +125,13 @@ export default function(model){
 
   /**
    *
+   */
+  function getStrippedCurrentItem(currentItem){
+    return _.omit(currentItem, ['_id', '__v', 'author', 'dateCreated', 'comment']);
+  }
+
+  /**
+   *
    * @param value
    * @param key
    */
@@ -105,7 +139,6 @@ export default function(model){
     return function(value, key){
 
       //TODO test to make sure schema[key].type === value.prototype or something along those lines
-
       return isEditDisabled(schema, key) ? {[key]: undefined } : {[key]: value};
     }
   }
@@ -117,6 +150,14 @@ export default function(model){
     return ['_id', '__v'].indexOf(key) !== -1 || schema[key].disableEdit;
   }
 
+
+  /**
+   *
+   * @param model
+   */
+  function getModelAsObject(model){
+    return model.toObject();
+  }
 
 
   /**
@@ -132,11 +173,9 @@ export default function(model){
 
   /**
    *
-   * @param schema
-   * @param key
    */
   function getSchemaPropertyDefault(schema, key){
-    return { [key]: schema.default && typeof schema.default === 'function' ? schema.default() : schema.default };
+    return { [key]: typeof schema.default === 'function' ? schema.default() : schema.default };
   }
 
 
@@ -160,7 +199,8 @@ export default function(model){
   function destroy(id) {
 
     //TODO implement?
-    return mongoModel.find(getIdQuery(id)).execAsync().removeAsync();
+    return mongoModel.find(getIdQuery(id)).execAsync()
+      .then(destroyAll);
   }
 
 
@@ -168,7 +208,14 @@ export default function(model){
    *
    */
   function getIdQuery(id){
-    return { [model.getIdKey()]: id };
+
+    if(model.isSingleton()){
+      return { [model.getIdKey()]: id };
+    }
+    else {
+      return { [model.getInstanceKey()]: id };
+    }
+
   }
 
   /**
@@ -176,6 +223,15 @@ export default function(model){
    */
   function getSortQuery(){
     return { 'dateCreated': -1 };
+  }
+
+  /**
+   *
+   * @param item
+   * @returns {*}
+   */
+  function destroyAll(items){
+    return Promise.all(_(items).map((item) => {return item.removeAsync();}).value());
   }
 
 }

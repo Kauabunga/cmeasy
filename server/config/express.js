@@ -75,6 +75,10 @@ function coreExpress(app){
       xssProtection: true
     }));
   }
+
+  if ('development' === env) {
+    app.use(require('connect-livereload')());
+  }
 }
 
 /**
@@ -93,9 +97,6 @@ function staticExpress(app){
     app.use(morgan('dev'));
   }
 
-  if ('development' === env) {
-    app.use(require('connect-livereload')());
-  }
 
   if ('development' === env || 'test' === env) {
     app.use(express.static(path.join(config.root, '.tmp')));

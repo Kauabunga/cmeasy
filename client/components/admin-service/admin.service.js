@@ -139,7 +139,7 @@ angular.module('cmeasyApp')
      * @returns {HttpPromise}
      */
     function deleteItem(type, id) {
-      return $http.delete(appConfig.rootRoute + '/' + type + '/' + id)
+      return $http.delete(appConfig.apiRoute + '/' + type + '/' + id)
         .then(getDataFromSuccess)
         .then(handleChangeResponseForType(type));
     }

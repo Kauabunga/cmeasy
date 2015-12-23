@@ -18,7 +18,7 @@
       span(ng-hide='isCreating') Create
       loader-svg.loading-button-svg.ng-hide(ng-show='isCreating')
 
-    md-button.md-raised.loading-button.md-warn(id='delete-item-button', ng-show='isDeleteItem && ! isCreateItem()', ng-click='deleteItem($event, itemModel)')
+    md-button.md-raised.loading-button.md-warn(id='delete-item-button', ng-show='canDeleteItem && ! isCreateItem()', ng-click='deleteItem($event, itemModel)')
       span(ng-hide='isDeleting') Delete
       loader-svg.loading-button-svg.ng-hide(ng-show='isDeleting')
 

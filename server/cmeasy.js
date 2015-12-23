@@ -124,11 +124,15 @@ class CmeasyModel {
   }
 
   getId(){
-    return this[this.getIdKey()];
+    return this._cmeasyId;
   }
 
   getIdKey(){
     return '_cmeasyId';
+  }
+
+  getInstanceKey(){
+    return '_cmeasyInstanceId';
   }
 
   isSingleton(){

@@ -161,7 +161,15 @@ export default function(model){
 
       [model.getIdKey()]: {
         type: String,
-        default: getDefaultId(model),
+        default: () => model.getId(),
+        disableEdit: true,
+        disableDisplay: true,
+        unique: false
+      },
+
+      [model.getInstanceKey()]: {
+        type: String,
+        default: () => uuid.v4(),
         disableEdit: true,
         disableDisplay: true,
         unique: false
@@ -183,19 +191,6 @@ function getDefinitionFromSchema(schema){
   return schema.definition;
 }
 
-/**
- *
- */
-function getDefaultId(model){
-  return function(){
-    if(model.isSingleton()){
-      return model.getId();
-    }
-    else {
-      return uuid.v4();
-    }
-  }
-}
 
 
 /**

@@ -12,7 +12,6 @@ angular.module('cmeasyApp')
         itemTitle: '@',
         itemTypeParam: '@',
         itemIdParam: '@',
-        isDeleteItem: '@',
         deleteItemState: '@'
       },
       link: function (scope, element, attrs) {
@@ -24,39 +23,44 @@ angular.module('cmeasyApp')
          */
         function init(){
 
-          scope.itemTitle = getItemTitle();
-          scope.itemType = getItemType();
-          scope.itemId = getItemId();
-          scope.isCreateItem = isCreateItem;
           scope.save = save;
           scope.create = create;
           scope.showHistory = showHistory;
           scope.deleteItem = deleteItem;
-          scope.isDialogActive = false;
-          scope.itemModel = scope.itemModel || {};
 
 
-          return getItemData(scope.itemType, scope.itemId)
-            .then(function([formlyFields, itemModel]){
+          return Admin.getModel(getItemType())
+            .then(function(model){
 
-              scope.formlyFields = formlyFields;
-              if( ! isCreateItem() ){
-                scope.itemModelOriginal = itemModel;
-                scope.itemModel = _.cloneDeep(itemModel);
-              }
+              scope.itemTitle = getItemTitle();
+              scope.itemType = getItemType();
+              scope.itemId = getItemId();
+              scope.isCreateItem = isCreateItem;
+              scope.canDeleteItem = getCanDeleteItem(model);
 
-              return $timeout(function(){
-                scope.isLoaded = true;
-                scope.dirtyWatcher = scope.$watch('itemModel', function(){
-                  scope.isDirty = true;
-                  scope.dirtyWatcher();
-                }, true);
-              }, 32);
+              return getItemData(scope.itemType, scope.itemId)
+                .then(function([formlyFields, itemModel]){
 
-            })
-            .catch(function(err){
-              $log.debug('Error getting item data', err);
-              $state.go(getMainState());
+                  scope.formlyFields = formlyFields;
+                  if( ! isCreateItem() ){
+                    scope.itemModelOriginal = itemModel;
+                    scope.itemModel = _.cloneDeep(itemModel);
+                  }
+
+
+                  return $timeout(function(){
+                    scope.isLoaded = true;
+                    scope.dirtyWatcher = scope.$watch('itemModel', function(){
+                      scope.isDirty = true;
+                      scope.dirtyWatcher();
+                    }, true);
+                  }, 32);
+
+                })
+                .catch(function(err){
+                  $log.debug('Error getting item data', err);
+                  $state.go(getMainState());
+                });
             });
         }
 
@@ -77,6 +81,14 @@ angular.module('cmeasyApp')
           }
 
           return itemTitle;
+        }
+
+        /**
+         *
+         * @param model
+         */
+        function getCanDeleteItem(model){
+          return ! model.disableDelete && ! model.singleton;
         }
 
         /**
@@ -139,13 +151,12 @@ angular.module('cmeasyApp')
 
           return AdminDialog.showDeleteDialog($event)
             .then(function hide() {
-              scope.isDialogActive = false;
               scope.isDeleting = true;
               return Admin.deleteItem(getItemType(), getItemId())
                 .then(function(response){
                   $log.debug('Delete response', response);
                   $stateParams.listType = $stateParams.itemType;
-                  $state.go(scope.deleteItemState, $stateParams);
+                  $state.go(appConfig.state.content, $stateParams);
                 })
                 .finally(function(){
                   scope.isDeleting = false;
@@ -153,7 +164,6 @@ angular.module('cmeasyApp')
             },
             function cancel() {
               $log.debug('Delete item canceled');
-              scope.isDialogActive = false;
             })
             .catch(function(){
               $log.debug('Error creating delete dialog');
@@ -210,12 +220,16 @@ angular.module('cmeasyApp')
         function create(item){
           $log.debug('creating item', item);
           if( ! scope.isCreating ){
+
             scope.isCreating = true;
+
             return Admin.createItem(getItemType(), item)
               .then(function(itemModel){
+
                 $log.debug('save response', itemModel);
                 scope.itemModel = itemModel;
-                $stateParams.itemId = itemModel[appConfig.itemIdKey];
+                $stateParams.itemId = itemModel[appConfig.itemInstanceKey];
+
                 $state.go($state.current.name, $stateParams, { location: 'replace' });
               })
               .finally(function(){

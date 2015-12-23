@@ -5,6 +5,7 @@ md-sidenav.admin-left-sidenav(md-component-id='admin-left-nav', md-is-locked-ope
   md-content
 
     md-tabs(md-selected='menuIndex', md-dynamic-height)
+
       md-tab(label='login')
         admin-login
 
@@ -12,6 +13,8 @@ md-sidenav.admin-left-sidenav(md-component-id='admin-left-nav', md-is-locked-ope
         admin-menu-main
 
       md-tab(label='2nd menu')
-        md-button(ng-click='goHome()') Go Home
-        admin-menu-content
 
+        md-list
+          md-list-item(ng-click='goHome($event)') Go Home
+
+        admin-menu-content

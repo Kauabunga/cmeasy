@@ -15,6 +15,7 @@ exports = module.exports = {
   usersRoute: '/admin/api/v1/users',
   authRoute: '/admin/auth/local',
   itemIdKey: '_cmeasyId',
+  itemInstanceKey: '_cmeasyInstanceId',
   state: {
     root: 'admin',
     main: 'admin.main',

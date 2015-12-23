@@ -19,16 +19,12 @@ angular.module('cmeasyApp')
          */
         function init(){
 
-
-
           scope.openListItem = openListItem;
           scope.createItem = createItem;
           scope.filterList = filterList;
           scope.getRenderedColumnValue = getRenderedColumnValue;
           scope.getPrettyLabel = getPrettyLabel;
 
-          scope.list = scope.list || [];
-          scope.filterText = '';
 
           return Admin.getModel(getListType())
             .then(function(model){
@@ -37,6 +33,9 @@ angular.module('cmeasyApp')
               scope.listTitle = getListTitle();
               scope.listType = getListType();
               scope.canCreate = getCanCreateModel(model);
+              scope.list = scope.list || [];
+              scope.filterText = '';
+
 
               return getListData(getListType(), { force: !! getCanCreateModel(model) })
                 .then(function([allItems, itemColumns]){
@@ -148,7 +147,8 @@ angular.module('cmeasyApp')
          * @param listItem
          */
         function getListItemId(listItem){
-          return listItem[appConfig.itemIdKey];
+          //return listItem[appConfig.itemIdKey];
+          return listItem[appConfig.itemInstanceKey];
         }
 
         /**
