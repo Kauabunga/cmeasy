@@ -30,6 +30,7 @@ function createModelRoute(model, router){
   router.get(`/${config.modelColumnRoute}`, gettifyPromise(model.getFormly().createModelColumns()));
 
   router.get('/', crudController.index);
+  router.get('/:id/history', crudController.history);
   router.get('/:id', crudController.show);
   router.post('/', crudController.create);
   router.put('/:id', crudController.create);

@@ -124,9 +124,11 @@ angular.module('cmeasyApp')
      * @param id
      * @param options
      * @returns {HttpPromise}
+     *
+     * TODO get history route into config
      */
     function getItemHistory(type, id, options) {
-      return $http.get('/api/v1/' + type + '/' + id + '/history', {cache: false})
+      return $http.get(appConfig.apiRoute + '/' + type + '/' + id + '/history', {cache: false})
         .then(getDataFromSuccess);
     }
 

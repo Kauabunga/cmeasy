@@ -14,7 +14,7 @@ import uuid from 'uuid';
 import Promise from 'bluebird';
 
 /**
- * 
+ *
  */
 export default function(model){
 

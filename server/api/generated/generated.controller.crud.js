@@ -66,18 +66,21 @@ export default function(model){
    *
    */
   function history(req, res) {
-    return res.sendStatus(501);
+    return model.getDao().history(req.params.id)
+      .then(handleEntityNotFound(res))
+      .then(responseWithResult(res))
+      .catch(handleError(res));
   }
 
 
   /**
    * Deletes a Generated from the DB
    *
+   * TODO implement
    */
   function destroy(req, res) {
     return model.getDao().destroy(req.params.id)
       .then(handleEntityNotFound(res))
-      .then(removeEntity(res))
       .catch(handleError(res));
   }
 
@@ -128,19 +131,3 @@ function handleEntityNotFound(res) {
   };
 }
 
-
-/**
- *
- * @param res
- * @returns {Function}
- */
-function removeEntity(res) {
-  return function(entity) {
-    if (entity) {
-      return entity.removeAsync()
-        .then(() => {
-          return res.status(204).end();
-        });
-    }
-  };
-}

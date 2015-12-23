@@ -34,6 +34,9 @@ export default function(app, cmeasy) {
  */
 function routeContentRequest(cmeasy){
   return function(req, res, next){
+
+    console.log('Routing content request', req.url);
+
     //get content type from req
     return cmeasy.getModel(req.params.type).getCrud()(req, res, next);
   }

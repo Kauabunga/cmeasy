@@ -15,9 +15,9 @@ import _ from 'lodash';
 /**
  * TODO rename to controller.model
  */
-export default function(originalModel){
+export default function(model){
 
-  var mongoModel = originalModel.getModel();
+  var mongoModel = model.getModel();
 
   return {
     index: index,
@@ -35,7 +35,7 @@ export default function(originalModel){
   function index() {
     return mongoModel.find({})
       .sort({ dateCreated: -1 }).execAsync()
-      .then(getUniqueIds(originalModel));
+      .then(getUniqueIds(model));
   }
 
 
@@ -44,11 +44,12 @@ export default function(originalModel){
    *
    */
   function show(id) {
-    return mongoModel.find({[originalModel.getIdKey()]: id}).sort({dateCreated: -1}).execAsync()
+    //TODO add limit(1) here?
+    return mongoModel.find(getIdQuery(id)).sort(getSortQuery()).execAsync()
       .then(function(items){
 
         //if this item is a singleton and there isn't one -> go and create it
-        if(originalModel.isSingleton() && (! items || items.length === 0)){
+        if(model.isSingleton() && (! items || items.length === 0)){
           return create({});
         }
         else {
@@ -63,6 +64,9 @@ export default function(originalModel){
    *
    */
   function create(item) {
+    //TODO default values from schema
+    //TODO validate values from schema
+    //TODO validate disableEdit from schema
     return mongoModel.createAsync(item);
   }
 
@@ -71,8 +75,8 @@ export default function(originalModel){
    * Gets the history of an item
    *
    */
-  function history(req, res) {
-    return res.sendStatus(501);
+  function history(id) {
+    return mongoModel.find(getIdQuery(id)).sort(getSortQuery()).execAsync();
   }
 
 
@@ -81,9 +85,25 @@ export default function(originalModel){
    *
    */
   function destroy(id) {
-    return mongoModel.findByIdAsync(id);
+
+    //TODO implement?
+    return mongoModel.find(getIdQuery(id)).execAsync().removeAsync();
   }
 
+
+  /**
+   *
+   */
+  function getIdQuery(id){
+    return {[model.getIdKey()]: id};
+  }
+
+  /**
+   *
+   */
+  function getSortQuery(){
+    return { dateCreated: -1 };
+  }
 
 }
 
@@ -91,9 +111,9 @@ export default function(originalModel){
 /**
  *
  */
-function getUniqueIds(originalModel){
+function getUniqueIds(model){
   return function (entity) {
-    return _(entity).unique(originalModel.idProperty).value();
+    return _(entity).unique(model.idProperty).value();
   };
 }
 
