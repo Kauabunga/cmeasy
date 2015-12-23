@@ -31,10 +31,11 @@ export default function(model){
   /**
    * Gets a list of Generateds
    *
+   * TODO if singleton then return an object not an array
    */
   function index() {
     return mongoModel.find({})
-      .sort({ dateCreated: -1 }).execAsync()
+      .sort(getSortQuery()).execAsync()
       .then(getUniqueIds(model));
   }
 
@@ -44,10 +45,9 @@ export default function(model){
    *
    */
   function show(id) {
-    //TODO add limit(1) here?
+    //TODO add limit(1) here? Does it make a difference?
     return mongoModel.find(getIdQuery(id)).sort(getSortQuery()).execAsync()
       .then(function(items){
-
         //if this item is a singleton and there isn't one -> go and create it
         if(model.isSingleton() && (! items || items.length === 0)){
           return create({});
@@ -63,11 +63,80 @@ export default function(model){
    * Creates a new Generated in the DB
    *
    */
-  function create(item) {
-    //TODO default values from schema
-    //TODO validate values from schema
-    //TODO validate disableEdit from schema
-    return mongoModel.createAsync(item);
+  function create(item = {}) {
+
+    //TODO validate value types from schema
+
+    return model.getSchemaController()
+      .show(model.getId())
+      .then(function(schema){
+          return mongoModel.createAsync(getCreateItem(schema, item));
+        });
+
+  }
+
+  /**
+   *
+   * @param schema
+   * @param item
+   * @returns {Object}
+   */
+  function getCreateItem(schema, item){
+    return _.merge(getDefaultItem(schema), getValidItem(schema, item));
+  }
+
+  /**
+   *
+   * @param schema
+   * @param item
+   */
+  function getValidItem(schema, item){
+    return _(item).map(getValidItemProperty(schema))
+      .filter()
+      .reduce(_.merge) || {};
+  }
+
+  /**
+   *
+   * @param value
+   * @param key
+   */
+  function getValidItemProperty(schema){
+    return function(value, key){
+
+      //TODO test to make sure schema[key].type === value.prototype or something along those lines
+
+      return isEditDisabled(schema, key) ? {[key]: undefined } : {[key]: value};
+    }
+  }
+
+  /**
+   *
+   */
+  function isEditDisabled(schema, key){
+    return ['_id', '__v'].indexOf(key) !== -1 || schema[key].disableEdit;
+  }
+
+
+
+  /**
+   *
+   * @param schema
+   * @returns {*}
+   */
+  function getDefaultItem(schema){
+    return _(schema).map(getSchemaPropertyDefault)
+      .filter()
+      .reduce(_.merge) || {};
+  }
+
+  /**
+   *
+   * @param schema
+   * @param key
+   */
+  function getSchemaPropertyDefault(schema, key){
+    return { [key]: schema.default && typeof schema.default === 'function' ? schema.default() : schema.default };
   }
 
 
@@ -76,7 +145,11 @@ export default function(model){
    *
    */
   function history(id) {
-    return mongoModel.find(getIdQuery(id)).sort(getSortQuery()).execAsync();
+    return mongoModel.find(getIdQuery(id)).sort(getSortQuery()).execAsync()
+      .then(function(history){
+        console.log('history', id, history);
+        return history;
+      });
   }
 
 
@@ -95,14 +168,14 @@ export default function(model){
    *
    */
   function getIdQuery(id){
-    return {[model.getIdKey()]: id};
+    return { [model.getIdKey()]: id };
   }
 
   /**
    *
    */
   function getSortQuery(){
-    return { dateCreated: -1 };
+    return { 'dateCreated': -1 };
   }
 
 }
@@ -113,7 +186,7 @@ export default function(model){
  */
 function getUniqueIds(model){
   return function (entity) {
-    return _(entity).unique(model.idProperty).value();
+    return _(entity).unique(model.getIdKey()).value();
   };
 }
 

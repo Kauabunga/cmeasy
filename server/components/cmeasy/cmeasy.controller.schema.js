@@ -123,6 +123,7 @@ export default function(model){
     return {
       dateCreated: new Date(),
       author: 'Server',
+      comment: 'Initial seed',
       [model.getIdKey()]: model.getId()
     }
   }
@@ -135,8 +136,9 @@ export default function(model){
 
       dateCreated: {
         type: Date,
-        default: new Date(),
+        default: Date.now,
         disableEdit: true,
+        disableDisplay: true,
         unique: false
       },
 
@@ -145,6 +147,15 @@ export default function(model){
         type: String,
         default: 'Server',
         disableEdit: true,
+        disableDisplay: true,
+        unique: false
+      },
+
+      comment: {
+        type: String,
+        default: 'Server',
+        disableEdit: false,
+        disableDisplay: true,
         unique: false
       },
 
@@ -152,6 +163,7 @@ export default function(model){
         type: String,
         default: getDefaultId(model),
         disableEdit: true,
+        disableDisplay: true,
         unique: false
       }
     }

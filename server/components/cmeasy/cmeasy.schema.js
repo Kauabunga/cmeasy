@@ -3,13 +3,13 @@
 import _ from 'lodash';
 import uuid from 'uuid';
 
+
 /**
  *
  */
 export default function(namespace, mongoose, model){
-  return mongoose.model(getMongoSchemaName(namespace, model), new mongoose.Schema({}, {strict: false}));
+  return mongoose.model(getMongoSchemaName(namespace, model), new mongoose.Schema({ meta: {}, definition: {} }, { strict: true }));
 }
-
 
 /**
  *

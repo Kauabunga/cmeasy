@@ -7,7 +7,7 @@ import uuid from 'uuid';
  *
  */
 export default function(namespace, mongoose, model){
-  return mongoose.model(getMongoModelName(namespace, model), new mongoose.Schema({}, { strict: false }));
+  return mongoose.model(getMongoModelName(namespace, model), new mongoose.Schema({ }, { strict: false }));
 }
 
 
