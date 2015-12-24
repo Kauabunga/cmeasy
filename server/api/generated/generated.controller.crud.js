@@ -81,6 +81,7 @@ export default function(model){
   function destroy(req, res) {
     return model.getDao().destroy(req.params.id)
       .then(handleEntityNotFound(res))
+      .then(responseWithResult(res))
       .catch(handleError(res));
   }
 

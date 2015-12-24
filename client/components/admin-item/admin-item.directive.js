@@ -155,8 +155,8 @@ angular.module('cmeasyApp')
               return Admin.deleteItem(getItemType(), getItemId())
                 .then(function(response){
                   $log.debug('Delete response', response);
-                  $stateParams.listType = $stateParams.itemType;
-                  $state.go(appConfig.state.content, $stateParams);
+                  //$stateParams.listType = $stateParams.itemType;
+                  $state.go(appConfig.state.list, $stateParams);
                 })
                 .finally(function(){
                   scope.isDeleting = false;

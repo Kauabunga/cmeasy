@@ -197,10 +197,7 @@ export default function(model){
    *
    */
   function destroy(id) {
-
-    //TODO implement?
-    return mongoModel.find(getIdQuery(id)).execAsync()
-      .then(destroyAll);
+    return mongoModel.find(getIdQuery(id)).execAsync().then(destroyAll);
   }
 
 
