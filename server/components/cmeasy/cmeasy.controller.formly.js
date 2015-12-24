@@ -3,6 +3,7 @@
 
 import _ from 'lodash';
 import {Promise} from 'bluebird';
+import {Schema} from 'mongoose';
 
 export default function(id, schemaController){
 
@@ -21,7 +22,20 @@ export default function(id, schemaController){
 function createModelColumns(id, schemaController){
   return function(){
     return schemaController.show(id)
+      .then(getSchemaDefinition)
       .then(function(modelSchema){
+
+
+        //TODO is this commiting this item to the database - or will it only be so when createing a model/documnet
+        try {
+          var modelMongooseSchemaStructure = new Schema(modelSchema);
+          console.log(modelMongooseSchemaStructure);
+        }
+        catch(err){
+          console.log('Error', err);
+        }
+               
+
         return _(modelSchema)
           .map(shouldDisplayColumn)
           .filter()
@@ -37,16 +51,23 @@ function createModelColumns(id, schemaController){
 function createModelFormlyFields(id, schemaController){
   return function(){
     return schemaController.show(id)
+      .then(getSchemaDefinition)
       .then(function(modelSchema){
-
-        console.log('FORMLY', modelSchema);
-
         return _(modelSchema)
           .map(getPathField)
           .filter()
           .value();
       });
   }
+}
+
+
+/**
+ *
+ * @param model
+ */
+function getSchemaDefinition(schema){
+  return schema.definition;
 }
 
 /**
@@ -84,6 +105,9 @@ function getPathField(path, key){
       field.type = 'adminLink';
     }
     else {
+
+      //TODO need to convert an object to an array with keys - e.g. 'meta.dateCreated'
+      //Can use mongoose to create this initial structure without generating a complete schema?
       //Assume only a single depth
       field.templateOptions.fields = [];
       _.map(path, function(childPath, childKey){
@@ -98,6 +122,7 @@ function getPathField(path, key){
     field.type = 'mdSelect';
     field.templateOptions.selectOptions = path.enum;
   }
+  //TODO path.type === 'HTML'
   else if(path.type === String && path.html){
     field.type = 'WYSIWYG';
   }

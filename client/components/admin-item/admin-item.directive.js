@@ -88,7 +88,7 @@ angular.module('cmeasyApp')
          * @param model
          */
         function getCanDeleteItem(model){
-          return ! model.disableDelete && ! model.singleton;
+          return model ? ! model.disableDelete && ! model.singleton : true;
         }
 
         /**

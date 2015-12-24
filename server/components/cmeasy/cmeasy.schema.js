@@ -65,9 +65,20 @@ function getMetaSchema(cmeasy){
     },
     definition: {
 
-      fields: {
-        type: [{}]
 
+      //TODO formly controller needs to handle nested objects
+      //    e.g. meta._cmeasyId
+      meta: {
+        [cmeasy.getIdKey()]: {
+          type: String,
+          displayColumn: true
+        }
+      },
+
+      definition: {
+        type: [{
+
+        }]
       }
 
     }

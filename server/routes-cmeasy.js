@@ -17,9 +17,11 @@ export default function(app, cmeasy) {
   app.use(`/${cmeasy.getRootRoute()}/auth`, auth);
   app.use(`/${cmeasy.getApiRoute()}/v1/users`, user);
 
+  app.use(`/${cmeasy.getApiRoute()}/v1/content/schema`, routeSchemaRequest(cmeasy));
   app.use(`/${cmeasy.getApiRoute()}/v1/content/:type`, routeContentRequest(cmeasy));
   //app.use(`/${cmeasy.getApiRoute()}/v1/schema/:type`, routeSchemaRequest(cmeasy));
-  app.use(`/${cmeasy.getApiRoute()}/v1/schema`, routeSchemaRequest(cmeasy));
+  //app.use(`/${cmeasy.getApiRoute()}/v1/schema`, routeSchemaRequest(cmeasy));
+
 
   app.use(`/${cmeasy.getRootRoute()}`, renderIndex(app, cmeasy));
 

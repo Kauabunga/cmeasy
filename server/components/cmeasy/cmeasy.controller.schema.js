@@ -201,8 +201,9 @@ function getIdFromItem(item, cmeasy){
  */
 function getDefinitionFromSchema(schema){
 
-  //TODO handle if typeof array
-  return schema.definition;
+  //return schema.definition;
+  //Always return the entire object?
+  return schema;
 }
 
 
@@ -215,6 +216,7 @@ function getUniqueIds(cmeasy){
     return _(entity)
       .map((item)=>{ return item.toObject(); })
       .uniq('meta.' + cmeasy.getIdKey())
+      .map(getDefinitionFromSchema)
       .value();
 
   };

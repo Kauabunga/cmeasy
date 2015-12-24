@@ -3,18 +3,19 @@
 md-sidenav.admin-left-sidenav(md-component-id='admin-left-nav', md-is-locked-open="$mdMedia('min-width: 992px')", ng-swipe-left='closeAdminNav()')
 
   md-content
-
     md-tabs(md-selected='menuIndex', md-dynamic-height)
-
-      md-tab(label='login')
+      md-tab(label='Login')
         admin-login
 
-      md-tab(label='1st menu')
+      md-tab(label='Main')
         admin-menu-main
 
-      md-tab(label='2nd menu')
-
+      md-tab(label='Content')
         md-list
           md-list-item(ng-click='goHome($event)') Go Home
-
         admin-menu-content
+
+      md-tab(label='Types')
+        md-list
+          md-list-item(ng-click='goHome($event)') Go Home
+        admin-menu-types

@@ -28,6 +28,31 @@ angular.module('cmeasyApp')
       });
 
     $stateProvider
+      .state('admin.types', {
+        url: '/types/:itemType',
+        authenticate: true,
+        menuIndex: 3,
+        views: {
+          admincontent: {
+            template: '<admin-list list-type-param="itemType" list-item-state="admin.type"></admin-list>'
+          }
+        }
+      });
+
+    //TODO wire this up
+    $stateProvider
+      .state('admin.type', {
+        url: '/type/:itemType/:itemId',
+        authenticate: true,
+        menuIndex: 3,
+        views: {
+          admincontent: {
+            template: '<admin-item item-type-param="itemType" item-id-param="itemId"></admin-item>'
+          }
+        }
+      });
+
+    $stateProvider
       .state('admin.list', {
         url: '/list/:itemType',
         authenticate: true,

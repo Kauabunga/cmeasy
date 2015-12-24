@@ -90,11 +90,12 @@ export default function(model, schemaController){
    *
    */
   function getCreateResolve(item){
-    var resolve = [ schemaController.show(model.getId()) ];
+    var resolve = [ schemaController.show(model.getId()).then(getSchemaDefinition) ];
 
     //If the model is not a singleton then we need to go fetch the previous instance (if one exists)
     if( ! model.isSingleton() && item[model.getInstanceKey()]){
-      resolve.push(show(item[model.getInstanceKey()]).then(getModelAsObject));
+      resolve.push(show(item[model.getInstanceKey()])
+        .then(getModelAsObject));
     }
     return resolve;
   }
@@ -104,7 +105,6 @@ export default function(model, schemaController){
    * @returns {Object}
    */
   function getCreateItem(schema, item, currentItem = {}){
-
     return _.merge(getDefaultItem(schema), getStrippedCurrentItem(currentItem), getValidItem(schema, item));
   }
 
@@ -155,6 +155,14 @@ export default function(model, schemaController){
     return model.toObject();
   }
 
+  /**
+   *
+   * @param model
+   */
+  function getSchemaDefinition(schema){
+    return schema.definition;
+  }
+
 
   /**
    *
@@ -168,9 +176,10 @@ export default function(model, schemaController){
   }
 
   /**
-   * TODO how to set a default as a function
+   * TODO how to set a default as a function -> need to check cmeasy model
    */
   function getSchemaPropertyDefault(schema, key){
+
     if(key === '_cmeasyInstanceId'){
       return { [key]: uuid.v4() };
     }
@@ -178,11 +187,10 @@ export default function(model, schemaController){
       return { [key]: Date.now() };
     }
     else {
-      return { [key]: typeof schema.default === 'function' ? schema.default() : schema.default };
+      return { [key]: schema && typeof schema.default === 'function' ? schema.default() : schema.default };
     }
 
   }
-
 
   /**
    * Gets the history of an item
