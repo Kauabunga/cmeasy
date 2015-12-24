@@ -11,16 +11,13 @@
 
 import _ from 'lodash';
 import Promise from 'bluebird';
-
+import uuid from 'uuid';
 
 /**
- * TODO rename to controller.model
  *
  * TODO catch and rethrow for ensured logging
  */
-export default function(model){
-
-  var mongoModel = model.getModel();
+export default function(model, schemaController){
 
   return {
     index: index,
@@ -34,10 +31,9 @@ export default function(model){
   /**
    * Gets a list of Generateds
    *
-   * TODO if singleton then return an object not an array
    */
   function index() {
-    return mongoModel.find({})
+    return model.getModel().find({})
       .sort(getSortQuery()).execAsync()
       .then(getUniqueIds(model));
   }
@@ -52,9 +48,9 @@ export default function(model){
 
     //TODO for non-singletons we need to search a different property
 
-    console.log(`Show:Start:${model.getId()}:${id}`);
+    console.log(`Model:Show:Start:${model.getId()}:${id}`);
 
-    return mongoModel.find(getIdQuery(id)).sort(getSortQuery()).execAsync()
+    return model.getModel().find(getIdQuery(id)).sort(getSortQuery()).execAsync()
       .then(function(items){
         //if this item is a singleton and there isn't one -> go and create it
         if(model.isSingleton() && (! items || items.length === 0)){
@@ -65,7 +61,7 @@ export default function(model){
         }
       })
       .then(function(item){
-        console.log(`Show:Finish:${model.getId()}:${id}:${item}`);
+        console.log(`Model:Show:Finish:${model.getId()}:${id}:${item}`);
         return item;
       });
   }
@@ -77,14 +73,14 @@ export default function(model){
    */
   function create(item = {}) {
 
-    console.log(`Create:Start:${model.getId()}:${item[model.getInstanceKey()] || ''}:${item || ''}`);
+    console.log(`Model:Create:Start:${model.getId()}:${item[model.getInstanceKey()] || ''}:${item || ''}`);
 
     return Promise.all(getCreateResolve(item))
       .then(function([schema, currentItem]){
-        return mongoModel.createAsync(getCreateItem(schema, item, currentItem));
+        return model.getModel().createAsync(getCreateItem(schema, item, currentItem));
       })
       .then(function(createdItem){
-        console.log(`Create:Finish:${model.getId()}:${item[model.getInstanceKey()] || ''}:${createdItem || ''}`);
+        console.log(`Model:Create:Finish:${model.getId()}:${item[model.getInstanceKey()] || ''}:${createdItem || ''}`);
         return createdItem;
       });
 
@@ -94,7 +90,7 @@ export default function(model){
    *
    */
   function getCreateResolve(item){
-    var resolve = [ model.getSchemaController().show(model.getId()) ];
+    var resolve = [ schemaController.show(model.getId()) ];
 
     //If the model is not a singleton then we need to go fetch the previous instance (if one exists)
     if( ! model.isSingleton() && item[model.getInstanceKey()]){
@@ -172,10 +168,19 @@ export default function(model){
   }
 
   /**
-   *
+   * TODO how to set a default as a function
    */
   function getSchemaPropertyDefault(schema, key){
-    return { [key]: typeof schema.default === 'function' ? schema.default() : schema.default };
+    if(key === '_cmeasyInstanceId'){
+      return { [key]: uuid.v4() };
+    }
+    else if(key === 'dateCreated'){
+      return { [key]: Date.now() };
+    }
+    else {
+      return { [key]: typeof schema.default === 'function' ? schema.default() : schema.default };
+    }
+
   }
 
 
@@ -184,7 +189,7 @@ export default function(model){
    *
    */
   function history(id) {
-    return mongoModel.find(getIdQuery(id)).sort(getSortQuery()).execAsync()
+    return model.getModel().find(getIdQuery(id)).sort(getSortQuery()).execAsync()
       .then(function(history){
         console.log('history', id, history);
         return history;
@@ -197,7 +202,7 @@ export default function(model){
    *
    */
   function destroy(id) {
-    return mongoModel.find(getIdQuery(id)).execAsync().then(destroyAll);
+    return model.getModel().find(getIdQuery(id)).execAsync().then(destroyAll);
   }
 
 
@@ -239,7 +244,19 @@ export default function(model){
  */
 function getUniqueIds(model){
   return function (entity) {
-    return _(entity).unique(model.getIdKey()).value();
+
+    if(model.isSingleton()){
+      return _(entity)
+        .map((item)=>{ return item.toObject(); })
+        .uniq(model.getIdKey())
+        .value();
+    }
+    else {
+      return _(entity)
+        .map((item)=>{ return item.toObject(); })
+        .uniq(model.getInstanceKey())
+        .value();
+    }
   };
 }
 

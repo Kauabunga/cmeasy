@@ -2,6 +2,8 @@
 
 import _ from 'lodash';
 import uuid from 'uuid';
+import Promise from 'bluebird';
+
 
 /**
  *

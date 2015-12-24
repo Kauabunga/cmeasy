@@ -4,11 +4,11 @@
 import _ from 'lodash';
 import {Promise} from 'bluebird';
 
-export default function(model){
+export default function(id, schemaController){
 
   return {
-    createModelFormlyFields: createModelFormlyFields(model),
-    createModelColumns: createModelColumns(model)
+    createModelFormlyFields: createModelFormlyFields(id, schemaController),
+    createModelColumns: createModelColumns(id, schemaController)
   };
 
 }
@@ -18,9 +18,9 @@ export default function(model){
  *
  * @param model
  */
-function createModelColumns(model){
+function createModelColumns(id, schemaController){
   return function(){
-    return model.getSchemaController().show(model.getId())
+    return schemaController.show(id)
       .then(function(modelSchema){
         return _(modelSchema)
           .map(shouldDisplayColumn)
@@ -34,10 +34,13 @@ function createModelColumns(model){
  *
  * @param model
  */
-function createModelFormlyFields(model){
+function createModelFormlyFields(id, schemaController){
   return function(){
-    return model.getSchemaController().show(model.getId())
+    return schemaController.show(id)
       .then(function(modelSchema){
+
+        console.log('FORMLY', modelSchema);
+
         return _(modelSchema)
           .map(getPathField)
           .filter()

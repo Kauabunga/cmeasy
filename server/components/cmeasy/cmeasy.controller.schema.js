@@ -16,7 +16,7 @@ import Promise from 'bluebird';
 /**
  *
  */
-export default function(model){
+export default function(cmeasy){
 
   return {
     index: index,
@@ -32,9 +32,9 @@ export default function(model){
    *
    */
   function index() {
-    return model.getSchema().find({})
+    return cmeasy.getSchema().find({})
       .sort(getSchemaSortQuery()).execAsync()
-      .then(getUniqueIds(model));
+      .then(getUniqueIds(cmeasy));
   }
 
 
@@ -44,26 +44,36 @@ export default function(model){
    */
   function show(id) {
 
-    return model.getSchema().find(getSchemaShowQuery(id)).sort(getSchemaSortQuery()).execAsync()
+    console.log(`Schema:Show:Start:${id}`);
+
+    return cmeasy.getSchema().find(getSchemaShowQuery(id)).sort(getSchemaSortQuery()).execAsync()
       .then(function(items){
-        if(! items || items.length === 0){
-          return create({});
-        }
-        else {
-          return _(items).first();
-        }
+        return _(items).first();
+      })
+      .then(getDefinitionFromSchema)
+      .then(function(item){
+        console.log(`Schema:Show:Finish:${id}:${item}`);
+        return item;
       });
   }
 
 
   /**
    * Creates a new Generated in the DB
-   * TODO....
+   *
    */
   function create(item) {
 
-    return model.getSchema().createAsync(_.merge(item || {}, getDefaultSchema(model)))
-      .then(getDefinitionFromSchema);
+    console.log(`Schema:Create:Start:${item._cmeasyId}`);
+    console.log(getDefaultSchema(cmeasy, item));
+
+    return cmeasy.getSchema()
+      .createAsync(getDefaultSchema(cmeasy, item))
+      .then(getDefinitionFromSchema)
+      .then(function(item){
+        console.log(`Schema:Create:Finish:${item}`);
+        return item;
+      });
   }
 
 
@@ -100,38 +110,38 @@ export default function(model){
    * @returns {{meta: {}}}
    */
   function getSchemaShowQuery(id){
-    return {
-      meta: { [model.getIdKey()]: id }
-    }
+    return {'meta._cmeasyId': id}
   }
 
 
   /**
    * TODO api check on definition
    */
-  function getDefaultSchema(model){
+  function getDefaultSchema(cmeasy, item){
     return {
-      meta: getSchemaMeta(model),
-      definition: _.merge(model.getDefinition(), getBaseSchema(model))
+      meta: getSchemaMeta(cmeasy, item),
+      definition: _.merge(item, getBaseSchema(cmeasy, item))
     };
   }
 
   /**
+   * TODO need to share this with cmeasy.schema.js
    *
    */
-  function getSchemaMeta(model){
+  function getSchemaMeta(cmeasy, item){
     return {
-      dateCreated: new Date(),
+      dateCreated: Date.now(),
       author: 'Server',
       comment: 'Initial seed',
-      [model.getIdKey()]: model.getId()
+      [cmeasy.getIdKey()]: getIdFromItem(item, cmeasy)
     }
   }
 
   /**
    *
    */
-  function getBaseSchema(model){
+  function getBaseSchema(cmeasy, item){
+
     return {
 
       dateCreated: {
@@ -159,15 +169,15 @@ export default function(model){
         unique: false
       },
 
-      [model.getIdKey()]: {
+      [cmeasy.getIdKey()]: {
         type: String,
-        default: () => model.getId(),
+        default: getIdFromItem(item, cmeasy),
         disableEdit: true,
         disableDisplay: true,
         unique: false
       },
 
-      [model.getInstanceKey()]: {
+      [cmeasy.getInstanceKey()]: {
         type: String,
         default: () => uuid.v4(),
         disableEdit: true,
@@ -177,9 +187,13 @@ export default function(model){
     }
   }
 
+}
 
-
-
+/**
+ *
+ */
+function getIdFromItem(item, cmeasy){
+  return typeof item[cmeasy.getIdKey()] === 'string' ? item[cmeasy.getIdKey()] : item[cmeasy.getIdKey()].default;
 }
 
 /**
@@ -196,9 +210,15 @@ function getDefinitionFromSchema(schema){
 /**
  *
  */
-function getUniqueIds(model){
+function getUniqueIds(cmeasy){
   return function (entity) {
-    return _(entity).unique(model.getIdKey()).value();
+    return _(entity)
+      .map((item)=>{ return item.toObject(); })
+      .uniq('meta.' + cmeasy.getIdKey())
+      .value();
+
   };
 }
+
+
 

@@ -11,9 +11,9 @@ import _ from 'lodash';
 /**
  *
  */
-module.exports = function(model){
+module.exports = function(modelController, formlyController){
   //TODO user the Router as passed in via options
-  return createModelRoute(model, express.Router());
+  return createModelRoute(modelController, formlyController, express.Router());
 };
 
 
@@ -22,12 +22,12 @@ module.exports = function(model){
  * @param router
  * @returns {Function}
  */
-function createModelRoute(model, router){
+function createModelRoute(modelController, formlyController, router){
 
-  let crudController = createCrudController(model);
+  let crudController = createCrudController(modelController);
 
-  router.get(`/${config.modelFormlyRoute}`, gettifyPromise(model.getFormly().createModelFormlyFields()));
-  router.get(`/${config.modelColumnRoute}`, gettifyPromise(model.getFormly().createModelColumns()));
+  router.get(`/${config.modelFormlyRoute}`, gettifyPromise(formlyController.createModelFormlyFields()));
+  router.get(`/${config.modelColumnRoute}`, gettifyPromise(formlyController.createModelColumns()));
 
   router.get('/', crudController.index);
   router.get('/:id/history', crudController.history);
