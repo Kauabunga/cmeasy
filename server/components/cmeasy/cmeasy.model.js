@@ -8,8 +8,21 @@ import Promise from 'bluebird';
 /**
  *
  */
-export default function(namespace, mongoose, model){
-  return mongoose.model(getMongoModelName(namespace, model), new mongoose.Schema({ }, getOptions()));
+export default function(cmeasy, mongoose, model){
+  var mongooseModel = mongoose.model(getMongoModelName(cmeasy.getNamespace(), model), new mongoose.Schema({ }, getOptions()))
+
+  //Remove any dud models from the db
+  cleanModel(cmeasy, mongooseModel);
+
+  return mongooseModel;
+}
+
+/**
+ *
+ */
+function cleanModel(cmeasy, model){
+  return model.find({}).execAsync()
+    .then(removeModelsWithoutProperty(cmeasy.getIdKey()));
 }
 
 /**
@@ -38,3 +51,19 @@ function getSafeName(name){
   return _.camelCase((name || '').toString().replace(/\s/g, ''));
 }
 
+/**
+ *
+ */
+function removeModelsWithoutProperty(property){
+  return function(items){
+    return _(items).map(function(item){
+      if( ! item[property]){
+        item.removeAsync();
+        return undefined;
+      }
+      else {
+        return item;
+      }
+    }).filter().value;
+  }
+}

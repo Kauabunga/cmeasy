@@ -168,7 +168,7 @@ class CmeasyModel {
 
     this._cmeasyId = _.camelCase(model.name);
 
-    this._model = createModel(cmeasy.getNamespace(), cmeasy.getMongoose(), this);
+    this._model = createModel(cmeasy, cmeasy.getMongoose(), this);
     this._modelController = createModelController(this, cmeasy.getSchemaController());
     this._modelFormly = createFormlyController(this.getId(), cmeasy.getSchemaController());
     this._modelCrud = createCrudController(this.getModelController(), this.getModelFormly());
