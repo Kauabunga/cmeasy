@@ -64,14 +64,29 @@ export default function(cmeasy){
    */
   function create(item) {
 
-    console.log(`Schema:Create:Start:${item._cmeasyId}`);
-    console.log(getDefaultSchema(cmeasy, item));
+    console.log(`Schema:Create:Start:${item.meta && item.meta._cmeasyId}`);
+
+
+    try{
+      console.log('createitem', item);
+
+      console.log('create schema ', getDefaultSchema(cmeasy, item));
+      console.log('create schema ', getDefaultSchema(cmeasy, item));
+      console.log('create schema ', getDefaultSchema(cmeasy, item));
+      console.log('create schema ', getDefaultSchema(cmeasy, item));
+      console.log('create schema ', getDefaultSchema(cmeasy, item));
+
+    }
+    catch(err){
+      console.error('errr', err);
+    }
+
 
     return cmeasy.getSchema()
       .createAsync(getDefaultSchema(cmeasy, item))
       .then(getDefinitionFromSchema)
       .then(function(item){
-        console.log(`Schema:Create:Finish:${item}`);
+        console.log(`Schema:Create:Finish:${item.meta && item.meta._cmeasyId}`);
         return item;
       });
   }
@@ -119,8 +134,9 @@ export default function(cmeasy){
    */
   function getDefaultSchema(cmeasy, item){
     return {
-      meta: getSchemaMeta(cmeasy, item),
-      definition: _.merge(item, getBaseSchema(cmeasy, item))
+      //meta: getSchemaMeta(cmeasy, item),
+      meta: {[cmeasy.getIdKey()]: item.meta[cmeasy.getIdKey()]},
+      definition: _.merge(item.definition, getBaseSchema(cmeasy, item))
     };
   }
 
@@ -145,7 +161,7 @@ export default function(cmeasy){
     return {
 
       dateCreated: {
-        type: Date,
+        type: 'Date',
         default: Date.now,
         disableEdit: true,
         disableDisplay: true,
@@ -154,7 +170,7 @@ export default function(cmeasy){
 
       //TODO create public content types that can be submitted to
       author: {
-        type: String,
+        type: 'String',
         default: 'Server',
         disableEdit: true,
         disableDisplay: true,
@@ -162,7 +178,7 @@ export default function(cmeasy){
       },
 
       comment: {
-        type: String,
+        type: 'String',
         default: 'Server',
         disableEdit: false,
         disableDisplay: true,
@@ -170,7 +186,7 @@ export default function(cmeasy){
       },
 
       [cmeasy.getIdKey()]: {
-        type: String,
+        type: 'String',
         default: getIdFromItem(item, cmeasy),
         disableEdit: true,
         disableDisplay: true,
@@ -178,7 +194,7 @@ export default function(cmeasy){
       },
 
       [cmeasy.getInstanceKey()]: {
-        type: String,
+        type: 'String',
         default: () => uuid.v4(),
         disableEdit: true,
         disableDisplay: true,
@@ -193,16 +209,14 @@ export default function(cmeasy){
  *
  */
 function getIdFromItem(item, cmeasy){
-  return typeof item[cmeasy.getIdKey()] === 'string' ? item[cmeasy.getIdKey()] : item[cmeasy.getIdKey()].default;
+  //return typeof item[cmeasy.getIdKey()] === 'string' ? item[cmeasy.getIdKey()] : item[cmeasy.getIdKey()].default;
+  return item.meta[cmeasy.getIdKey()];
 }
 
 /**
  *
  */
 function getDefinitionFromSchema(schema){
-
-  //return schema.definition;
-  //Always return the entire object?
   return schema;
 }
 

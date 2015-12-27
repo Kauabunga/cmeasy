@@ -24,18 +24,6 @@ function createModelColumns(id, schemaController){
     return schemaController.show(id)
       .then(getSchemaDefinition)
       .then(function(modelSchema){
-
-
-        //TODO is this commiting this item to the database - or will it only be so when createing a model/documnet
-        try {
-          var modelMongooseSchemaStructure = new Schema(modelSchema);
-          console.log(modelMongooseSchemaStructure);
-        }
-        catch(err){
-          console.log('Error', err);
-        }
-               
-
         return _(modelSchema)
           .map(shouldDisplayColumn)
           .filter()
@@ -53,6 +41,28 @@ function createModelFormlyFields(id, schemaController){
     return schemaController.show(id)
       .then(getSchemaDefinition)
       .then(function(modelSchema){
+
+
+        console.log('createModelFormlyFields:modelSchema');
+        console.log('createModelFormlyFields:modelSchema');
+        console.log('createModelFormlyFields:modelSchema');
+        console.log('createModelFormlyFields:modelSchema');
+        console.log('createModelFormlyFields:modelSchema');
+        console.log('createModelFormlyFields:modelSchema');
+        console.log('createModelFormlyFields:modelSchema');
+        console.log('createModelFormlyFields:modelSchema');
+        console.log('createModelFormlyFields:modelSchema', modelSchema);
+
+        //TODO is this commiting this item to the database - or will it only be so when createing a model/documnet
+        try {
+          var modelMongooseSchemaStructure = new Schema(modelSchema);
+          console.log('modelMongooseSchemaStructure', modelMongooseSchemaStructure);
+        }
+        catch(err){
+          console.log('Error', err);
+        }
+
+
         return _(modelSchema)
           .map(getPathField)
           .filter()

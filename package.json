@@ -105,9 +105,11 @@
   },
   "scripts": {
     "start": "node server",
-    "test": "grunt test:coverage:unit",
+    "test": "grunt test:coverage",
     "pre-commit-hook": "printf '#!/bin/sh\n# Lint stuff before committing\ngrunt jshint' > ./.git/hooks/pre-commit && chmod +x .git/hooks/pre-commit",
     "drop-dev-database": "mongo cmeasy-dev --eval \"db.dropDatabase();\"",
+    "drop-test-database": "mongo cmeasy-test --eval \"db.dropDatabase();\"",
+    "drop-database": "npm run-script drop-dev-database & npm run-script drop-test-database",
     "update-webdriver": "node node_modules/grunt-protractor-runner/node_modules/protractor/bin/webdriver-manager update"
   },
   "private": true

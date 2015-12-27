@@ -41,27 +41,21 @@ export default class Cmeasy {
     this._schemaFormly = createFormlyController(this.getSchemaMetaId(), this.getSchemaController()); //could be a singleton object rather than having one for each model
     this._schemaCrud = createCrudController(this.getSchemaController(), this.getSchemaFormly()); //could be a singleton object rather than having one for each model
 
-
     return Promise.all(this.generateModels(options.models))
       .then((models) => {
-
-        console.log('created models', models);
-
         this.models = models;
         return(this);
       });
   }
 
   generateModels(models){
-    console.log('moooo');
     return _(models).map(this.createModel.bind(this)).value();
   }
 
   createModel(model){
-    console.log('moooo2222', _.merge(model.definition, {['_cmeasyId']: _.camelCase(model.name)}));
-    return this.getSchemaController().create(_.merge(model.definition, {['_cmeasyId']: _.camelCase(model.name)}))
-      .then((modelSchema) => {
-          console.log('moooo3333', modelSchema);
+    return this.getSchemaController()
+      .create(this.getModelSchema(model))
+      .then(() => {
           return new CmeasyModel(this, model);
       })
       .catch(function(error){
@@ -69,6 +63,20 @@ export default class Cmeasy {
       });
 
   }
+
+  getModelSchema(model){
+
+    return {
+      meta: {
+        [this.getIdKey()]: _.camelCase(model.name),
+        author: 'Cmeasy User',
+        comment: 'Cmeasy init'
+      },
+      definition: model.definition || {}
+    };
+
+  }
+
 
 
   //TODO config urls

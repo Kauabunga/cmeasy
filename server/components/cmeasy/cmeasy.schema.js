@@ -20,7 +20,39 @@ export default function(namespace, mongoose, cmeasy){
  *
  */
 function createMongooseModel(namespace, mongoose, cmeasy){
-  return mongoose.model(getMongoSchemaName(namespace, cmeasy), new mongoose.Schema({ meta: {}, definition: {} }, { strict: false }));
+  return mongoose.model(getMongoSchemaName(namespace, cmeasy), new mongoose.Schema({ meta: getMetaType(cmeasy), definition: {} }, getOptions()));
+}
+
+/**
+ *
+ */
+function getMetaType(cmeasy){
+  return {
+    dateCreated: {
+      $type: Number,
+      default: Date.now
+    },
+    author: {
+      $type: String
+    },
+    comment: {
+      $type: String
+    },
+    [cmeasy.getIdKey()]: {
+      $type: String,
+      required: true
+    }
+  }
+}
+
+/**
+ *
+ */
+function getOptions(){
+  return {
+    strict: false,
+    typeKey: '$type'
+  };
 }
 
 /**
@@ -57,28 +89,39 @@ function getSafeName(name){
  */
 function getMetaSchema(cmeasy){
   return {
+
     meta: {
       dateCreated: Date.now(),
       author: 'Server',
       comment: 'Initial seed',
       [cmeasy.getIdKey()]: cmeasy.getSchemaMetaId()
     },
-    definition: {
 
+    definition: {
 
       //TODO formly controller needs to handle nested objects
       //    e.g. meta._cmeasyId
       meta: {
         [cmeasy.getIdKey()]: {
-          type: String,
+          type: 'String',
           displayColumn: true
+
+          //TODO needs to be a only edit on create type
+
+        },
+        dateCreated: {
+          type: 'Date'
+        },
+        author: {
+          type: 'String'
+        },
+        comment: {
+          type: 'String'
         }
       },
 
       definition: {
-        type: [{
-
-        }]
+        type: 'CmeasyMeta'
       }
 
     }

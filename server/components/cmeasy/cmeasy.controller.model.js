@@ -197,11 +197,7 @@ export default function(model, schemaController){
    *
    */
   function history(id) {
-    return model.getModel().find(getIdQuery(id)).sort(getSortQuery()).execAsync()
-      .then(function(history){
-        console.log('history', id, history);
-        return history;
-      });
+    return model.getModel().find(getIdQuery(id)).sort(getSortQuery()).execAsync();
   }
 
 

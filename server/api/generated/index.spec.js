@@ -6,7 +6,7 @@ var generatedCtrlStub = {
   index: 'generatedCtrl.index',
   show: 'generatedCtrl.show',
   create: 'generatedCtrl.create',
-  update: 'generatedCtrl.update',
+  history: 'generatedCtrl.history',
   destroy: 'generatedCtrl.destroy'
 };
 
@@ -18,6 +18,20 @@ var routerStub = {
   delete: sinon.spy()
 };
 
+var formlyStub = {
+  createModelFormlyFields: sinon.spy(),
+  createModelColumns: sinon.spy()
+};
+
+var crudStub = {
+  index: 'crudStub.index',
+  show: 'crudStub.show',
+  create: 'crudStub.create',
+  history: 'crudStub.history',
+  destroy: 'crudStub.destroy'
+};
+
+
 // require the index with our stubbed out modules
 var generatedIndex = proxyquire('./index.js', {
   'express': {
@@ -25,10 +39,12 @@ var generatedIndex = proxyquire('./index.js', {
       return routerStub;
     }
   },
-  './generated.controller': generatedCtrlStub
-});
+  './generated.controller.crud': function(){ return generatedCtrlStub; }
+})(crudStub, formlyStub);
 
-/*
+
+
+
 describe('Generated API Router:', function() {
 
   it('should return an express router instance', function() {
@@ -44,6 +60,7 @@ describe('Generated API Router:', function() {
     });
 
   });
+
 
   describe('GET /api/generated/:id', function() {
 
@@ -67,19 +84,9 @@ describe('Generated API Router:', function() {
 
   describe('PUT /api/generated/:id', function() {
 
-    it('should route to generated.controller.update', function() {
+    it('should route to generated.controller.create', function() {
       routerStub.put
-        .withArgs('/:id', 'generatedCtrl.update')
-        .should.have.been.calledOnce;
-    });
-
-  });
-
-  describe('PATCH /api/generated/:id', function() {
-
-    it('should route to generated.controller.update', function() {
-      routerStub.patch
-        .withArgs('/:id', 'generatedCtrl.update')
+        .withArgs('/:id', 'generatedCtrl.create')
         .should.have.been.calledOnce;
     });
 
@@ -95,6 +102,7 @@ describe('Generated API Router:', function() {
 
   });
 
+
+
 });
 
-*/

@@ -57,12 +57,12 @@ function getBlogModel(){
 
     definition: {
       title: {
-        type: String,
+        type: 'String',
         label: 'Blog Title',
         displayColumn: true
       },
       content: {
-        type: String,
+        type: 'String',
         label: 'Blog Content'
       }
     }
@@ -81,8 +81,9 @@ function getHomePageModel(){
 
     definition: {
       title: {
-        type: String,
-        label: 'Home Page Title'
+        type: 'String',
+        label: 'Home Page Title',
+        default: 'Default Home Page Title'
       }
     }
   }
