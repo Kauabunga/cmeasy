@@ -104,10 +104,10 @@ function getMetaSchema(cmeasy){
       meta: {
         [cmeasy.getIdKey()]: {
           type: 'String',
-          displayColumn: true
-
+          displayColumn: true,
+          disableEdit: true,
           //TODO needs to be a only edit on create type
-
+          createEdit: true
         },
         dateCreated: {
           type: 'Date'
@@ -121,7 +121,8 @@ function getMetaSchema(cmeasy){
       },
 
       definition: {
-        type: 'CmeasyMeta'
+        type: 'String',
+        __schemaType__: true
       }
 
     }

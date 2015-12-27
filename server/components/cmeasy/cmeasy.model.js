@@ -22,7 +22,8 @@ export default function(cmeasy, mongoose, model){
  */
 function cleanModel(cmeasy, model){
   return model.find({}).execAsync()
-    .then(removeModelsWithoutProperty(cmeasy.getIdKey()));
+    .then(removeModelsWithoutProperty(cmeasy.getIdKey()))
+    .then(removeModelsWithoutProperty(cmeasy.getInstanceKey()));
 }
 
 /**

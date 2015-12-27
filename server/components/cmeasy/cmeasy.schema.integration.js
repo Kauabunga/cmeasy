@@ -136,7 +136,6 @@ function addSchemaField(schemaType){
  */
 describe('Cmeasy meta schema API:', function() {
 
-
   //TODO should test/implement to ensure this cannot be changed
   describe('GET /api/v1/content/schema/CmeasyMetaSchema', function() {
     it('should get the meta schema', function(done) {
@@ -152,8 +151,8 @@ describe('Cmeasy meta schema API:', function() {
     });
   });
 
-  //describe.only('GET /api/v1/content/schema/CmeasyMetaSchema/modelFormly', function() {
-  describe('GET /api/v1/content/schema/CmeasyMetaSchema/modelFormly', function() {
+  describe.only('GET /api/v1/content/schema/CmeasyMetaSchema/modelFormly', function() {
+  //describe('GET /api/v1/content/schema/CmeasyMetaSchema/modelFormly', function() {
     it('should get the meta schema formly definition', function(done) {
       cmeasy.then(function(app) {
         request(app)
@@ -163,6 +162,14 @@ describe('Cmeasy meta schema API:', function() {
           .end((err, res) => {
 
             //TODO next stop.....
+            console.log('CmeasyMetaSchema modelFormly');
+            console.log('CmeasyMetaSchema modelFormly');
+            console.log('CmeasyMetaSchema modelFormly');
+            console.log('CmeasyMetaSchema modelFormly');
+            console.log('CmeasyMetaSchema modelFormly');
+            console.log('CmeasyMetaSchema modelFormly');
+            console.log('CmeasyMetaSchema modelFormly');
+            console.log('CmeasyMetaSchema modelFormly');
             console.log('CmeasyMetaSchema modelFormly', res.body);
 
             done();

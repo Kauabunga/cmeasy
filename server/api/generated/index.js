@@ -51,8 +51,8 @@ function gettifyPromise(fn){
       return res.status(200).json(payload);
     })
     .catch((err) => {
-        console.error('Error gettifying promise', err);
+      console.error('Error gettifying promise', err);
       return res.status(500);
-      });
+    });
   }
 }
