@@ -58,6 +58,29 @@ describe('Cmeasy blogPost model API:', function() {
   });
 
 
+  describe('GET /api/v1/content/blogPost', function() {
+    before(() => {
+      createDummyBlogPost()
+        .then(createDummyBlogPost)
+        .then(createDummyBlogPost);
+    });
+    after(deleteDummyBlogPost);
+    it('should get a all blog post entry', function(done) {
+      cmeasy.then(function(app) {
+        request(app)
+          .get('/admin/api/v1/content/blogPost')
+          .expect(200)
+          .expect('Content-Type', /json/)
+          .end((err, res) => {
+            res.body.length.should.equal(3);
+            done();
+          });
+      });
+    });
+
+  });
+
+
   /**
    *
    * @returns {*}
@@ -103,7 +126,7 @@ describe('Cmeasy blogPost model API:', function() {
   function getDefaultBlogPost(){
     return {
       title: 'Test blog title ' + uuid.v4(),
-        content: 'Test blog content ' + uuid.v4()
+      content: 'Test blog content ' + uuid.v4()
     }
   }
 
