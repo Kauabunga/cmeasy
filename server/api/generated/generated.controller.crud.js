@@ -16,7 +16,7 @@ import {Promise} from 'bluebird';
 /**
  *
  */
-export default function(model){
+export default function(modelController){
 
   return {
     index: index,
@@ -32,7 +32,7 @@ export default function(model){
    *
    */
   function index(req, res) {
-    return model.getDao().index()
+    return modelController.index()
       .then(responseWithResult(res))
       .catch(handleError(res));
   }
@@ -43,7 +43,7 @@ export default function(model){
    *
    */
   function show(req, res) {
-    return model.getDao().show(req.params.id)
+    return modelController.show(req.params.id)
       .then(handleEntityNotFound(res))
       .then(responseWithResult(res))
       .catch(handleError(res));
@@ -55,7 +55,7 @@ export default function(model){
    *
    */
   function create(req, res) {
-    return model.getDao().create(req.body)
+    return modelController.create(req.body)
       .then(responseWithResult(res, 201))
       .catch(handleError(res));
   }
@@ -66,7 +66,7 @@ export default function(model){
    *
    */
   function history(req, res) {
-    return model.getDao().history(req.params.id)
+    return modelController.history(req.params.id)
       .then(handleEntityNotFound(res))
       .then(responseWithResult(res))
       .catch(handleError(res));
@@ -79,7 +79,7 @@ export default function(model){
    * TODO implement
    */
   function destroy(req, res) {
-    return model.getDao().destroy(req.params.id)
+    return modelController.destroy(req.params.id)
       .then(handleEntityNotFound(res))
       .then(responseWithResult(res))
       .catch(handleError(res));
@@ -95,6 +95,7 @@ export default function(model){
 function handleError(res, statusCode) {
   statusCode = statusCode || 500;
   return function(err) {
+    console.error('Controller Error', err);
     return res.status(statusCode).send(err);
   };
 }

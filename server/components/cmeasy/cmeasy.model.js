@@ -2,12 +2,24 @@
 
 import _ from 'lodash';
 import uuid from 'uuid';
+import Promise from 'bluebird';
+
 
 /**
  *
  */
 export default function(namespace, mongoose, model){
-  return mongoose.model(getMongoModelName(namespace, model), new mongoose.Schema({ }, { strict: false }));
+  return mongoose.model(getMongoModelName(namespace, model), new mongoose.Schema({ }, getOptions()));
+}
+
+/**
+ *
+ */
+function getOptions(){
+  return {
+    strict: false,
+    typeKey: '$type'
+  };
 }
 
 

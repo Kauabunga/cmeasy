@@ -14,6 +14,7 @@ angular.module('cmeasyApp')
          */
         function init(){
           scope.gotoContent = $state.go.bind($state, appConfig.state.content);
+          scope.gotoTypes = $state.go.bind($state, appConfig.state.types, {itemType: 'schema'});
           scope.logout = _.compose($state.go.bind($state, appConfig.state.login), Auth.logout);
         }
 

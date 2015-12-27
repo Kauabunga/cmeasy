@@ -25,6 +25,7 @@ angular.module('cmeasyApp')
           scope.getRenderedColumnValue = getRenderedColumnValue;
           scope.getPrettyLabel = getPrettyLabel;
 
+          $log.debug('List admin init', getListType());
 
           return Admin.getModel(getListType())
             .then(function(model){
@@ -94,8 +95,8 @@ angular.module('cmeasyApp')
          * @returns {*}
          */
         function getRenderedColumnValue(value){
-          if(value instanceof Array){
 
+          if(value instanceof Array){
             return _(value)
               .map(function(valueItem){ return _.omit(valueItem, '_id'); })
               .map(function(valueItem){
@@ -105,7 +106,7 @@ angular.module('cmeasyApp')
               .value().toString().replace(/,/g, ' &nbsp;&nbsp;|&nbsp;&nbsp; ');
           }
           else {
-            return value;
+            return value && value.default || value;
           }
         }
 
@@ -147,15 +148,25 @@ angular.module('cmeasyApp')
          * @param listItem
          */
         function getListItemId(listItem){
-          //return listItem[appConfig.itemIdKey];
+
           return listItem[appConfig.itemInstanceKey];
+
+          //if(typeof listItem[appConfig.itemInstanceKey] !== 'string'){
+          //  //Get the id from a schema type
+          //  return listItem[appConfig.itemIdKey].default;
+          //}
+          //else {
+          //  //Get the id of a non singleton type
+          //  return listItem[appConfig.itemInstanceKey];
+          //}
+
         }
 
         /**
          *
          */
         function getCanCreateModel(model){
-          return ! model.disableCreate;
+          return model ? ! model.disableCreate : true;
         }
 
         /**

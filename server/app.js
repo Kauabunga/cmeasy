@@ -21,25 +21,27 @@ import Cmeasy from './cmeasy';
  */
 exports = module.exports = function(userOptions  = {}){
 
-  let cmeasy = new Cmeasy(userOptions);
+  return new Cmeasy(userOptions)
+    .then(function(cmeasy){
 
-  connectToMongo(cmeasy);
+      let {app, server, socketio} = connectToServer(cmeasy);
 
-  let {app, server, socketio} = connectToServer(cmeasy);
+      require('./config/socketio')(socketio);
 
-  require('./config/socketio')(socketio);
+      require('./config/express').coreExpress(app);
 
-  require('./config/express').coreExpress(app);
+      require('./routes-cmeasy')(app, cmeasy);
 
-  require('./routes-cmeasy')(app, cmeasy);
+      require('./config/express').staticExpress(app);
 
-  require('./config/express').staticExpress(app);
+      require('./routes')(app, cmeasy);
 
-  require('./routes')(app, cmeasy);
+      setImmediate(startServer(app, server));
 
-  setImmediate(startServer(app, server));
+      return app;
+    });
 
-  return app;
+
 };
 
 
@@ -61,25 +63,6 @@ function connectToServer(cmeasy){
   }
 }
 
-
-/**
- *
- */
-function connectToMongo(cmeasy){
-
-  var mongoose = cmeasy.getMongoose();
-
-  mongoose.connect(config.mongo.uri, config.mongo.options);
-  mongoose.connection.on('error', function(err) {
-    console.error('MongoDB connection error: ' + err);
-    process.exit(-1);
-  });
-
-  // Populate databases with sample data
-  if (config.seedDB) { require('./config/seed')(); }
-
-  return mongoose;
-}
 
 /**
  * Start server

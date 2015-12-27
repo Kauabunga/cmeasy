@@ -97,7 +97,7 @@ export function changePassword(req, res, next) {
         user.password = newPass;
         return user.saveAsync()
           .then(() => {
-            res.status(204).end();
+            return res.status(204).end();
           })
           .catch(validationError(res));
       } else {

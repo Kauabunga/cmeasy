@@ -33,7 +33,8 @@ deploy:
 
 after_script:
   - npm install codeclimate-test-reporter
-  - codeclimate-test-reporter < ./coverage/server/unit/lcov.info
+  #TODO merge integration and unit tests coverage reports
+  - codeclimate-test-reporter < ./coverage/server/integration/lcov.info
 
 addons:
     code_climate:
