@@ -500,10 +500,10 @@ module.exports = function (grunt) {
         options: {
           coverageFolder: 'coverage/**',
           check: {
-            lines: 80,
-            statements: 80,
-            branches: 80,
-            functions: 80
+            lines: 50,
+            statements: 50,
+            branches: 50,
+            functions: 50
           }
         }
       }
