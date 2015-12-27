@@ -58,7 +58,7 @@ function getSafeName(name){
 function removeModelsWithoutProperty(property){
   return function(items){
     return _(items).map(function(item){
-      if( ! item[property]){
+      if( ! item[property] || item[property] === ''){
         item.removeAsync();
         return undefined;
       }
