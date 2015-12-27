@@ -1,6 +1,6 @@
 {
   "name": "cmeasy",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "main": "server/app.js",
   "dependencies": {
     "babel-runtime": "^6.3.19",
