@@ -23,7 +23,10 @@ function createModelColumns(id, schemaController){
   return function(){
     return schemaController.show(id)
       .then(getSchemaDefinition)
+      .then(getAsMongooseSchema)
       .then(function(modelSchema){
+
+
         return _(modelSchema)
           .map(shouldDisplayColumn)
           .filter()
@@ -34,29 +37,30 @@ function createModelColumns(id, schemaController){
 
 /**
  *
+ * @param modelSchema
+ * @returns {*}
+ */
+function getAsMongooseSchema(modelSchema){
+  try {
+    return new Schema(modelSchema).paths;
+  }
+  catch(err){
+    console.error('error creating mongoose schema', err);
+  }
+
+}
+
+/**
+ *
  * @param model
  */
 function createModelFormlyFields(id, schemaController){
   return function(){
     return schemaController.show(id)
       .then(getSchemaDefinition)
+      .then(getAsMongooseSchema)
       .then(function(modelSchema){
-
-
-        console.log('createModelFormlyFields:modelSchema');
-        console.log('createModelFormlyFields:modelSchema');
-        console.log('createModelFormlyFields:modelSchema');
-        console.log('createModelFormlyFields:modelSchema');
-        console.log('createModelFormlyFields:modelSchema');
-        console.log('createModelFormlyFields:modelSchema');
-        console.log('createModelFormlyFields:modelSchema');
-        console.log('createModelFormlyFields:modelSchema');
-        console.log('createModelFormlyFields:modelSchema', modelSchema);
-
-
-        var modelMongooseSchemaStructure = new Schema(modelSchema);
-
-        return _(modelMongooseSchemaStructure.paths)
+        return _(modelSchema)
           .map(getPathField)
           .filter()
           .value();
@@ -169,7 +173,7 @@ function unCamelCase(text){
  * @returns {*}
  */
 function shouldDisplayColumn(path, key){
-  return path.displayColumn ? key : undefined;
+  return path.options && path.options.displayColumn ? key : undefined;
 }
 
 /**

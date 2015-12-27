@@ -60,11 +60,13 @@ describe('Cmeasy blogPost model API:', function() {
 
   describe('GET /api/v1/content/blogPost', function() {
     before(() => {
-      createDummyBlogPost()
+      return createDummyBlogPost()
+        .then(createDummyBlogPost)
+        .then(createDummyBlogPost)
         .then(createDummyBlogPost)
         .then(createDummyBlogPost);
     });
-    after(deleteDummyBlogPost);
+    after(deleteAllDummyBlogPost);
     it('should get a all blog post entry', function(done) {
       cmeasy.then(function(app) {
         request(app)
@@ -72,7 +74,7 @@ describe('Cmeasy blogPost model API:', function() {
           .expect(200)
           .expect('Content-Type', /json/)
           .end((err, res) => {
-            res.body.length.should.equal(3);
+            res.body.length.should.equal(5);
             done();
           });
       });
@@ -114,6 +116,44 @@ describe('Cmeasy blogPost model API:', function() {
           .expect('Content-Type', /json/)
           .end((err, res) => {
             success();
+          });
+      })
+    });
+  }
+
+  /**
+   *
+   * @returns {*}
+   */
+  function deleteAllDummyBlogPost(){
+    return cmeasy.then(function(app) {
+      return new Promise((success)=>{
+        request(app)
+          .get('/admin/api/v1/content/blogPost')
+          .expect(200)
+          .expect('Content-Type', /json/)
+          .end((err, res) => {
+            return Promise.all(
+
+              _(res.body).map((item) => {
+                return new Promise((success, failure) => {
+                  request(app)
+                    .delete('/admin/api/v1/content/blogPost/' + item._cmeasyInstanceId.toString())
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .end((err, res) => {
+                      if(err){
+                        failure();
+                      }
+                      else {
+                        success(res.body);
+                      }
+                    });
+                });
+              }).value()
+
+            ).then((res)=>{return success(res);});
+
           });
       })
     });
@@ -207,6 +247,7 @@ describe('Cmeasy homePage model API:', function() {
     before(() => {
       return createDummyHomePage()
         .then(createDummyHomePage)
+        .then(createDummyHomePage)
         .then(createDummyHomePage);
     });
     after(deleteDummyHomePage);
@@ -217,7 +258,7 @@ describe('Cmeasy homePage model API:', function() {
           .expect(200)
           .expect('Content-Type', /json/)
           .end((err, res) => {
-            res.body.length.should.equal(3);
+            res.body.length.should.equal(4);
             done();
           });
       });

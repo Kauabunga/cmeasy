@@ -34,7 +34,8 @@ export default function(cmeasy){
   function index() {
     return cmeasy.getSchema().find({})
       .sort(getSchemaSortQuery()).execAsync()
-      .then(getUniqueIds(cmeasy));
+      .then(getUniqueIds(cmeasy))
+      .then(removeMetaSchema(cmeasy));
   }
 
 
@@ -66,21 +67,7 @@ export default function(cmeasy){
 
     console.log(`Schema:Create:Start:${item.meta && item.meta._cmeasyId}`);
 
-
-    try{
-      console.log('createitem', item);
-
-      console.log('create schema ', getDefaultSchema(cmeasy, item));
-      console.log('create schema ', getDefaultSchema(cmeasy, item));
-      console.log('create schema ', getDefaultSchema(cmeasy, item));
-      console.log('create schema ', getDefaultSchema(cmeasy, item));
-      console.log('create schema ', getDefaultSchema(cmeasy, item));
-
-    }
-    catch(err){
-      console.error('errr', err);
-    }
-
+    //TODO if id === metaSchema the reject
 
     return cmeasy.getSchema()
       .createAsync(getDefaultSchema(cmeasy, item))
@@ -209,7 +196,6 @@ export default function(cmeasy){
  *
  */
 function getIdFromItem(item, cmeasy){
-  //return typeof item[cmeasy.getIdKey()] === 'string' ? item[cmeasy.getIdKey()] : item[cmeasy.getIdKey()].default;
   return item.meta[cmeasy.getIdKey()];
 }
 
@@ -219,8 +205,6 @@ function getIdFromItem(item, cmeasy){
 function getDefinitionFromSchema(schema){
   return schema;
 }
-
-
 
 /**
  *
@@ -236,5 +220,22 @@ function getUniqueIds(cmeasy){
   };
 }
 
+/**
+ *
+ */
+function removeMetaSchema(cmeasy){
+  return function (items = []){
+    return _([].concat(items)).filter(isMetaSchema(cmeasy)).value();
+  }
+}
+
+/**
+ *
+ */
+function isMetaSchema(cmeasy){
+  return function (item){
+    return ! item.meta || item.meta[cmeasy.getIdKey()] !== cmeasy.getSchemaMetaId();
+  }
+}
 
 
