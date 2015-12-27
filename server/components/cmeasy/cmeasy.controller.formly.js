@@ -38,6 +38,10 @@ function createModelColumns(id, schemaController){
  */
 function createModelFormlyFields(id, schemaController){
   return function(){
+
+
+    console.log('momomoomomomomm');
+
     return schemaController.show(id)
       .then(getSchemaDefinition)
       .then(function(modelSchema){

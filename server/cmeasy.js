@@ -38,8 +38,8 @@ export default class Cmeasy {
 
     this._schema = createSchema(this.getNamespace(), this.getMongoose(), this);
     this._schemaController = createSchemaController(this);
-    this._schemaFormly = createFormlyController(this.getSchemaMetaId(), this.getSchemaController()); //could be a singleton object rather than having one for each model
-    this._schemaCrud = createCrudController(this.getSchemaController(), this.getSchemaFormly()); //could be a singleton object rather than having one for each model
+    this._schemaFormly = createFormlyController(this.getSchemaMetaId(), this.getSchemaController());
+    this._schemaCrud = createCrudController(this.getSchemaController(), this.getSchemaFormly());
 
     return Promise.all(this.generateModels(options.models))
       .then((models) => {
@@ -61,11 +61,10 @@ export default class Cmeasy {
       .catch(function(error){
         console.error('error', error);
       });
-
   }
 
-  getModelSchema(model){
 
+  getModelSchema(model){
     return {
       meta: {
         [this.getIdKey()]: _.camelCase(model.name),
@@ -74,16 +73,13 @@ export default class Cmeasy {
       },
       definition: model.definition || {}
     };
-
   }
-
 
 
   //TODO config urls
   connectToMongo(){
 
     var mongoose = this.getMongoose();
-
     mongoose.connect(config.mongo.uri, config.mongo.options);
     mongoose.connection.on('error', function(err) {
       console.error('MongoDB connection error: ' + err);
@@ -172,11 +168,6 @@ class CmeasyModel {
     this._modelController = createModelController(this, cmeasy.getSchemaController());
     this._modelFormly = createFormlyController(this.getId(), cmeasy.getSchemaController());
     this._modelCrud = createCrudController(this.getModelController(), this.getModelFormly());
-
-    //this._schema = createSchema(namespace, mongoose, this);
-    //this._schemaController = createSchemaController(this);
-    //this._schemaFormly = createFormlyController(this.getMetaSchemaId(), this.getSchemaController()); //could be a singleton object rather than having one for each model
-    //this._schemaCrud = createCrudController(this.getSchemaController(), this.getSchemaFormly()); //could be a singleton object rather than having one for each model
 
   }
 
