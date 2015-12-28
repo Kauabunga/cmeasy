@@ -11,6 +11,7 @@ angular.module('cmeasyApp')
     function init(){
 
       $scope.selectHistoryItem = selectHistoryItem;
+      $scope.getHistoryItemDisplay = getHistoryItemDisplay;
       $scope.historyItemId = $stateParams.itemId;
 
       return getHistoryData($stateParams.itemType, $stateParams.itemId)
@@ -21,11 +22,24 @@ angular.module('cmeasyApp')
           $scope.listColumns = [
             'author',
             'comment',
-            'dateCreatedPretty'
+            'dateCreated'
           ];
 
         });
 
+    }
+
+    /**
+     *
+     */
+    function getHistoryItemDisplay(item, key){
+      var display = _.get(item, key);
+      if(! display){
+        return _.get(item, 'meta.' + key);
+      }
+      else {
+        return display;
+      }
     }
 
     /**

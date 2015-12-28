@@ -22,6 +22,8 @@
       span(ng-hide='isDeleting') Delete
       loader-svg.loading-button-svg.ng-hide(ng-show='isDeleting')
 
+
+  //TODO move into generic directive container
   loader-svg.state-loader(loader-admin='', ng-class='{"is-loaded": !! isLoaded}')
 
 

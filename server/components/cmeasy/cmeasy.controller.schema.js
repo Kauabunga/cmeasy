@@ -67,7 +67,11 @@ export default function(cmeasy){
 
     console.log(`Schema:Create:Start:${item.meta && item.meta._cmeasyId}`);
 
-    //TODO if id === metaSchema the reject
+    //If id === metaSchema the reject
+    if(getIdFromItem(item, cmeasy) === cmeasy.getSchemaMetaId()){
+      console.error('Attempted to remove meta schema');
+      return Promise.reject(new Error(400));
+    }
 
     return cmeasy.getSchema()
       .createAsync(getDefaultSchema(cmeasy, item))
@@ -84,12 +88,15 @@ export default function(cmeasy){
    *
    */
   function history(id) {
-    return Promise.reject(new Error(501));
+    return cmeasy.getSchema()
+      .find(getSchemaShowQuery(id))
+      .sort(getSchemaSortQuery())
+      .execAsync();
   }
 
 
   /**
-   * Deletes a Generated from the DB
+   * Deletes a Schema from the DB
    *
    */
   function destroy(id) {

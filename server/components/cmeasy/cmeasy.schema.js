@@ -33,10 +33,12 @@ function getMetaType(cmeasy){
       default: Date.now
     },
     author: {
-      $type: String
+      $type: String,
+      default: 'Server default'
     },
     comment: {
-      $type: String
+      $type: String,
+      default: 'Server seed'
     },
     [cmeasy.getIdKey()]: {
       $type: String,
