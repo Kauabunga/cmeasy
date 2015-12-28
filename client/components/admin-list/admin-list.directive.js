@@ -94,7 +94,11 @@ angular.module('cmeasyApp')
          * @param value
          * @returns {*}
          */
-        function getRenderedColumnValue(value){
+        function getRenderedColumnValue(item, label){
+
+
+          var value = _.get(item, label);
+          //var value = item[label];
 
           if(value instanceof Array){
             return _(value)
@@ -149,16 +153,14 @@ angular.module('cmeasyApp')
          */
         function getListItemId(listItem){
 
-          return listItem[appConfig.itemInstanceKey];
-
-          //if(typeof listItem[appConfig.itemInstanceKey] !== 'string'){
-          //  //Get the id from a schema type
-          //  return listItem[appConfig.itemIdKey].default;
-          //}
-          //else {
-          //  //Get the id of a non singleton type
-          //  return listItem[appConfig.itemInstanceKey];
-          //}
+          if(typeof listItem[appConfig.itemInstanceKey] !== 'string'){
+            //Get the id from a schema type
+            return listItem.meta[appConfig.itemIdKey];
+          }
+          else {
+            //Get the id of a non singleton model type
+            return listItem[appConfig.itemInstanceKey];
+          }
 
         }
 

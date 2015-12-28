@@ -37,16 +37,11 @@ angular.module('cmeasyApp')
         function openMenu($event, menuItem){
 
           let params = {
-            itemType: getId(menuItem),
+            itemType: 'schema',
             itemId: getId(menuItem)
           };
 
-          if(isSingleton(menuItem)){
-            $state.transitionTo(appConfig.state.item, params);
-          }
-          else {
-            $state.transitionTo(appConfig.state.list, params);
-          }
+          $state.transitionTo(appConfig.state.type, params);
         }
 
         /**
@@ -54,13 +49,6 @@ angular.module('cmeasyApp')
          */
         function getId(menuItem){
           return menuItem._cmeasyId;
-        }
-
-        /**
-         *
-         */
-        function isSingleton(menuItem){
-          return menuItem.singleton;
         }
 
       }

@@ -2,6 +2,8 @@
 
   'use strict';
 
+  //TODO seperate into individual formlyConfigs
+
   angular.module('cmeasyApp')
     .config(function (formlyConfigProvider) {
 

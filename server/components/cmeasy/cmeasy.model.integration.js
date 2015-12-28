@@ -327,7 +327,7 @@ describe('Cmeasy homePage model API:', function() {
    */
   function getDefaultHomePage(){
     return {
-      title: 'Test home page title ' + uuid.v4(),
+      title: 'Test home page title ' + uuid.v4()
     }
   }
 

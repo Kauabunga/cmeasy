@@ -22,6 +22,7 @@ exports = module.exports = {
     login: 'admin.login',
     content: 'admin.content',
     types: 'admin.types',
+    type: 'admin.type',
     list: 'admin.list',
     item: 'admin.item'
   }

@@ -34,7 +34,7 @@ angular.module('cmeasyApp')
         menuIndex: 3,
         views: {
           admincontent: {
-            template: '<admin-list list-type-param="itemType" list-item-state="admin.type"></admin-list>'
+            template: '<admin-list list-type-param="itemType" item-state="admin.type"></admin-list>'
           }
         }
       });

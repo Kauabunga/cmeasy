@@ -25,7 +25,7 @@ md-content.list-admin-content
     md-list-item.list-label-row(ng-hide='list.length === 0')
       span(ng-repeat='label in listColumns track by $index', flex='{{100 / listColumns.length}}') {{::getPrettyLabel(label)}}
     md-list-item(ng-repeat='item in filteredList = ( list | filter:filterList:filterText)', aria-label='{{item.id}}', ng-click='openListItem(item)')
-      span(ng-repeat='label in listColumns track by $index', flex='{{100 / listColumns.length}}', ng-bind-html='::getRenderedColumnValue(item[label])')
+      span(ng-repeat='label in listColumns track by $index', flex='{{100 / listColumns.length}}', ng-bind-html='::getRenderedColumnValue(item, label)')
 
     h4.no-results(ng-show='list.length !== 0 && filteredList.length === 0') The filter "{{filterText}}" doesn't match any items.
     h4.no-results(ng-show='list.length === 0') There isn't anything here.
