@@ -1,5 +1,8 @@
 
 .admin-repeat-container(class='{{hideRepeat + " " + to.cssClass}}')
+
+  label(ng-if='to.label') {{::to.label}}
+
   .repeatsection(ng-repeat='element in model[options.key]', ng-init='fields = copyFields(to.fields)')
 
     formly-form(fields='fields', model='element', form='form')

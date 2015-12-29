@@ -1,10 +1,6 @@
 
 
-
-h3 META Repeat TYPE
-
-
-div(ng-repeat='metaField in metaFields track by $index')
+.meta-repeat-container(ng-repeat='metaField in metaFields track by $index')
 
   formly-form(fields='cmeasyMeta', model='metaField', form='metaRepeatForm')
 

@@ -128,24 +128,20 @@ export default function(cmeasy){
    */
   function getDefaultSchema(cmeasy, item){
     return {
-      //meta: getSchemaMeta(cmeasy, item),
       meta: {[cmeasy.getIdKey()]: item.meta[cmeasy.getIdKey()]},
       definition: _.merge(item.definition, getBaseSchema(cmeasy, item))
     };
   }
 
+
   /**
-   * TODO need to share this with cmeasy.schema.js
    *
    */
-  function getSchemaMeta(cmeasy, item){
-    return {
-      dateCreated: Date.now(),
-      author: 'Server',
-      comment: 'Initial seed',
-      [cmeasy.getIdKey()]: getIdFromItem(item, cmeasy)
-    }
+  function isSchemaEditDisabled(schema, key){
+    return ['_id', '__v'].indexOf(key) !== -1 || ! schema[key] || schema[key].disableSchemaEdit;
   }
+
+
 
   /**
    *
@@ -158,6 +154,7 @@ export default function(cmeasy){
         type: 'Date',
         default: Date.now,
         disableEdit: true,
+        disableSchemaEdit: true,
         disableDisplay: true,
         unique: false
       },
@@ -167,6 +164,7 @@ export default function(cmeasy){
         type: 'String',
         default: 'Server',
         disableEdit: true,
+        disableSchemaEdit: true,
         disableDisplay: true,
         unique: false
       },
@@ -175,6 +173,7 @@ export default function(cmeasy){
         type: 'String',
         default: 'Server',
         disableEdit: false,
+        disableSchemaEdit: true,
         disableDisplay: true,
         unique: false
       },
@@ -183,6 +182,7 @@ export default function(cmeasy){
         type: 'String',
         default: getIdFromItem(item, cmeasy),
         disableEdit: true,
+        disableSchemaEdit: true,
         disableDisplay: true,
         unique: false
       },
@@ -191,6 +191,7 @@ export default function(cmeasy){
         type: 'String',
         default: () => uuid.v4(),
         disableEdit: true,
+        disableSchemaEdit: true,
         disableDisplay: true,
         unique: false
       }

@@ -108,17 +108,20 @@ function getMetaSchema(cmeasy){
           type: 'String',
           displayColumn: true,
           disableEdit: true,
-          //TODO needs to be a only edit on create type
-          createEdit: true
+
+          editOnCreate: true //TODO needs to be a only edit on create type
         },
         dateCreated: {
-          type: 'Date'
+          type: 'Date',
+          disableEdit: true
         },
         author: {
-          type: 'String'
+          type: 'String',
+          disableEdit: true
         },
         comment: {
-          type: 'String'
+          type: 'String',
+          disableEdit: true
         }
       },
 

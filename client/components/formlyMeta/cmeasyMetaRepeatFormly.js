@@ -6,9 +6,9 @@
     .config(function (formlyConfigProvider) {
 
       return formlyConfigProvider.setType({
-        //TODO should come from config
+
         name: 'cmeasyMetaRepeat',
-        templateUrl: 'components/formly/formlyTemplates/cmeasyMetaRepeat.html',
+        templateUrl: 'components/formlyMeta/formlyTemplates/cmeasyMetaRepeat.html',
         defaultOptions: {},
         controller: ['$scope', '$log', '$timeout', '$http', '$q', controller]
       });
@@ -62,7 +62,16 @@
         function getDefinitionAsArray(definition){
           return _(definition).map(function (value, key) {
             return _.merge(value, {[DEFINITION_KEY]: key});
-          }).filter().value();
+          }).filter(isDefinitionIncluded).value();
+        }
+
+        /**
+         *
+         * @param definition
+         * @returns {*|boolean}
+         */
+        function isDefinitionIncluded(definition){
+          return definition && ! definition.disableSchemaEdit;
         }
 
         /**
@@ -77,12 +86,21 @@
          * @param definition
          */
         function getDefinitionAsObject(definition){
-          return _(definition).reduce((result, value, index) => {
-            if(index === 1){
-              result = {[result[DEFINITION_KEY]]: result};
-            }
-            return _.merge(result, {[value[DEFINITION_KEY]]: value});
-          });
+
+          if(definition.length === 0){
+            return {};
+          }
+          if(definition.length === 1){
+            return {[definition[0][DEFINITION_KEY]]: definition[0]};
+          }
+          else {
+            return _(definition).reduce((result, value, index) => {
+              if(index === 1){
+                result = {[result[DEFINITION_KEY]]: result};
+              }
+              return _.merge(result, {[value[DEFINITION_KEY]]: value});
+            });
+          }
         }
 
       }
