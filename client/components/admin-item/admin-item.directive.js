@@ -41,12 +41,14 @@ angular.module('cmeasyApp')
               return getItemData(scope.itemType, scope.itemId)
                 .then(function([formlyFields, itemModel]){
 
+                  $log.debug('Item model', itemModel);
+                  $log.debug('Item fields', formlyFields);
+
                   scope.formlyFields = formlyFields;
                   if( ! isCreateItem() ){
                     scope.itemModelOriginal = itemModel;
                     scope.itemModel = _.cloneDeep(itemModel);
                   }
-
 
                   return $timeout(function(){
                     scope.isLoaded = true;

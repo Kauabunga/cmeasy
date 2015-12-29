@@ -143,7 +143,7 @@ export default function(model, schemaController){
    *
    */
   function isEditDisabled(schema, key){
-    return ['_id', '__v'].indexOf(key) !== -1 || schema[key].disableEdit;
+    return ['_id', '__v'].indexOf(key) !== -1 || ! schema[key] || schema[key].disableEdit;
   }
 
 

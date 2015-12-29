@@ -90,7 +90,7 @@ function getPathField(path, key){
 
 
   if(path.options.__schemaType__){
-    field.type = 'cmeasyMeta';
+    field.type = 'cmeasyMetaRepeat';
   }
   else if(path.options.type === Boolean){
     field.type = 'mdCheckbox';

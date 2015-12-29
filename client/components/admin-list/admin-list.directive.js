@@ -96,9 +96,7 @@ angular.module('cmeasyApp')
          */
         function getRenderedColumnValue(item, label){
 
-
           var value = _.get(item, label);
-          //var value = item[label];
 
           if(value instanceof Array){
             return _(value)
@@ -109,9 +107,16 @@ angular.module('cmeasyApp')
               })
               .value().toString().replace(/,/g, ' &nbsp;&nbsp;|&nbsp;&nbsp; ');
           }
+          else if(isCamelCaseValue(value)){
+            return getPrettyLabel(value);
+          }
           else {
             return value && value.default || value;
           }
+        }
+
+        function isCamelCaseValue(value){
+          return value === _.camelCase(value);
         }
 
         /**
@@ -202,8 +207,13 @@ angular.module('cmeasyApp')
          * @param label
          */
         function getPrettyLabel(label){
-          // insert a space before all caps
-          return label.replace(/([A-Z])/g, ' $1')
+
+          // replace all . with a space
+          return label.replace(/\./g, ' ')
+            //replace all underscores
+            .replace(/_/g, ' ')
+            // insert a space before all caps
+            .replace(/([A-Z])/g, ' $1')
             // uppercase the first character
             .replace(/^./, function(str){ return str.toUpperCase(); });
         }

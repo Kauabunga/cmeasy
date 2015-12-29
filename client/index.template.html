@@ -7,7 +7,7 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <base href="/">
-    <title></title>
+    <title>Cmeasy</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
@@ -21,6 +21,46 @@
       <!-- injector:css -->
       <!-- endinjector -->
     <!-- endbuild -->
+
+
+    <!-- Font styles -->
+    <style>
+
+      @font-face {
+        font-family: 'museo';
+        src: url('/assets/fonts/museo_sans_family_web/MuseoSans_300Web.eot'),
+        url('/assets/fonts/museo_sans_family_web/MuseoSans_300Web.woff') format('woff');
+        font-weight: 300;
+        font-style: normal;
+      }
+
+      @font-face {
+        font-family: 'museo';
+        src: url('/assets/fonts/museo_sans_family_web/MuseoSans_500Web.eot'),
+        url('/assets/fonts/museo_sans_family_web/MuseoSans_500Web.woff') format('woff');
+        font-weight: 500;
+        font-style: normal;
+      }
+
+      @font-face {
+        font-family: 'museo';
+        src: url('/assets/fonts/museo_sans_family_web/MuseoSans_700Web.eot'),
+        url('/assets/fonts/museo_sans_family_web/MuseoSans_700Web.woff') format('woff');
+        font-weight: 700;
+        font-style: normal;
+      }
+
+      div, span, button, input, textarea {
+        font-family: 'museo' !important;
+      }
+
+      h1, h2, h3, h4, h5, h6 {
+        font-family: 'museo' !important;
+      }
+
+
+    </style>
+
   </head>
   <body ng-app="cmeasyApp">
 
@@ -32,7 +72,7 @@
     <div ui-view=""></div>
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
-    <script>
+    <script async>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -42,9 +82,7 @@
       ga('send', 'pageview');
     </script>
 
-    <script>
-      window._cmeasy = <%- cmeasy %>;
-    </script>
+
 
     <!--[if lt IE 9]>
     <script src="bower_components/es5-shim/es5-shim.js"></script>
@@ -77,7 +115,7 @@
       <script src="app/admin/admin.module.js"></script>
       <script src="components/auth/auth.module.js"></script>
       <script src="components/util/util.module.js"></script>
-      <script src="components/admin-menu/admin-menu.directive.js"></script>
+      <script src="components/admin-service/admin.service.js"></script>
       <script src="app/admin/admin.router.js"></script>
       <script src="app/app.constant.js"></script>
       <script src="app/main/main.controller.js"></script>
@@ -92,8 +130,8 @@
       <script src="components/admin-menu/admin-menu-content/admin-menu-content.directive.js"></script>
       <script src="components/admin-menu/admin-menu-main/admin-menu-main.directive.js"></script>
       <script src="components/admin-menu/admin-menu-types/admin-menu-types.directive.js"></script>
+      <script src="components/admin-menu/admin-menu.directive.js"></script>
       <script src="app/account/settings/settings.controller.js"></script>
-      <script src="components/admin-service/admin.service.js"></script>
       <script src="app/account/signup/signup.controller.js"></script>
       <script src="components/auth/auth.service.js"></script>
       <script src="components/auth/interceptor.service.js"></script>
@@ -101,6 +139,7 @@
       <script src="components/auth/user.service.js"></script>
       <script src="components/footer/footer.directive.js"></script>
       <script src="components/formly/cmeasyMetaFormly.js"></script>
+      <script src="components/formly/cmeasyMetaRepeatFormly.js"></script>
       <script src="components/formly/formlyConfigAdmin.js"></script>
       <script src="components/mongoose-error/mongoose-error.directive.js"></script>
       <script src="components/navbar/navbar.controller.js"></script>
@@ -113,5 +152,10 @@
       <script src="components/util/util.service.js"></script>
       <!-- endinjector -->
     <!-- endbuild -->
+
+    <script>
+      window._cmeasy = <%- cmeasy %>;
+    </script>
+
   </body>
 </html>
