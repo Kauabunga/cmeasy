@@ -105,7 +105,7 @@
   },
   "scripts": {
     "start": "node server",
-    "test": "grunt test:coverage",
+    "test": "grunt test:coverage && grunt test:e2e --force",
     "pre-commit-hook": "printf '#!/bin/sh\n# Lint stuff before committing\ngrunt jshint' > ./.git/hooks/pre-commit && chmod +x .git/hooks/pre-commit",
     "drop-dev-database": "mongo cmeasy-dev --eval \"db.dropDatabase();\"",
     "drop-test-database": "mongo cmeasy-test --eval \"db.dropDatabase();\"",

@@ -37,5 +37,11 @@ after_script:
   - codeclimate-test-reporter < ./coverage/server/integration/lcov.info
 
 addons:
-    code_climate:
-        repo_token: c0f8ef3f1117d8416655a3aa7c8f89f2afec95569c1deb67d5be1168be4d4674
+
+  code_climate:
+    repo_token: c0f8ef3f1117d8416655a3aa7c8f89f2afec95569c1deb67d5be1168be4d4674
+
+  sauce_connect:
+    username: "Kauabunga"
+    access_key:
+      secure: "mMcIhcjVHh5PLILu/9t4KZ8n3ffZUNC8zRMUYMga1oWoc3+2rHLW3lpIBSZisNYI3nYiZxeqWsJaDp513dIot6o6ZiiXL9ehDw0wG7iROKnqrrarm0+TCtr+1NLAZfNVu0ZyC5IwIWZnIpXRNX06BMJIWwJj59eKrgKxEPSh2ys/oHYrmfcThexk/m+iZj/wLP3DmRsT9CqQTBH8fgfxilytNACEyw/zigJcVhVhCUViJ8rl1G3ReqgcNcjYS5y4UIfVS/+eIef40dW/8fvSHeWR24J5/2E02sACf6kHue006C6xI72ku/eDI1LTevkeCN/THpyA93R40bSdPA6aqzUckLLc2IdfuLSUq+fCPqnmavdsCjfri5H9LYm+QOUCxrA0bcJienSV9SmsqjlqlHofq+fiNy4hmxz4iypJxGy6m4wtTdUfW4NDtcS6rXCcG4PJf02eDZVHou6tsk6MuxKIp+rSVIuGuD89df3AQ+r5wntfr/rFmBwyeiBO4DnkFc3PuMOyaEReDHbYDZWqTZiLPPKQwxPFvCS76E8rfaOnLiH/gRz+UajT2oeEM+AXwJ7Rw7wPsom+NZNMOIDYlHKG6GosVNAPTpr6fOI3TGe9XF4yZBOy6ji1+U0yi9QH7pWUXdq7v6sb9/XR+NQQTUHNvfo2NBKW6ljKAwYzoAc="

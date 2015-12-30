@@ -803,8 +803,8 @@ module.exports = function (grunt) {
     }
 
     else grunt.task.run([
-      'test:server'
-      //'test:client'
+      'test:server',
+      'test:client'
     ]);
   });
 
@@ -829,8 +829,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('default', [
     'newer:jshint',
-    //'test',
-    'test:server',
+    'test',
     'build'
   ]);
 };
