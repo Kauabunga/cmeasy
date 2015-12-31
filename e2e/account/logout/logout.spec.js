@@ -29,22 +29,17 @@ describe('Logout View', function() {
 
   after(function() {
     return UserModel.removeAsync();
-  })
+  });
 
   describe('with local auth', function() {
 
-    it('should logout a user and redirecting to "/"', function() {
-      var navbar = require('../../components/navbar/navbar.po');
+    it('should logout a user and redirecting to "/login"', function() {
 
-      browser.getCurrentUrl().should.eventually.equal(config.baseUrl + '/');
-      navbar.navbarAccountGreeting.getText().should.eventually.equal('Hello ' + testUser.name);
+      browser.getCurrentUrl().should.eventually.equal(config.baseUrl + '/main');
 
       browser.get(config.baseUrl + '/logout');
 
-      navbar = require('../../components/navbar/navbar.po');
-
-      browser.getCurrentUrl().should.eventually.equal(config.baseUrl + '/');
-      navbar.navbarAccountGreeting.isDisplayed().should.eventually.equal(false);
+      browser.getCurrentUrl().should.eventually.equal(config.baseUrl + '/login');
     });
 
   });

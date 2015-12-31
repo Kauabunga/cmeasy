@@ -2,7 +2,7 @@
 
 md-content
 
-  form(name='loginForm', ng-submit='login(user)', novalidate='')
+  form.login-form(name='loginForm', ng-submit='login(user)', novalidate='')
 
     md-input-container
       label Email
@@ -13,7 +13,7 @@ md-content
       input(name='password', ng-model='user.password', type='password', autocomplete='off')
 
 
-    md-button(type='submit') Login
+    md-button.login-button(type='submit') Login
 
 
 
