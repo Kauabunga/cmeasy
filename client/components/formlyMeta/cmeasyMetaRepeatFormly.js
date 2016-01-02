@@ -111,15 +111,15 @@
           else {
             return _(definition).reduce((result, value, index) => {
 
-              if(index === 1 && result && result[DEFINITION_KEY]){
-                result = {[result[DEFINITION_KEY]]: result};
+              if(index === 1 && result && getDefinitionKeyFromObject(result)){
+                result = getDefinitionFromObject(result);
               }
               else {
                 result = {};
               }
 
-              if(value && value[DEFINITION_KEY]){
-                return _.merge(result, {[value[DEFINITION_KEY]]: value});
+              if(value && getDefinitionKeyFromObject(value)){
+                return _.merge(result, getDefinitionFromObject(value));
               }
               else {
                 return result;
@@ -127,6 +127,27 @@
 
             });
           }
+        }
+
+        /**
+         * Ensure the definition key is in camel case
+         *
+         * @param value
+         * @returns {*}
+         */
+        function getDefinitionFromObject(value){
+
+          return {[getDefinitionKeyFromObject(value)]: _.omit(value, 'definitionKey')};
+
+        }
+
+        /**
+         *
+         * @param value
+         * @returns {*}
+         */
+        function getDefinitionKeyFromObject(value){
+          return value[DEFINITION_KEY] && _.camelCase(value[DEFINITION_KEY]);
         }
 
       }

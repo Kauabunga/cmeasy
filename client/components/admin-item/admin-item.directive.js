@@ -29,6 +29,9 @@ angular.module('cmeasyApp')
           scope.deleteItem = deleteItem;
 
 
+          //TODO populate model instance with defaults if it is a create item
+
+
           return Admin.getModel(getItemType())
             .then(function(model){
 
