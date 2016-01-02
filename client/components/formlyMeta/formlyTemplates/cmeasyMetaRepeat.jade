@@ -1,7 +1,7 @@
 
 
 .meta-repeat-container(ng-repeat='metaField in metaFields track by $index')
-
   formly-form(fields='cmeasyMeta', model='metaField', form='metaRepeatForm')
-
   hr
+
+md-button.md-raised.md-primary(type='button', ng-click='addField($event)') Add Field

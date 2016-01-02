@@ -24,8 +24,33 @@
          *
          */
         function init(){
-          $log.debug('metaType $scope', $scope);
+          $scope.removeField = removeField;
+
           $scope.metaFields = getMetaFields();
+        }
+
+        /**
+         *
+         */
+        function removeField($event){
+          $log.debug('Removing field @ index', getIndex());
+          getMetaFieldsParentModel().splice(getIndex(), 1);
+        }
+
+        /**
+         *
+         * @returns {*}
+         */
+        function getIndex(){
+          return $scope.$parent.$parent.$parent.$parent.$index;
+        }
+
+        /**
+         *
+         * @returns {*|$scope.metaFields}
+         */
+        function getMetaFieldsParentModel(){
+          return $scope.$parent.$parent.$parent.$parent.$parent.metaFields;
         }
 
         /**
@@ -46,7 +71,8 @@
               key: 'definitionKey',
               type: 'mdInput',
               templateOptions: {
-                label: 'Key'
+                label: 'Key',
+                require: true
               }
             },
             {

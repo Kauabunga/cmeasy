@@ -26,6 +26,9 @@
          *
          */
         function init(){
+
+          $scope.addField = addField;
+
           $scope.metaFields = getDefinitionAsArray($scope.model.definition);
           $scope.cmeasyMeta = getCmeasyMetaFormlyDefinition();
 
@@ -39,12 +42,19 @@
 
         /**
          *
+         */
+        function addField($event){
+          $scope.metaFields.push({});
+        }
+
+        /**
+         *
          * @returns {Array|*}
          */
         function getMetaFieldsDefinitionKeys(){
           return _($scope.metaFields).map((item) => {
-            return item[DEFINITION_KEY];
-          }).value();
+            return item && item[DEFINITION_KEY];
+          }).filter().value();
         }
 
         /**
@@ -91,14 +101,30 @@
             return {};
           }
           if(definition.length === 1){
-            return {[definition[0][DEFINITION_KEY]]: definition[0]};
+            if(definition[0] && definition[0][DEFINITION_KEY]){
+              return {[definition[0][DEFINITION_KEY]]: definition[0]};
+            }
+            else {
+              return {};
+            }
           }
           else {
             return _(definition).reduce((result, value, index) => {
-              if(index === 1){
+
+              if(index === 1 && result && result[DEFINITION_KEY]){
                 result = {[result[DEFINITION_KEY]]: result};
               }
-              return _.merge(result, {[value[DEFINITION_KEY]]: value});
+              else {
+                result = {};
+              }
+
+              if(value && value[DEFINITION_KEY]){
+                return _.merge(result, {[value[DEFINITION_KEY]]: value});
+              }
+              else {
+                return result;
+              }
+
             });
           }
         }
