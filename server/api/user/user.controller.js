@@ -8,6 +8,7 @@ import jwt from 'jsonwebtoken';
 function validationError(res, statusCode) {
   statusCode = statusCode || 422;
   return function(err) {
+    console.error('User controller validation error', err);
     res.status(statusCode).json(err);
   }
 }
@@ -42,18 +43,21 @@ export function index(req, res) {
  * Creates a new user
  */
 export function create(req, res, next) {
+
   var newUser = new User(req.body);
   newUser.provider = 'local';
   newUser.role = 'user';
+
   return newUser.saveAsync()
-    .spread(function(user) {
+    .then(function(user) {
       var token = jwt.sign({ _id: user._id }, config.secrets.session, {
         expiresIn: 60 * 60 * 5
       });
-      res.json({ token });
+      return res.status(201).json({ token: token, email: user.email });
     })
     .catch(validationError(res));
 }
+
 
 /**
  * Get a single user
@@ -66,7 +70,7 @@ export function show(req, res, next) {
       if (!user) {
         return res.status(404).end();
       }
-      res.json(user.profile);
+      return res.json(user.profile);
     })
     .catch(err => next(err));
 }

@@ -6,7 +6,20 @@
 
 //TODO handle 500 pretty print
 
-module.exports[404] = function pageNotFound(req, res) {
+
+module.exports = {
+  404: pageNotFound
+};
+
+
+/**
+ *
+ * @param req
+ * @param res
+ * @returns {*}
+ */
+function pageNotFound(req, res) {
+
   var viewFilePath = '404';
   var statusCode = 404;
   var result = {
@@ -14,11 +27,12 @@ module.exports[404] = function pageNotFound(req, res) {
   };
 
   res.status(result.status);
-  res.render(viewFilePath, {}, function(err, html) {
+  return res.render(viewFilePath, {}, function(err, html) {
+
     if (err) {
       return res.json(result, result.status);
     }
 
-    res.send(html);
+    return res.send(html);
   });
-};
+}

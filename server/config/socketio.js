@@ -3,13 +3,18 @@
  */
 'use strict';
 
+
+//TODO ignore while not being used
+
+
 import config from './environment';
 
 // When the user disconnects.. perform this
-function onDisconnect(socket) {
-}
+/* istanbul ignore next */
+function onDisconnect(socket) { }
 
 // When the user connects.. perform this
+/* istanbul ignore next */
 function onConnect(socket) {
   // When the client emits 'info', this listens and executes
   socket.on('info', data => {
@@ -21,6 +26,7 @@ function onConnect(socket) {
 
 }
 
+/* istanbul ignore next */
 export default function(socketio) {
   // socket.io (v1.x.x) is powered by debug.
   // In order to see all the debug output, set DEBUG (in server/config/local.env.js) to including the desired scope.

@@ -47,6 +47,8 @@ export function isAuthenticated() {
  * Checks if the user role meets the minimum requirements of the route
  */
 export function hasRole(roleRequired) {
+
+  /* istanbul ignore if */
   if (!roleRequired) {
     throw new Error('Required role needs to be set');
   }
@@ -72,16 +74,3 @@ export function signToken(id, role) {
   });
 }
 
-/**
- * Set token cookie directly for oAuth strategies
- */
-export function setTokenCookie(req, res) {
-  if (!req.user) {
-    return res.status(404).send('It looks like you aren\'t logged in, please try again.');
-  }
-  else {
-    var token = signToken(req.user._id, req.user.role);
-    res.cookie('token', token);
-    return res.redirect('/');
-  }
-}

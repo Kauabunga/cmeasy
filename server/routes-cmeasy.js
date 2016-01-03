@@ -38,12 +38,10 @@ function routeContentRequest(cmeasy){
       .then(filterSchemaById(cmeasy, req.params.type))
       .then(function(schema){
         if(! schema){
-          res.sendStatus(404);
           return undefined;
         }
         else {
           var cmeasyModel = cmeasy.getModel(req.params.type);
-
           if( ! cmeasyModel ){
             return cmeasy.createModel(schema);
           }
@@ -53,15 +51,12 @@ function routeContentRequest(cmeasy){
         }
       })
       .then(function(cmeasyModel){
-
-
-        console.log(cmeasyModel);
-
-        return cmeasyModel.getModelCrud()(req, res, next);
-      })
-      .catch(function(err){
-        console.error('Error routing content request', err);
-        return next();
+        if(cmeasyModel){
+          return cmeasyModel.getModelCrud()(req, res, next);
+        }
+        else {
+          return res.sendStatus(404);
+        }
       });
   }
 }

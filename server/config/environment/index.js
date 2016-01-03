@@ -64,16 +64,3 @@ function getProjectVersion(){
   return require('../../../package.json').version;
 }
 
-
-/**
- *
- * @param name
- * @returns {*}
- */
-function requiredProcessEnv(name) {
-  if (!process.env[name]) {
-    throw new Error('You must set the ' + name + ' environment variable');
-  }
-  return process.env[name];
-}
-

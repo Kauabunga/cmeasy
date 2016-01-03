@@ -16,7 +16,7 @@ describe('Error API:', function() {
   it('should get 404ed', function(done) {
     cmeasy.then(function(app) {
       request(app)
-        .get('/admin/api/v1/abc')
+        .get('/assets/mooooo')
         .expect(404)
         .end((err, res) => {
           done();

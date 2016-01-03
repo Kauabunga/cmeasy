@@ -4,23 +4,23 @@ import crypto from 'crypto';
 var mongoose = require('bluebird').promisifyAll(require('mongoose'));
 import {Schema} from 'mongoose';
 
-const authTypes = ['github', 'twitter', 'facebook', 'google'];
-
 var UserSchema = new Schema({
   name: String,
   email: {
     type: String,
-    lowercase: true
+    lowercase: true,
+    required: true
   },
   role: {
     type: String,
     default: 'user'
   },
-  password: String,
+  password: {
+    type: String,
+    required: true
+  },
   provider: String,
-  salt: String,
-  google: {},
-  github: {}
+  salt: String
 });
 
 /**
@@ -55,9 +55,6 @@ UserSchema
 UserSchema
   .path('email')
   .validate(function(email) {
-    if (authTypes.indexOf(this.provider) !== -1) {
-      return true;
-    }
     return email.length;
   }, 'Email cannot be blank');
 
@@ -65,9 +62,6 @@ UserSchema
 UserSchema
   .path('password')
   .validate(function(password) {
-    if (authTypes.indexOf(this.provider) !== -1) {
-      return true;
-    }
     return password.length;
   }, 'Password cannot be blank');
 
@@ -101,11 +95,11 @@ var validatePresenceOf = function(value) {
 UserSchema
   .pre('save', function(next) {
     // Handle new/update passwords
-    if (!this.isModified('password')) {
+    if (! this.isModified('password') ) {
       return next();
     }
 
-    if (!validatePresenceOf(this.password) && authTypes.indexOf(this.provider) === -1) {
+    if (!validatePresenceOf(this.password) && this.provider === 'local') {
       next(new Error('Invalid password'));
     }
 

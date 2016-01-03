@@ -61,6 +61,7 @@ function coreExpress(app){
    * Lusca - express server security
    * https://github.com/krakenjs/lusca
    */
+  /* istanbul ignore if */
   if ('test' !== env) {
     app.use(lusca({
       csrf: {
@@ -76,6 +77,7 @@ function coreExpress(app){
     }));
   }
 
+  /* istanbul ignore if */
   if ('development' === env) {
     app.use(require('connect-livereload')());
   }
@@ -91,6 +93,7 @@ function staticExpress(app){
 
   app.set('appPath', path.join(config.root, 'client'));
 
+  /* istanbul ignore if */
   if ('production' === env) {
     app.use(favicon(path.join(config.root, 'client', 'favicon.ico')));
     app.use(express.static(app.get('appPath')));

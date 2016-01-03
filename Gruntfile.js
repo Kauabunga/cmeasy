@@ -17,6 +17,7 @@ module.exports = function (grunt) {
     protractor: 'grunt-protractor-runner',
     buildcontrol: 'grunt-build-control',
     istanbul_check_coverage: 'grunt-mocha-istanbul',
+    istanbul_coverage_combine: 'grunt-istanbul-combine', //TODO combine unit and integration tests
     ngconstant: 'grunt-ng-constant'
   });
 
@@ -658,7 +659,9 @@ module.exports = function (grunt) {
             '<%= yeoman.client %>/{app,components}/**/*.css'
           ]
         }
-      }
+      },
+
+
     },
   });
 
