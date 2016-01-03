@@ -57,12 +57,135 @@
 
     </style>
 
+
+
+    <!-- LOADING SCREEN STYLES -->
+    <style>
+
+      .app-loading-screen.fade-out { opacity: 0; }
+      .app-loading-screen {
+        transition: opacity 500ms ease;
+        /*transition: opacity 5000ms ease;*/
+        -ms-transition: opacity 500ms ease;
+        -moz-transition: opacity 500ms ease;
+        -o-transition: opacity 500ms ease;
+        opacity: 1;
+        height: 100%;
+        width: 100%;
+        z-index: 9999999999999999999999;
+        position: absolute;
+        overflow-y: auto;
+        top: 0;
+        left: 0;
+        background-color: #f2f2f2;
+      }
+
+      .app-loading-screen svg {
+        width: 180px;
+        left: 50%;
+        margin-left: -90px;
+        margin-top: -60px;
+        opacity: 0.5;
+        z-index: 99999999999999999999999;
+        position: fixed;
+        top: 50%;
+      }
+
+    </style>
+
+
+    <!-- LOADING SCREEN SCRIPT - safety script to remove loading screen after timeout -->
+    <!--[if gt IE 9 ]>
+    <script nonce="<%- cspNonce %>">setTimeout(function(){ var el = document.getElementById('app-loading-screen'); if(el){ el.parentNode.removeChild(el); } }, 10000);</script>
+    <![endif]-->
+
+    <!-- Browsehappy styling -->
+    <style nonce="<%- cspNonce %>">
+      html.lt-ie10 .browsehappy h2 {
+        color: #005E76;
+      }
+      html.lt-ie10 .browsehappy hr {
+        width: 100px;
+        border-color: #005E76;
+        border-style: solid;
+        margin-bottom: 20px;
+      }
+      html.lt-ie10 .browsehappy a:hover {
+        color: #005E76;
+      }
+      html.lt-ie10 .browsehappy a {
+        color: #fefefe;
+        font-weight: bold;
+        transition: color 200ms ease;
+        -ms-transition: color 200ms ease;
+        -moz-transition: color 200ms ease;
+        -o-transition: color 200ms ease;
+      }
+      html.lt-ie10 .browsehappy p {
+        font-size: 18px;
+        line-height: 18px;
+        margin-bottom: 0;
+      }
+      html.lt-ie10 .browsehappy {
+        display: block !important;
+        text-align: center;
+        color: #fefefe;
+        top: 60%;
+        position: absolute;
+        width: 100%;
+      }
+      html.lt-ie10 #main-ui-view {
+        display: none !important;
+      }
+    </style>
+
+    <!-- Noscript styling -->
+    <style nonce="<%- cspNonce %>">
+      noscript a:hover {
+        color: #005E76;
+      }
+      noscript a {
+        color: #fefefe;
+        font-weight: bold;
+        transition: color 200ms ease;
+        -ms-transition: color 200ms ease;
+        -moz-transition: color 200ms ease;
+        -o-transition: color 200ms ease;
+      }
+      noscript {
+        display: block !important;
+        text-align: center;
+        color: #fefefe;
+        top: 60%;
+      }
+      noscript h2 {
+        color: #005E76;
+      }
+      noscript hr {
+        width: 100px;
+        border-color: #005E76;
+        border-style: solid;
+        margin-bottom: 20px;
+      }
+      noscript p {
+        font-size: 18px;
+        line-height: 18px;
+        margin-bottom: 0;
+      }
+    </style>
+
+
   </head>
   <body>
 
-    <!--[if lt IE 10]>
-      <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-    <![endif]-->
+    <div loading-screen="" id="app-loading-screen" class="app-loading-screen">
+      <noscript><p class="noscript">We need javascript to run our site.</p><p>Please <a href="http://www.enable-javascript.com/">enable javascript</a> to continue into our site.</p></noscript>
+      <div class="browsehappy" style="display: none;">
+        <p>You are using an <strong>outdated</strong> browser.</p><p>Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+      </div>
+
+      <!-- TODO Add svg-->
+    </div>
 
     <!-- Add your site or application content here -->
     <div ui-view=""></div>
@@ -127,6 +250,8 @@
       <script src="components/auth/interceptor.service.js"></script>
       <script src="components/auth/router.decorator.js"></script>
       <script src="components/auth/user.service.js"></script>
+      <script src="components/formly-meta/cmeasyMetaFormly.js"></script>
+      <script src="components/formly-meta/cmeasyMetaRepeatFormly.js"></script>
       <script src="components/formly/adminLinkFormly.js"></script>
       <script src="components/formly/adminRepeatFormly.js"></script>
       <script src="components/formly/htmlFormly.js"></script>
@@ -135,11 +260,9 @@
       <script src="components/formly/mdInputFormly.js"></script>
       <script src="components/formly/mdSelectFormly.js"></script>
       <script src="components/formly/wysiwygFormly.js"></script>
-      <script src="components/formlyMeta/cmeasyMetaFormly.js"></script>
-      <script src="components/formlyMeta/cmeasyMetaRepeatFormly.js"></script>
+      <script src="components/loading-button/loading-button.directive.js"></script>
+      <script src="components/loading-screen/loading-screen.directive.js"></script>
       <script src="components/mongoose-error/mongoose-error.directive.js"></script>
-      <script src="components/oauth-buttons/oauth-buttons.controller.js"></script>
-      <script src="components/oauth-buttons/oauth-buttons.directive.js"></script>
       <script src="components/socket/socket.service.js"></script>
       <script src="components/toast/toast.service.js"></script>
       <script src="app/account/account.js"></script>

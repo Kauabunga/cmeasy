@@ -726,6 +726,22 @@ module.exports = function (grunt) {
       ]);
     }
 
+    else if(target === 'unit'){
+      return grunt.task.run([
+        'env:all',
+        'env:test',
+        'mochaTest:unit'
+      ]);
+    }
+
+    else if(target === 'integration'){
+      return grunt.task.run([
+        'env:all',
+        'env:test',
+        'mochaTest:integration'
+      ]);
+    }
+
     else if (target === 'client') {
       return grunt.task.run([
         'clean:server',

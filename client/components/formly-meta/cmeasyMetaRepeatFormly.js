@@ -8,7 +8,7 @@
       return formlyConfigProvider.setType({
 
         name: 'cmeasyMetaRepeat',
-        templateUrl: 'components/formlyMeta/formlyTemplates/cmeasyMetaRepeat.html',
+        templateUrl: 'components/formly-meta/formlyTemplates/cmeasyMetaRepeat.html',
         defaultOptions: {},
         controller: ['$scope', '$log', '$timeout', '$http', '$q', controller]
       });
@@ -33,7 +33,7 @@
           $scope.cmeasyMeta = getCmeasyMetaFormlyDefinition();
 
           //Watch all definitionKey items and update the definition based on changes
-          $scope.$watch(getMetaFieldsDefinitionKeys, watchMetaFieldsDefinitionKeys, true);
+          $scope.$watch('metaFields', watchMetaFieldsDefinitionKeys, true);
 
           //Handle history selections / what ever else the item directive throws this way
           $scope.$watch('model', function(model){ $scope.metaFields = getDefinitionAsArray(model.definition); });
@@ -53,7 +53,9 @@
          */
         function getMetaFieldsDefinitionKeys(){
           return _($scope.metaFields).map((item) => {
-            return item && item[DEFINITION_KEY];
+            //return item && item[DEFINITION_KEY];
+            //TODO we need to watch changes to the entire object - i.e. we are just watching metaFields
+            return item;
           }).filter().value();
         }
 
@@ -63,6 +65,7 @@
          */
         function watchMetaFieldsDefinitionKeys(newKeys, prevKeys){
           $scope.model.definition = getDefinitionAsObject($scope.metaFields);
+          $log.debug('watchMetaFieldsDefinitionKeys', $scope.model.definition);
         }
 
         /**
@@ -142,9 +145,7 @@
         }
 
         /**
-         *
-         * @param value
-         * @returns {*}
+         * TODO should strip invalid characters
          */
         function getDefinitionKeyFromObject(value){
           return value[DEFINITION_KEY] && _.camelCase(value[DEFINITION_KEY]);

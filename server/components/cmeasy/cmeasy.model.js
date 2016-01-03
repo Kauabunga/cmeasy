@@ -9,7 +9,7 @@ import Promise from 'bluebird';
  *
  */
 export default function(cmeasy, mongoose, model){
-  var mongooseModel = mongoose.model(getMongoModelName(cmeasy.getNamespace(), model), new mongoose.Schema({ }, getOptions()))
+  var mongooseModel = mongoose.model(getMongoModelName(cmeasy.getNamespace(), model), new mongoose.Schema({ }, getOptions()));
 
   //Remove any dud models from the db
   cleanModel(cmeasy, mongooseModel);

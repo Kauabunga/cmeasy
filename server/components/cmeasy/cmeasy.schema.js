@@ -23,6 +23,7 @@ function createMongooseModel(namespace, mongoose, cmeasy){
   return mongoose.model(getMongoSchemaName(namespace, cmeasy), new mongoose.Schema({ meta: getMetaType(cmeasy), definition: {} }, getOptions()));
 }
 
+
 /**
  *
  */
@@ -93,17 +94,19 @@ function getMetaSchema(cmeasy){
   return {
 
     meta: {
+
       dateCreated: Date.now(),
       author: 'Server',
       comment: 'Initial seed',
       [cmeasy.getIdKey()]: cmeasy.getSchemaMetaId()
+
     },
 
     definition: {
 
-      //TODO formly controller needs to handle nested objects
-      //    e.g. meta._cmeasyId
+      //Note: All type 'Strings' simply indicate that is it not a nested object or array
       meta: {
+
         [cmeasy.getIdKey()]: {
           type: 'String',
           displayColumn: true,
@@ -126,8 +129,7 @@ function getMetaSchema(cmeasy){
       },
 
       definition: {
-        type: 'String',
-        __schemaType__: true
+        type: '__schemaType__'
       }
 
     }

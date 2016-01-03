@@ -3,8 +3,11 @@
 
 import _ from 'lodash';
 import {Promise} from 'bluebird';
-import {Schema} from 'mongoose';
+import flatten from './cmeasy.flatten.service';
 
+/**
+ *
+ */
 export default function(id, schemaController){
 
   return {
@@ -14,7 +17,6 @@ export default function(id, schemaController){
 
 }
 
-
 /**
  *
  * @param model
@@ -23,10 +25,8 @@ function createModelColumns(id, schemaController){
   return function(){
     return schemaController.show(id)
       .then(getSchemaDefinition)
-      .then(getAsMongooseSchema)
+      .then(flatten)
       .then(function(modelSchema){
-
-
         return _(modelSchema)
           .map(shouldDisplayColumn)
           .filter()
@@ -37,34 +37,18 @@ function createModelColumns(id, schemaController){
 
 /**
  *
- * @param modelSchema
- * @returns {*}
- */
-function getAsMongooseSchema(modelSchema){
-  try {
-    return new Schema(modelSchema).paths;
-  }
-  catch(err){
-    console.error('error creating mongoose schema', err);
-  }
-
-}
-
-/**
- *
  * @param model
  */
 function createModelFormlyFields(id, schemaController){
   return function(){
     return schemaController.show(id)
       .then(getSchemaDefinition)
-      .then(getAsMongooseSchema)
+      .then(flatten)
       .then(function(modelSchema){
         return _(modelSchema)
           .map(getPathField)
           .filter()
           .value();
-
       });
   }
 }
@@ -77,62 +61,90 @@ function createModelFormlyFields(id, schemaController){
 function getPathField(path, key){
 
   if( excludedProperties(path) ){
-    return;
-  }
-
-  var field = {
-    key: path.path,
-    templateOptions: {
-      label: path.options.label || convertPathToLabel(path.path),
-      cssClass: path.options.cssClass || ''
-    }
-  };
-
-
-  if(path.options.__schemaType__){
-    field.type = 'cmeasyMetaRepeat';
-  }
-  else if(path.options.type === Boolean){
-    field.type = 'mdCheckbox';
-  }
-  else if(path.options.type instanceof Array){
-
-    if(path.options.autocomplete){
-      field.templateOptions.autocompleteLabel = path.options.autocompleteLabel;
-      field.templateOptions.autocompleteType = path.options.autocompleteType;
-      field.templateOptions.autocompleteId = path.options.autocompleteId;
-      field.templateOptions.autocompleteChip = path.options.autocompleteChip;
-      field.type = 'mdChipsAutocomplete';
-    }
-    else if (path.options.displayLink){
-      field.templateOptions.linkType = path.options.linkType;
-      field.templateOptions.linkId = path.options.linkId;
-      field.type = 'adminLink';
-    }
-    else {
-      //Assume only a single depth
-      field.templateOptions.fields = [];
-      _.map(path.schema.paths, function(path){
-        var pathField = getPathField(path);
-        if(pathField){ field.templateOptions.fields.push(pathField); }
-      });
-      field.type = 'adminRepeat';
-    }
-
-  }
-  else if(path.options.type === String && path.options.enum){
-    field.type = 'mdSelect';
-    field.templateOptions.selectOptions = path.options.enum;
-  }
-  else if(path.options.type === String && path.options.html){
-    field.type = 'WYSIWYG';
+    return undefined;
   }
   else {
-    field.type = 'mdInput';
+    console.log('getPathField', path, path.type.toString().toLowerCase());
+    return _.merge(getDefaultField(path), getFieldTypeMap()[path.type.toString().toLowerCase()](path, key));
   }
 
+}
+/**
+ *
+ */
+function getFieldTypeMap(){
+  return {
 
-  return field;
+    array: function(path){
+      //TODO
+
+      //if(path.options.autocomplete){
+      //  field.templateOptions.autocompleteLabel = path.options.autocompleteLabel;
+      //  field.templateOptions.autocompleteType = path.options.autocompleteType;
+      //  field.templateOptions.autocompleteId = path.options.autocompleteId;
+      //  field.templateOptions.autocompleteChip = path.options.autocompleteChip;
+      //  field.type = 'mdChipsAutocomplete';
+      //}
+      //else if (path.options.displayLink){
+      //  field.templateOptions.linkType = path.options.linkType;
+      //  field.templateOptions.linkId = path.options.linkId;
+      //  field.type = 'adminLink';
+      //}
+      //else {
+      //  //Assume only a single depth
+      //  field.templateOptions.fields = [];
+      //  _.map(path.schema.paths, function(path){
+      //    var pathField = getPathField(path);
+      //    if(pathField){ field.templateOptions.fields.push(pathField); }
+      //  });
+      //  field.type = 'adminRepeat';
+      //}
+    },
+
+    select: function(path){
+      return {
+        type: 'mdSelect',
+        templateOptions: {selectOptions: path.enum }
+      };
+    },
+
+    string: function(path){
+      if(path.html){
+        return { type: 'WYSIWYG'};
+      }
+      else {
+        return { type: 'mdInput'};
+      }
+    },
+
+    number: function(path){
+      //TODO
+      return { type: 'mdInput'};
+    },
+
+    boolean: function(path){
+      return { type: 'mdCheckbox'};
+    },
+
+    __schematype__: function(path){
+      return { type: 'cmeasyMetaRepeat' };
+    }
+  };
+}
+
+
+/**
+ *
+ * @param path
+ */
+function getDefaultField(path){
+  return {
+    key: path.path,
+    templateOptions: {
+      label: path.label || convertPathToLabel(path.path),
+      cssClass: path.cssClass || ''
+    }
+  };
 }
 
 
@@ -173,7 +185,7 @@ function unCamelCase(text){
  * @returns {*}
  */
 function shouldDisplayColumn(path, key){
-  return path.options && path.options.displayColumn ? key : undefined;
+  return path && path.displayColumn ? key : undefined;
 }
 
 /**
@@ -184,9 +196,9 @@ function shouldDisplayColumn(path, key){
 function excludedProperties(path){
 
   //if disable display is undefined then use the disableEdit
-  var disableProperty = path.options.disableDisplay !== undefined ? 'disableDisplay' : 'disableEdit';
+  var disableProperty = path.disableDisplay !== undefined ? 'disableDisplay' : 'disableEdit';
 
-  if(path.options && path.options[disableProperty]){
+  if(path && path[disableProperty]){
     return true;
   }
 

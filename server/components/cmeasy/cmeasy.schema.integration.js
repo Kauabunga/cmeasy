@@ -54,7 +54,7 @@ describe('Cmeasy blogPost schema API:', function() {
 
     before(addSchemaField('blogPost'));
 
-    it('should update the blog post formly model', function(done) {
+    it.only('should update the blog post formly model', function(done) {
       cmeasy.then(function(app) {
         request(app)
           .get('/admin/api/v1/content/blogPost/modelFormly')
@@ -62,7 +62,7 @@ describe('Cmeasy blogPost schema API:', function() {
           .expect('Content-Type', /json/)
           .end((err, res) => {
 
-            res.body.length.should.equal(3);
+            res.body.length.should.equal(4);
 
             //Should contain a 'newField' type
             res.body.should.contain({

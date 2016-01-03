@@ -21,7 +21,9 @@ export default function(app, cmeasy) {
 
   return function renderIndexHtml(req, res, next){
 
-    return Promise.all([getIndexAsString(), getInjectedVariables()])
+    var cspNonce = uuid.v4().replace(/-/g, '');
+
+    return Promise.all([getIndexAsString(), getInjectedVariables(cspNonce)])
       .then(function([ejsIndexTemplate, injectedVariables]){
         return res.header('content-type', 'text/html; charset=UTF-8')
           .end(ejsIndexTemplate(injectedVariables));
@@ -36,15 +38,16 @@ export default function(app, cmeasy) {
   /**
    *
    */
-  function getInjectedVariables(){
-
+  function getInjectedVariables(cspNonce){
     return Promise.resolve({
       cmeasy: JSON.stringify({
         env: config.env,
         version: config.version,
         rootRoute: cmeasy.getRootRoute(),
-        models: cmeasy.getModels()
-      })
+        models: cmeasy.getModels(),
+
+      }),
+      cspNonce: cspNonce
     });
   }
 

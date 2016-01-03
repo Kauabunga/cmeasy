@@ -61,6 +61,11 @@ function getBlogModel(){
         label: 'Blog Title',
         displayColumn: true
       },
+      category: {
+        type: 'Select',
+        label: 'Blog category',
+        enum: ['Update', 'Random']
+      },
       content: {
         type: 'String',
         label: 'Blog Content'

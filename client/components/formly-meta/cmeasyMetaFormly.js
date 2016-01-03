@@ -8,7 +8,7 @@
       return formlyConfigProvider.setType({
 
         name: 'cmeasyMeta',
-        templateUrl: 'components/formlyMeta/formlyTemplates/cmeasyMeta.html',
+        templateUrl: 'components/formly-meta/formlyTemplates/cmeasyMeta.html',
         defaultOptions: {},
         controller: ['$scope', '$log', '$timeout', '$http', '$q', controller]
       });
@@ -120,22 +120,30 @@
         }
 
         /**
-         * TODO return extra props when type === 'Select'
          *
          * @returns {Array}
          */
         function getSelectMetaFields(){
           const hideExpression = '! model.displayOptions || model.type !== "Select"';
           return [
-            {
-              //TODO validate that it is one of the listed enums
-              key: 'default',
-              type: 'mdInput',
-              templateOptions: {
-                label: 'Default Select Value'
-              },
-              hideExpression: hideExpression
-            },
+            //{
+            //  //TODO validate that it is one of the listed enums
+            //  key: 'default',
+            //  type: 'mdInput',
+            //  templateOptions: {
+            //    label: 'Default Select Value'
+            //  },
+            //  hideExpression: hideExpression
+            //},
+            //{
+            //  key: 'defaultOptions',
+            //  type: 'mdSelect',
+            //  templateOptions: {
+            //    label: 'Default Select Value',
+            //    selectOptions: 'model.enum'
+            //  },
+            //  hideExpression: hideExpression
+            //},
             {
               key: 'enum',
               type: 'adminRepeat',
