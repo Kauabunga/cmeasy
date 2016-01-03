@@ -39,16 +39,21 @@ export default function(app, cmeasy) {
    *
    */
   function getInjectedVariables(cspNonce){
-    return Promise.resolve({
-      cmeasy: JSON.stringify({
-        env: config.env,
-        version: config.version,
-        rootRoute: cmeasy.getRootRoute(),
-        models: cmeasy.getModels(),
+    return Promise.all([cmeasy.getSchemaController().index()])
+      .then(function([models]){
 
-      }),
-      cspNonce: cspNonce
-    });
+        return {
+          cmeasy: JSON.stringify({
+            env: config.env,
+            version: config.version,
+            rootRoute: cmeasy.getRootRoute(),
+            models: models
+
+          }),
+          cspNonce: cspNonce
+        };
+
+      });
   }
 
   /**

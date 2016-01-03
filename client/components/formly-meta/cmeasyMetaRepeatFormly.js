@@ -29,14 +29,15 @@
 
           $scope.addField = addField;
 
-          $scope.metaFields = getDefinitionAsArray($scope.model.definition);
           $scope.cmeasyMeta = getCmeasyMetaFormlyDefinition();
 
-          //Watch all definitionKey items and update the definition based on changes
-          $scope.$watch('metaFields', watchMetaFieldsDefinitionKeys, true);
+          $timeout(function(){
+            //Watch all definitionKey items and update the definition based on changes
+            $scope.$watch('metaFields', watchMetaFieldsDefinitionKeys, true);
 
-          //Handle history selections / what ever else the item directive throws this way
-          $scope.$watch('model', function(model){ $scope.metaFields = getDefinitionAsArray(model.definition); });
+            //Handle history selections / what ever else the item directive throws this way
+            $scope.$watch('model', watchModel);
+          });
 
         }
 
@@ -49,23 +50,24 @@
 
         /**
          *
-         * @returns {Array|*}
          */
-        function getMetaFieldsDefinitionKeys(){
-          return _($scope.metaFields).map((item) => {
-            //return item && item[DEFINITION_KEY];
-            //TODO we need to watch changes to the entire object - i.e. we are just watching metaFields
-            return item;
-          }).filter().value();
+        function watchModel(model){
+          $log.debug('watchModel', model);
+          $scope.metaFields = getDefinitionAsArray(model.definition);
         }
 
         /**
          *
          * @returns {Array|*}
          */
-        function watchMetaFieldsDefinitionKeys(newKeys, prevKeys){
-          $scope.model.definition = getDefinitionAsObject($scope.metaFields);
-          $log.debug('watchMetaFieldsDefinitionKeys', $scope.model.definition);
+        function watchMetaFieldsDefinitionKeys(metaFields){
+
+          $log.debug('watchMetaFieldsDefinitionKeys', metaFields);
+          if(metaFields){
+            $scope.model.definition = getDefinitionAsObject(metaFields);
+            $log.debug('watchMetaFieldsDefinitionKeys', $scope.model.definition);
+          }
+
         }
 
         /**
@@ -104,8 +106,8 @@
             return {};
           }
           if(definition.length === 1){
-            if(definition[0] && definition[0][DEFINITION_KEY]){
-              return {[definition[0][DEFINITION_KEY]]: definition[0]};
+            if(definition[0] && getDefinitionKeyFromObject(definition[0])){
+              return getDefinitionKeyFromObject(definition[0]);
             }
             else {
               return {};
@@ -114,11 +116,15 @@
           else {
             return _(definition).reduce((result, value, index) => {
 
-              if(index === 1 && result && getDefinitionKeyFromObject(result)){
-                result = getDefinitionFromObject(result);
-              }
-              else {
-                result = {};
+              $log.debug('getDefinitionAsObject: result, value, index', result, value, index);
+
+              if(index === 1){
+                if(result && getDefinitionKeyFromObject(result)){
+                  result = getDefinitionFromObject(result);
+                }
+                else {
+                  result = {};
+                }
               }
 
               if(value && getDefinitionKeyFromObject(value)){

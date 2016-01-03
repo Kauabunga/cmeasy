@@ -67,9 +67,17 @@ export default function(cmeasy){
 
     console.log(`Schema:Create:Start:${item.meta && item.meta._cmeasyId}`);
 
+    //TODO If there is no schema id then explode??
+
+    var itemId = getIdFromItem(item, cmeasy);
+
+    if( ! itemId){
+      console.error('No type passed to create schema');
+      return Promise.reject(new Error(400));
+    }
     //If id === metaSchema the reject
-    if(getIdFromItem(item, cmeasy) === cmeasy.getSchemaMetaId()){
-      console.error('Attempted to remove meta schema');
+    else if(itemId === cmeasy.getSchemaMetaId()){
+      console.error('Attempted to create meta schema');
       return Promise.reject(new Error(400));
     }
 
@@ -97,7 +105,7 @@ export default function(cmeasy){
 
   /**
    * Deletes a Schema from the DB
-   *
+   * TODO implmeent
    */
   function destroy(id) {
     return Promise.reject(new Error(501));
@@ -128,14 +136,14 @@ export default function(cmeasy){
    */
   function getDefaultSchema(cmeasy, item){
     return {
-      meta: {[cmeasy.getIdKey()]: item.meta[cmeasy.getIdKey()]},
+      meta: _.omit(item.meta, ['dateCreated', 'author', 'comment']), //TODO we should be filtering the values in here using isSchemaEditDisabled
       definition: _.merge(item.definition, getBaseSchema(cmeasy, item))
     };
   }
 
 
   /**
-   *
+   * TODO use this to protect some of the core meta properties
    */
   function isSchemaEditDisabled(schema, key){
     return ['_id', '__v'].indexOf(key) !== -1 || ! schema[key] || schema[key].disableSchemaEdit;
@@ -144,7 +152,9 @@ export default function(cmeasy){
 
 
   /**
+   * TODO this should be grabbed from the meta schema meta?????
    *
+   * TODO create public content types that can be submitted to
    */
   function getBaseSchema(cmeasy, item){
 
@@ -159,7 +169,6 @@ export default function(cmeasy){
         unique: false
       },
 
-      //TODO create public content types that can be submitted to
       author: {
         type: 'String',
         default: 'Server',
@@ -195,6 +204,7 @@ export default function(cmeasy){
         disableDisplay: true,
         unique: false
       }
+
     }
   }
 
@@ -204,7 +214,7 @@ export default function(cmeasy){
  *
  */
 function getIdFromItem(item, cmeasy){
-  return item.meta[cmeasy.getIdKey()];
+  return item && item.meta && item.meta[cmeasy.getIdKey()];
 }
 
 /**

@@ -173,7 +173,7 @@ angular.module('cmeasyApp')
          *
          */
         function getCanCreateModel(model){
-          return model ? ! model.disableCreate : true;
+          return model ? ! model.meta.disableCreate : true;
         }
 
         /**

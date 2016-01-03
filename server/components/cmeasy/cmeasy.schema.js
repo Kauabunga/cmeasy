@@ -20,9 +20,18 @@ export default function(namespace, mongoose, cmeasy){
  *
  */
 function createMongooseModel(namespace, mongoose, cmeasy){
-  return mongoose.model(getMongoSchemaName(namespace, cmeasy), new mongoose.Schema({ meta: getMetaType(cmeasy), definition: {} }, getOptions()));
+  return mongoose.model(getMongoSchemaName(namespace, cmeasy), new mongoose.Schema(getSchemaType(cmeasy), getOptions()));
 }
 
+/**
+ *
+ */
+function getSchemaType(cmeasy){
+  return {
+    meta: getMetaType(cmeasy),
+    definition: {}
+  };
+}
 
 /**
  *
@@ -31,19 +40,42 @@ function getMetaType(cmeasy){
   return {
     dateCreated: {
       $type: Number,
-      default: Date.now
+      default: Date.now,
+      disableEdit: true
     },
     author: {
       $type: String,
-      default: 'Server default'
+      default: 'Server default',
+      disableEdit: true
     },
     comment: {
       $type: String,
-      default: 'Server seed'
+      default: 'Server seed',
+      disableEdit: false,
+      disableDisplay: true
     },
     [cmeasy.getIdKey()]: {
       $type: String,
+      displayColumn: true,
+      disableEdit: true,
       required: true
+      //TODO if required with no default then allow on create
+    },
+
+    singleton: {
+      $type: Boolean,
+      default: false,
+      disableEdit: false
+    },
+    disableDelete: {
+      $type: Boolean,
+      default: false,
+      disableEdit: false
+    },
+    disableCreate: {
+      $type: Boolean,
+      default: false,
+      disableEdit: false
     }
   }
 }
@@ -62,12 +94,7 @@ function getOptions(){
  * Meta Schema defining schema structure/definition
  */
 function addMetaSchema(schemaModel, cmeasy){
-
-  //TODO move to cmeasy?
-  console.log('Creating meta schema');
-
   schemaModel.createAsync(getMetaSchema(cmeasy));
-
   return schemaModel;
 }
 
@@ -87,6 +114,31 @@ function getSafeName(name){
 }
 
 /**
+ * Replace all $type references with type
+ */
+function getMetaSchemaType(cmeasy){
+  return _(getMetaType(cmeasy))
+    .map(function(item, key){
+      return {[key]: _.merge(_.omit(item, '$type'), {type: getPrototypeName(item.$type)})};
+    })
+    .reduce(_.merge);
+}
+
+/**
+ *
+ * @param prototype
+ * @returns {*}
+ */
+function getPrototypeName(prototype){
+  if (typeof prototype.name !== 'undefined') {
+    return prototype.name;
+  }
+  else {
+    return /function (.+)\(/.exec(prototype.toString())[1];
+  }
+}
+
+/**
  *
  * @param model
  */
@@ -94,44 +146,17 @@ function getMetaSchema(cmeasy){
   return {
 
     meta: {
-
       dateCreated: Date.now(),
       author: 'Server',
       comment: 'Initial seed',
       [cmeasy.getIdKey()]: cmeasy.getSchemaMetaId()
-
     },
 
     definition: {
-
-      //Note: All type 'Strings' simply indicate that is it not a nested object or array
-      meta: {
-
-        [cmeasy.getIdKey()]: {
-          type: 'String',
-          displayColumn: true,
-          disableEdit: true,
-
-          editOnCreate: true //TODO needs to be a only edit on create type
-        },
-        dateCreated: {
-          type: 'Date',
-          disableEdit: true
-        },
-        author: {
-          type: 'String',
-          disableEdit: true
-        },
-        comment: {
-          type: 'String',
-          disableEdit: true
-        }
-      },
-
+      meta: getMetaSchemaType(cmeasy),
       definition: {
         type: '__schemaType__'
       }
-
     }
   }
 }

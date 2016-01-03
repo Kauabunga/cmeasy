@@ -44,7 +44,6 @@ export default function(model, schemaController){
    *
    */
   function show(id) {
-    //TODO add limit(1) here? Does it make a difference?
 
     //TODO for non-singletons we need to search a different property
 

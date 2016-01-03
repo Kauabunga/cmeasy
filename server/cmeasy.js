@@ -30,7 +30,7 @@ const CMEASY_INSTANCE_ID = '_cmeasyInstanceId';
  */
 export default class Cmeasy {
 
-  constructor(options){
+  constructor(options = {}){
     this.name = options.name || 'Cmeasy';
     this.options = options;
 
@@ -55,8 +55,8 @@ export default class Cmeasy {
   createModel(model){
     return this.getSchemaController()
       .create(this.getModelSchema(model))
-      .then(() => {
-          return new CmeasyModel(this, model);
+      .then((result) => {
+        return new CmeasyModel(this, model);
       })
       .catch(function(error){
         console.error('error', error);
@@ -69,7 +69,10 @@ export default class Cmeasy {
       meta: {
         [this.getIdKey()]: _.camelCase(model.name),
         author: 'Cmeasy User',
-        comment: 'Cmeasy init'
+        comment: 'Cmeasy init',
+        singleton: model.singleton || false,
+        disableDelete: model.disableDelete || false,
+        disableCreate: model.disableCreate || false
       },
       definition: model.definition || {}
     };
@@ -157,12 +160,16 @@ class CmeasyModel {
 
   constructor(cmeasy, model){
 
-    this.name = model.name;
     this.definition = model.definition;
-    this.singleton = model.singleton;
-    this.disableCreate = model.disableCreate === true;
 
+    //TODO should be able to get this reference from the db schema???
+    this.name = model.name;
     this._cmeasyId = _.camelCase(model.name);
+
+
+    //TODO this reference needs to come for the db schema
+    this.singleton = model.singleton;
+
 
     this._model = createModel(cmeasy, cmeasy.getMongoose(), this);
     this._modelController = createModelController(this, cmeasy.getSchemaController());

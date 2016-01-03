@@ -54,7 +54,7 @@ describe('Cmeasy blogPost schema API:', function() {
 
     before(addSchemaField('blogPost'));
 
-    it.only('should update the blog post formly model', function(done) {
+    it('should update the blog post formly model', function(done) {
       cmeasy.then(function(app) {
         request(app)
           .get('/admin/api/v1/content/blogPost/modelFormly')
@@ -161,10 +161,6 @@ describe('Cmeasy meta schema API:', function() {
           .end((err, res) => {
 
             //TODO validate this response ....
-            console.log('CmeasyMetaSchema modelFormly');
-            console.log('CmeasyMetaSchema modelFormly');
-            console.log('CmeasyMetaSchema modelFormly');
-            console.log('CmeasyMetaSchema modelFormly');
             console.log('CmeasyMetaSchema modelFormly');
             console.log('CmeasyMetaSchema modelFormly');
             console.log('CmeasyMetaSchema modelFormly');

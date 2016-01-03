@@ -38,7 +38,7 @@ angular.module('cmeasyApp')
     function getModel(id){
       return getModels()
         .then(function(models){
-          return _(models).filter(function(model){return model[appConfig.itemIdKey] === id;}).first();
+          return _(models).filter(function(model){return model.meta[appConfig.itemIdKey] === id;}).first();
         });
     }
 

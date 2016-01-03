@@ -32,16 +32,13 @@ function flatten(schema){
  */
 function getDefinitionsFromPaths(schema){
   return function(path){
-
     var definition = _.merge({path: path}, _.get(schema, path));
-
     if(definition.type instanceof Array){
       return {[path]: _.merge(definition, {type: flatten(definition.type[0] || {})})};
     }
     else {
       return {[path]: definition};
     }
-
   }
 }
 
@@ -51,8 +48,10 @@ function getDefinitionsFromPaths(schema){
  */
 function parseFlattenPaths(path, key){
 
-  if(key.indexOf('type')){
-    return key.substring(0, key.indexOf('type') - 1);
+  const typeIndex = '.type';
+
+  if(key.indexOf(typeIndex)){
+    return key.substring(0, key.indexOf(typeIndex));
   }
   else {
     return undefined;

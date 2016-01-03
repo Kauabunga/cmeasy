@@ -16,6 +16,7 @@ angular.module('cmeasyApp')
         function init(){
 
           scope.openMenu = openMenu;
+          scope.getMenuDisplay = getMenuDisplay;
 
           return Admin.getModels()
             .then(function(models){
@@ -53,14 +54,22 @@ angular.module('cmeasyApp')
          *
          */
         function getId(menuItem){
-          return menuItem._cmeasyId;
+          return menuItem.meta[appConfig.itemIdKey];
         }
 
         /**
          *
          */
+        function getMenuDisplay(menuItem){
+          return menuItem.meta[appConfig.itemIdKey];
+        }
+
+
+        /**
+         *
+         */
         function isSingleton(menuItem){
-          return menuItem.singleton;
+          return menuItem.meta.singleton;
         }
 
       }

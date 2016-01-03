@@ -51,9 +51,12 @@ function getModels(){
  */
 function getBlogModel(){
   return {
+
     name: 'Blog Post',
     singleton: false,
+
     disableDelete: false,
+    disableCreate: false,
 
     definition: {
       title: {
