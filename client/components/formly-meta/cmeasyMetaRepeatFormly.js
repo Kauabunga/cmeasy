@@ -3,7 +3,7 @@
   'use strict';
 
   angular.module('cmeasyApp')
-    .config(function (formlyConfigProvider) {
+    .config(function (formlyConfigProvider, appConfig) {
 
       return formlyConfigProvider.setType({
 
@@ -53,7 +53,7 @@
          */
         function watchModel(model){
           $log.debug('watchModel', model);
-          $scope.metaFields = getDefinitionAsArray(model.definition);
+          $scope.metaFields = getDefinitionAsArray(model);
         }
 
         /**
@@ -74,10 +74,13 @@
          *
          * @param definition
          */
-        function getDefinitionAsArray(definition){
-          return _(definition).map(function (value, key) {
-            return _.merge(value, {[DEFINITION_KEY]: key});
-          }).filter(isDefinitionIncluded).value();
+        function getDefinitionAsArray(model){
+          return _(model.definition)
+            .map(function (value, key) {
+              return _.merge(value, {[DEFINITION_KEY]: key});
+            })
+            .filter(isDefinitionIncluded($scope.originalModel))
+            .value();
         }
 
         /**
@@ -85,15 +88,30 @@
          * @param definition
          * @returns {*|boolean}
          */
-        function isDefinitionIncluded(definition){
-          return definition && ! definition.disableSchemaEdit;
+        function isDefinitionIncluded(originalModel){
+          return function(definition){
+
+            //Special case where if we are creating a new schema then we need to enable the meta._cmeasyId field
+            if(definition[DEFINITION_KEY] === appConfig.itemIdKey &&
+              ( ! originalModel || ! originalModel.meta || ! originalModel.meta[appConfig.itemIdKey] )){
+              return true;
+            }
+            else {
+              return definition && ! definition.disableSchemaEdit;
+            }
+
+          };
         }
 
         /**
          *
          */
         function getCmeasyMetaFormlyDefinition(){
-          return [ { type: 'cmeasyMeta' } ];
+          return [
+            {
+              type: 'cmeasyMeta'
+            }
+          ];
         }
 
         /**
@@ -102,12 +120,16 @@
          */
         function getDefinitionAsObject(definition){
 
+          console.log(definition);
+
+
           if(definition.length === 0){
             return {};
           }
           if(definition.length === 1){
+
             if(definition[0] && getDefinitionKeyFromObject(definition[0])){
-              return getDefinitionKeyFromObject(definition[0]);
+              return getDefinitionFromObject(definition[0]);
             }
             else {
               return {};
@@ -119,21 +141,10 @@
               $log.debug('getDefinitionAsObject: result, value, index', result, value, index);
 
               if(index === 1){
-                if(result && getDefinitionKeyFromObject(result)){
-                  result = getDefinitionFromObject(result);
-                }
-                else {
-                  result = {};
-                }
+                result = result && getDefinitionKeyFromObject(result) ? getDefinitionFromObject(result) : {};
               }
 
-              if(value && getDefinitionKeyFromObject(value)){
-                return _.merge(result, getDefinitionFromObject(value));
-              }
-              else {
-                return result;
-              }
-
+              return value && getDefinitionKeyFromObject(value) ? _.merge(result, getDefinitionFromObject(value)) : result;
             });
           }
         }

@@ -32,11 +32,52 @@ function routeContentRequest(cmeasy){
 
     console.log('Routing content request', req.url);
 
-    if(! req.params.type) {return res.sendStatus(401);}
-    if(! cmeasy.getModel(req.params.type)) {return res.sendStatus(404);}
+    if(! req.params.type) { return res.sendStatus(401); }
 
-    //get content type from req
-    return cmeasy.getModel(req.params.type).getModelCrud()(req, res, next);
+    return cmeasy.getSchemaController().index()
+      .then(filterSchemaById(cmeasy, req.params.type))
+      .then(function(schema){
+        if(! schema){
+          res.sendStatus(404);
+          return undefined;
+        }
+        else {
+          var cmeasyModel = cmeasy.getModel(req.params.type);
+
+          if( ! cmeasyModel ){
+            return cmeasy.createModel(schema);
+          }
+          else {
+            return cmeasyModel;
+          }
+        }
+      })
+      .then(function(cmeasyModel){
+
+
+        console.log(cmeasyModel);
+
+        return cmeasyModel.getModelCrud()(req, res, next);
+      })
+      .catch(function(err){
+        console.error('Error routing content request', err);
+        return next();
+      });
+  }
+}
+
+
+
+/**
+ *
+ * @param type
+ * @returns {Function}
+ */
+function filterSchemaById(cmeasy, type){
+  return function(schemas){
+    return _(schemas).filter(function(schema){
+      return schema.meta[cmeasy.getIdKey()] === type;
+    }).first();
   }
 }
 
@@ -52,3 +93,4 @@ function routeSchemaRequest(cmeasy){
     return cmeasy.getSchemaCrud()(req, res, next);
   }
 }
+

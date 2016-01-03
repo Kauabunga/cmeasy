@@ -28,9 +28,7 @@ angular.module('cmeasyApp')
           scope.showHistory = showHistory;
           scope.deleteItem = deleteItem;
 
-
           //TODO populate model instance with defaults if it is a create item
-
 
           return Admin.getModel(getItemType())
             .then(function(model){
@@ -44,10 +42,12 @@ angular.module('cmeasyApp')
               return getItemData(scope.itemType, scope.itemId)
                 .then(function([formlyFields, itemModel]){
 
+                  formlyFields = formlyFields || [];
+                  itemModel = itemModel || {};
                   $log.debug('Item model', itemModel);
                   $log.debug('Item fields', formlyFields);
 
-                  scope.formlyFields = formlyFields;
+                  scope.formlyFields = getFormlyFields(formlyFields);
                   if( ! isCreateItem() ){
                     scope.itemModelOriginal = itemModel;
                     scope.itemModel = _.cloneDeep(itemModel);
@@ -126,6 +126,26 @@ angular.module('cmeasyApp')
          */
         function isCreateItem(){
           return getItemId() === 'create';
+        }
+
+
+        /**
+         * TODO refactor this -> wrapper around admin-item directives to handle data fetching
+         *
+         * @param fields
+         * @returns {*}
+         */
+        function getFormlyFields(fields){
+          return _(fields).filter(keepMetaIdOnCreate).value();
+        }
+
+        /**
+         *
+         * @param field
+         * @returns {boolean}
+         */
+        function keepMetaIdOnCreate(field){
+          return field.key === 'meta._cmeasyId' ? isCreateItem() : true;
         }
 
 
@@ -254,7 +274,7 @@ angular.module('cmeasyApp')
          */
         function getItemData(itemType, itemId){
 
-          var promises = [ Admin.getTypeMetadata(itemType) ];
+          var promises = [ Admin.getTypeMetadata(itemType, itemId) ];
           if( ! isCreateItem() ){ promises.push(Admin.getItem(itemType, itemId)); }
 
           return $q.all(promises);

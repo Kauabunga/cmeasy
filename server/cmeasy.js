@@ -33,6 +33,7 @@ export default class Cmeasy {
   constructor(options = {}){
     this.name = options.name || 'Cmeasy';
     this.options = options;
+    this.models = [];
 
     this.connectToMongo();
 
@@ -43,26 +44,39 @@ export default class Cmeasy {
 
     return Promise.all(this.generateModels(options.models))
       .then((models) => {
-        this.models = models;
         return(this);
       });
   }
 
   generateModels(models){
-    return _(models).map(this.createModel.bind(this)).value();
+    return _(models).map(this.initModel.bind(this)).value();
   }
 
-  createModel(model){
+  initModel(model){
     return this.getSchemaController()
       .create(this.getModelSchema(model))
-      .then((result) => {
-        return new CmeasyModel(this, model);
-      })
+      .then(this.getAsObject.bind(this))
+      .then(this.createModel.bind(this))
       .catch(function(error){
         console.error('error', error);
       });
   }
 
+  createModel(model){
+    var existingModel = this.getModel(model.meta._cmeasyId);
+    if(existingModel){
+      return existingModel
+    }
+    else {
+      var newModel = new CmeasyModel(this, model);
+      this.models.push(newModel);
+      return newModel;
+    }
+  }
+
+  getAsObject(obj){
+    return obj.toObject()
+  }
 
   getModelSchema(model){
     return {
@@ -113,7 +127,8 @@ export default class Cmeasy {
   }
 
   getModel(id){
-    return _(this.models).filter((model)=>{return model.getId() === id;}).first();
+    return _(this.models)
+      .filter((model) => { return model.getId() === id; }).first();
   }
 
   getRootRoute(){
@@ -160,16 +175,10 @@ class CmeasyModel {
 
   constructor(cmeasy, model){
 
+    this.meta = model.meta;
     this.definition = model.definition;
 
-    //TODO should be able to get this reference from the db schema???
-    this.name = model.name;
-    this._cmeasyId = _.camelCase(model.name);
-
-
-    //TODO this reference needs to come for the db schema
-    this.singleton = model.singleton;
-
+    this.cmeasy = cmeasy;
 
     this._model = createModel(cmeasy, cmeasy.getMongoose(), this);
     this._modelController = createModelController(this, cmeasy.getSchemaController());
@@ -195,7 +204,7 @@ class CmeasyModel {
   }
 
   getId(){
-    return this._cmeasyId;
+    return this.meta._cmeasyId;
   }
 
   getIdKey(){
@@ -207,7 +216,7 @@ class CmeasyModel {
   }
 
   isSingleton(){
-    return this.singleton;
+    return this.meta.singleton;
   }
 
   getDefinition(){

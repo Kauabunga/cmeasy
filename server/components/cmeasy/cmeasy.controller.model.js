@@ -33,9 +33,12 @@ export default function(model, schemaController){
    *
    */
   function index() {
-    return model.getModel().find({})
-      .sort(getSortQuery()).execAsync()
-      .then(getUniqueIds(model));
+    return getModelSchema()
+      .then(function(schema) {
+        return model.getModel().find({})
+          .sort(getSortQuery()).execAsync()
+          .then(getUniqueIds(model, schema));
+      });
   }
 
 
@@ -45,23 +48,51 @@ export default function(model, schemaController){
    */
   function show(id) {
 
-    //TODO for non-singletons we need to search a different property
-
     console.log(`Model:Show:Start:${model.getId()}:${id}`);
 
-    return model.getModel().find(getIdQuery(id)).sort(getSortQuery()).execAsync()
-      .then(function(items){
-        //if this item is a singleton and there isn't one -> go and create it
-        if(model.isSingleton() && (! items || items.length === 0)){
-          return create({});
+    return getModelSchema()
+      .then(function(schema){
+        if(isSchemaSingleton(schema)){
+          return showSingleton(id);
         }
         else {
-          return _(items).first();
+          return showInstance(id);
         }
       })
       .then(function(item){
         console.log(`Model:Show:Finish:${model.getId()}:${id}:${item}`);
         return item;
+      });
+  }
+
+  /**
+   *
+   * @param id
+   * @returns {*}
+   */
+  function showSingleton(id){
+
+    return model.getModel().find(getIdQuery(id, {meta: {singleton: true}})).sort(getSortQuery()).execAsync()
+      .then(function(items){
+        //if this item is a singleton and there isn't one -> go and create it
+        if(! items || items.length === 0 ){
+          return create({});
+        }
+        else {
+          return _(items).first();
+        }
+      });
+  }
+
+  /**
+   *
+   * @param id
+   * @param schema
+   */
+  function showInstance(id){
+    return model.getModel().find(getIdQuery(id, {meta: {singleton: false}})).sort(getSortQuery()).execAsync()
+      .then(function(items){
+        return _(items).first();
       });
   }
 
@@ -74,7 +105,7 @@ export default function(model, schemaController){
 
     console.log(`Model:Create:Start:${model.getId()}:${item[model.getInstanceKey()] || ''}:${item || ''}`);
 
-    return Promise.all(getCreateResolve(item))
+    return getCreateResolve(item)
       .then(function([schema, currentItem]){
         return model.getModel().createAsync(getCreateItem(schema, item, currentItem));
       })
@@ -89,14 +120,41 @@ export default function(model, schemaController){
    *
    */
   function getCreateResolve(item){
-    var resolve = [ schemaController.show(model.getId()).then(getSchemaDefinition) ];
 
-    //If the model is not a singleton then we need to go fetch the previous instance (if one exists)
-    if( ! model.isSingleton() && item[model.getInstanceKey()]){
-      resolve.push(show(item[model.getInstanceKey()])
-        .then(getModelAsObject));
-    }
-    return resolve;
+    return getModelSchema()
+      .then(function(schema){
+
+        //If the model is not a singleton or it contains an instance key
+        //then we need to go fetch the previous instance (if one exists)
+        if( ! isSchemaSingleton(schema) || item[model.getInstanceKey()]){
+          return showInstance(item[model.getInstanceKey()])
+            .then(getModelAsObject)
+            .then(function(currentItem = {}){
+              return [schema, currentItem];
+            });
+        }
+        else {
+          return [schema, {}];
+        }
+
+      });
+
+  }
+
+  /**
+   *
+   * @returns {*}
+   */
+  function getModelSchema(){
+    return schemaController.show(model.getId());
+  }
+
+
+  /**
+   *
+   */
+  function isSchemaSingleton(schema){
+    return schema && schema.meta && schema.meta.singleton;
   }
 
   /**
@@ -113,7 +171,7 @@ export default function(model, schemaController){
    * @param item
    */
   function getValidItem(schema, item){
-    return _(item).map(getValidItemProperty(schema))
+    return _(item).map(getValidItemProperty(schema.definition))
       .filter()
       .reduce(_.merge) || {};
   }
@@ -151,17 +209,8 @@ export default function(model, schemaController){
    * @param model
    */
   function getModelAsObject(model){
-    return model.toObject();
+    return model && model.toObject();
   }
-
-  /**
-   *
-   * @param model
-   */
-  function getSchemaDefinition(schema){
-    return schema.definition;
-  }
-
 
   /**
    *
@@ -169,7 +218,7 @@ export default function(model, schemaController){
    * @returns {*}
    */
   function getDefaultItem(schema){
-    return _(schema).map(getSchemaPropertyDefault)
+    return _(schema.definition).map(getSchemaPropertyDefault)
       .filter()
       .reduce(_.merge) || {};
   }
@@ -196,7 +245,10 @@ export default function(model, schemaController){
    *
    */
   function history(id) {
-    return model.getModel().find(getIdQuery(id)).sort(getSortQuery()).execAsync();
+    return getModelSchema()
+      .then(function(schema) {
+        return model.getModel().find(getIdQuery(id, schema)).sort(getSortQuery()).execAsync();
+      });
   }
 
 
@@ -205,22 +257,25 @@ export default function(model, schemaController){
    *
    */
   function destroy(id) {
-    return model.getModel().find(getIdQuery(id)).execAsync().then(destroyAll);
+    return getModelSchema()
+      .then(function(schema){
+        return model.getModel().find(getIdQuery(id, schema)).execAsync().then(destroyAll);
+      });
+
+
   }
 
 
   /**
    *
    */
-  function getIdQuery(id){
-
-    if(model.isSingleton()){
+  function getIdQuery(id, schema){
+    if(isSchemaSingleton(schema)){
       return { [model.getIdKey()]: id };
     }
     else {
       return { [model.getInstanceKey()]: id };
     }
-
   }
 
   /**
@@ -239,27 +294,29 @@ export default function(model, schemaController){
     return Promise.all(_(items).map((item) => {return item.removeAsync();}).value());
   }
 
+
+
+  /**
+   *
+   */
+  function getUniqueIds(model, schema){
+    return function (entity) {
+
+      if(isSchemaSingleton(schema)){
+        return _(entity)
+          .map((item)=>{ return item.toObject(); })
+          .uniq(model.getIdKey())
+          .value();
+      }
+      else {
+        return _(entity)
+          .map((item)=>{ return item.toObject(); })
+          .uniq(model.getInstanceKey())
+          .value();
+      }
+    };
+  }
+
+
+
 }
-
-
-/**
- *
- */
-function getUniqueIds(model){
-  return function (entity) {
-
-    if(model.isSingleton()){
-      return _(entity)
-        .map((item)=>{ return item.toObject(); })
-        .uniq(model.getIdKey())
-        .value();
-    }
-    else {
-      return _(entity)
-        .map((item)=>{ return item.toObject(); })
-        .uniq(model.getInstanceKey())
-        .value();
-    }
-  };
-}
-

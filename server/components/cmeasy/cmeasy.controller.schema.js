@@ -51,8 +51,7 @@ export default function(cmeasy){
       .then(function(items){
         return _(items).first();
       })
-      .then(getDefinitionFromSchema)
-      .then(function(item){
+      .then(function(item = {}){
         console.log(`Schema:Show:Finish:${id}:${item}`);
         return item;
       });
@@ -83,7 +82,6 @@ export default function(cmeasy){
 
     return cmeasy.getSchema()
       .createAsync(getDefaultSchema(cmeasy, item))
-      .then(getDefinitionFromSchema)
       .then(function(item){
         console.log(`Schema:Create:Finish:${item.meta && item.meta._cmeasyId}`);
         return item;
@@ -105,12 +103,23 @@ export default function(cmeasy){
 
   /**
    * Deletes a Schema from the DB
-   * TODO implmeent
    */
   function destroy(id) {
-    return Promise.reject(new Error(501));
+    return cmeasy.getSchema()
+      .find(getSchemaShowQuery(id))
+      .execAsync()
+      .then(destroyAll);
   }
 
+
+  /**
+   *
+   * @param item
+   * @returns {*}
+   */
+  function destroyAll(items){
+    return Promise.all(_(items).map((item) => { return item.removeAsync(); }).value());
+  }
 
 
   /**
@@ -122,12 +131,12 @@ export default function(cmeasy){
 
 
   /**
+   * TODO get by _cmeasyInstanceId so the _cmeasyId can be changed
    *
    * @param id
-   * @returns {{meta: {}}}
    */
   function getSchemaShowQuery(id){
-    return {'meta._cmeasyId': id}
+    return { 'meta._cmeasyId': id };
   }
 
 
@@ -166,7 +175,8 @@ export default function(cmeasy){
         disableEdit: true,
         disableSchemaEdit: true,
         disableDisplay: true,
-        unique: false
+        unique: false,
+        required: true
       },
 
       author: {
@@ -193,7 +203,8 @@ export default function(cmeasy){
         disableEdit: true,
         disableSchemaEdit: true,
         disableDisplay: true,
-        unique: false
+        unique: false,
+        required: true
       },
 
       [cmeasy.getInstanceKey()]: {
@@ -202,7 +213,8 @@ export default function(cmeasy){
         disableEdit: true,
         disableSchemaEdit: true,
         disableDisplay: true,
-        unique: false
+        unique: false,
+        required: true
       }
 
     }
@@ -217,12 +229,6 @@ function getIdFromItem(item, cmeasy){
   return item && item.meta && item.meta[cmeasy.getIdKey()];
 }
 
-/**
- *
- */
-function getDefinitionFromSchema(schema){
-  return schema;
-}
 
 /**
  *
@@ -232,7 +238,6 @@ function getUniqueIds(cmeasy){
     return _(entity)
       .map((item)=>{ return item.toObject(); })
       .uniq('meta.' + cmeasy.getIdKey())
-      .map(getDefinitionFromSchema)
       .value();
 
   };

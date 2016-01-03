@@ -35,9 +35,22 @@ function getSchemaType(cmeasy){
 
 /**
  *
+ * Defines both the mongoose Schema.meta types and the MetaSchema.definition.meta instance
+ *
+ * TODO reuse this for defaulting a new Schema.meta values
+ *
  */
 function getMetaType(cmeasy){
+
   return {
+    //TODO allow this to be edited -> updates all endpoints / previous models
+    [cmeasy.getIdKey()]: {
+      $type: String,
+      displayColumn: true,
+      disableEdit: false, //Note this is a special case where when creating we do allow it to be edited
+      label: 'Schema Id',
+      required: true
+    },
     dateCreated: {
       $type: Number,
       default: Date.now,
@@ -54,13 +67,7 @@ function getMetaType(cmeasy){
       disableEdit: false,
       disableDisplay: true
     },
-    [cmeasy.getIdKey()]: {
-      $type: String,
-      displayColumn: true,
-      disableEdit: true,
-      required: true
-      //TODO if required with no default then allow on create
-    },
+
 
     singleton: {
       $type: Boolean,

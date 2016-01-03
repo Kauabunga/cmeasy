@@ -31,7 +31,7 @@ angular.module('cmeasyApp')
       .state('admin.types', {
         url: '/types/:itemType',
         authenticate: true,
-        menuIndex: 3,
+        menuIndex: 1,
         views: {
           admincontent: {
             template: '<admin-list list-type-param="itemType" item-state="admin.type"></admin-list>'
@@ -39,7 +39,6 @@ angular.module('cmeasyApp')
         }
       });
 
-    //TODO wire this up
     $stateProvider
       .state('admin.type', {
         url: '/type/:itemType/:itemId',
@@ -64,6 +63,7 @@ angular.module('cmeasyApp')
         }
       });
 
+    //TODO if this is not a singleton then we should change menu states
     $stateProvider
       .state('admin.item', {
         url: '/item/:itemType/:itemId',

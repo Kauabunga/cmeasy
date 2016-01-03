@@ -75,6 +75,7 @@
                 require: true
               }
             },
+            //Only used to show/hide additional field details
             {
               key: 'displayOptions',
               type: 'mdCheckbox',
@@ -87,6 +88,7 @@
               type: 'mdSelect',
               templateOptions: {
                 label: 'Type',
+                //TODO get types from server
                 selectOptions: ['String', 'Select']
               },
               hideExpression: '! model.displayOptions'
