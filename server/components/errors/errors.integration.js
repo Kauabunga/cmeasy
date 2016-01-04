@@ -13,6 +13,8 @@ import _ from 'lodash';
  */
 describe('Error API:', function() {
 
+  this.timeout(10000);
+
   it('should get 404ed', function(done) {
     cmeasy.then(function(app) {
       request(app)
