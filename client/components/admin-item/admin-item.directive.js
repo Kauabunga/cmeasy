@@ -59,7 +59,7 @@ angular.module('cmeasyApp')
                       scope.isDirty = true;
                       scope.dirtyWatcher();
                     }, true);
-                  }, 32);
+                  }, 150);
 
                 })
                 .catch(function(err){

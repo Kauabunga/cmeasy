@@ -3,6 +3,9 @@
 
 .list-admin-content {
   background-color: inherit;
+
+  //Let the filter container handle the top margin so the label can overflow
+  margin-top: 10px;
 }
 
 
@@ -11,6 +14,11 @@
 }
 
 
+.list-admin-filter-container {
+  font-size: 1.8rem;
+  font-weight: 300;
+  margin-top: 30px;
+}
 
 
 loader-svg.state-loader{
@@ -32,11 +40,3 @@ loader-svg.state-loader{
   }
 }
 
-
-.admin-fade-in-on-loaded {
-  opacity: 0;
-  transition: opacity 200ms ease;
-  &.is-loaded {
-    opacity: 1;
-  }
-}

@@ -12,10 +12,12 @@ md-sidenav.admin-left-sidenav(md-component-id='admin-left-nav', md-is-locked-ope
 
       md-tab(label='Content')
         md-list
-          md-list-item(ng-click='goHome($event)') Go Home
+          md-list-item
+            md-button(ng-click='goHome($event)') Go Home
         admin-menu-content
 
       md-tab(label='Types')
         md-list
-          md-list-item(ng-click='goHome($event)') Go Home
+          md-list-item
+            md-button(ng-click='goHome($event)') Go Home
         admin-menu-types

@@ -1,14 +1,14 @@
 
 
 .admin-top-header.item-admin-top
-  h1
+  h1.admin-top-container
     span.item-type-title(ng-if='itemType !== itemId') {{::itemTitle}}&nbsp;
     | Item
     span(ng-hide='hideItemId') &nbsp;{{::itemId}}
-    br.is-dirty-label-mobile-break
-    span.is-dirty-label.ng-hide(ng-show='isDirty && form.$dirty') Edited
+    span.is-dirty-label.ng-hide(ng-show='isDirty && form.$dirty') &nbsp;Edited
 
-  .item-actions-container
+
+  .admin-top-container.align-right.item-actions-container
     md-button.publish-button.loading-button.md-raised.md-primary(id='publish-item-button', ng-hide='isCreateItem()', ng-click='save($event, itemModel)')
       span(ng-hide='isPublishing') Publish
       loader-svg.loading-button-svg.ng-hide(ng-show='isPublishing')
@@ -27,7 +27,7 @@
   loader-svg.state-loader(loader-admin='', ng-class='{"is-loaded": !! isLoaded}')
 
 
-md-content.item-admin-content
+md-content.admin-bottom-container.item-admin-content
 
   formly-form.admin-form.admin-fade-in-on-loaded(fields='formlyFields', model='itemModel', form='form', ng-class='{"is-loaded": !! isLoaded}')
 

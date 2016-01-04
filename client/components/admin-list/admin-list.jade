@@ -1,9 +1,9 @@
 
 
 .list-admin-top.admin-top-header
-  h1 Select a {{::listTitle}}
+  h1.admin-top-container Select a {{::listTitle}}
 
-  .list-admin-actions-container
+  .admin-top-container.align-right.list-admin-actions-container
 
     .list-admin-button-container
       md-button.md-raised.md-primary(id='create-{{::listType}}', ng-show='canCreate', ng-click='createItem()') Create {{::listTitle}}
@@ -12,7 +12,7 @@
 
 
 
-md-content.list-admin-content
+md-content.admin-bottom-container.list-admin-content
 
   .list-admin-filter-container
     md-input-container.filter-list-text

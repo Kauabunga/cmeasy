@@ -2,8 +2,18 @@
 
 
 button.md-button {
-  span {
-    text-transform: none;
+
+  > span {margin: 0 10px;}
+  span { text-transform: none; }
+
+
+  border-radius: 0;
+  &.md-raised,
+  &.md-raised.md-primary,
+  &.md-raised:not([disabled]){ border-radius: 0; box-shadow: none; }
+
+  .md-ripple-container {
+    border-radius: 0;
   }
 }
 

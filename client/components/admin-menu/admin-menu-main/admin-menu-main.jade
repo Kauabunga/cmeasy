@@ -2,11 +2,13 @@
 
 
 md-list
-  md-list-item(ng-click='gotoContent()') Content
-  md-list-item(ng-click='gotoTypes()') Types
-  md-list-item(ng-click='gotoUsers()') TODO Users
-  md-list-item(ng-click='gotoSystem()') TODO System
-  md-list-item(ng-click='logout()') Logout
-
+  md-list-item
+    md-button(ng-click='gotoContent()') Content
+  md-list-item
+    md-button(ng-click='gotoTypes()') Types
+  md-list-item
+    md-button(ng-click='gotoUsers()') Users
+  md-list-item
+    md-button(ng-click='logout()') Logout
 
 
