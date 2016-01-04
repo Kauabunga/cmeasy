@@ -6,3 +6,34 @@ button.md-button {
     text-transform: none;
   }
 }
+
+
+
+button.loading-button {
+  position: relative;
+  span {
+    opacity: 1;
+    transition: opacity 200ms ease;
+    &.ng-hide {
+      display: inline !important;
+      opacity: 0;
+    }
+  }
+  .loading-button-svg {
+    position: absolute;
+    top: 2px;
+    left: 50%;
+    margin-left: -13px;
+    opacity: 1;
+    transition: opacity 200ms ease;
+    transition-delay: 100ms;
+    svg {
+      width: 26px;
+      fill: @almost-white;
+    }
+    &.ng-hide {
+      opacity: 0;
+      display: block !important;
+    }
+  }
+}

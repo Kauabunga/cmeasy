@@ -13,7 +13,9 @@ md-content
       input(name='password', ng-model='user.password', type='password', autocomplete='off')
 
 
-    md-button.login-button(type='submit') Login
+    md-button.loading-button.md-primary.bold(id='login-submit-button', type='submit')
+      span(ng-hide='submitting') Login
+      loader-svg.loading-button-svg.ng-hide(ng-show='submitting')
 
 
 

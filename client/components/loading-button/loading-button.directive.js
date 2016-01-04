@@ -9,6 +9,9 @@
         restrict: 'EA',
         transclude: true,
         replace: true,
+        scope: {
+          loadingButton: '=isLoading'
+        },
         link: function (scope, element, attrs) {
 
           return init();
@@ -19,10 +22,7 @@
           function init(){
 
           }
-
-
         }
-
       };
     });
 
