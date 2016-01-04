@@ -223,46 +223,12 @@
     });
 
   angular.module('cmeasyApp')
-    .directive('eablogoSvg', function () {
-      return {
-        templateUrl: 'components/svg/eablogo.svg.html',
-        restrict: 'EA'
-      };
-    });
-
-
-  angular.module('cmeasyApp')
-    .directive('eablogoSmallSvg', function () {
-      return {
-        templateUrl: 'components/svg/eablogosmall.svg.html',
-        restrict: 'EA'
-      };
-    });
-
-  angular.module('cmeasyApp')
-    .directive('mbieLogoSvg', function () {
-      return {
-        templateUrl: 'components/svg/mbielogo.svg.html',
-        restrict: 'EA'
-      };
-    });
-
-  angular.module('cmeasyApp')
-    .directive('atworkLogoSvg', function () {
-      return {
-        templateUrl: 'components/svg/atworklogo.svg.html',
-        restrict: 'EA'
-      };
-    });
-
-  angular.module('cmeasyApp')
     .directive('facebookLogoSvg', function () {
       return {
         templateUrl: 'components/svg/facebook.svg.html',
         restrict: 'EA'
       };
     });
-
 
   angular.module('cmeasyApp')
     .directive('twitterLogoSvg', function () {
@@ -271,15 +237,6 @@
         restrict: 'EA'
       };
     });
-
-  angular.module('cmeasyApp')
-    .directive('nzGovtLogoSvg', function () {
-      return {
-        templateUrl: 'components/svg/nzgovt.svg.html',
-        restrict: 'EA'
-      };
-    });
-
 
 
 
