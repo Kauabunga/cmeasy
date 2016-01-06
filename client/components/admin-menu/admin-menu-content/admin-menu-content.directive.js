@@ -5,7 +5,9 @@ angular.module('cmeasyApp')
     return {
       templateUrl: 'components/admin-menu/admin-menu-content/admin-menu-content.html',
       restrict: 'E',
-      scope: {},
+      scope: {
+        menuItems: '='
+      },
       link: function(scope, element) {
 
         return init();
@@ -18,19 +20,8 @@ angular.module('cmeasyApp')
           scope.openMenu = openMenu;
           scope.getMenuDisplay = getMenuDisplay;
 
-          return Admin.getModels()
-            .then(function(models){
-              scope.menuItems = _(models).map(getMenuItem).value();
-            });
         }
 
-        /**
-         *
-         * @param model
-         */
-        function getMenuItem(model){
-          return model;
-        }
 
         /**
          *

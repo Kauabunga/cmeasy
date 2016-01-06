@@ -8,16 +8,16 @@ md-sidenav.admin-left-sidenav(md-component-id='admin-left-nav', md-is-locked-ope
         admin-login
 
       md-tab(label='Main')
-        admin-menu-main
+        admin-menu-main(menu-items='menuItems')
 
       md-tab(label='Content')
         md-list
           md-list-item
             md-button(ng-click='goHome($event)') Go Home
-        admin-menu-content
+        admin-menu-content(menu-items='menuItems')
 
       md-tab(label='Types')
         md-list
           md-list-item
             md-button(ng-click='goHome($event)') Go Home
-        admin-menu-types
+        admin-menu-types(menu-items='menuItems')

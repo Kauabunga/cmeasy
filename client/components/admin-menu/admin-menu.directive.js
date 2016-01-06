@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('cmeasyApp')
-  .directive('adminMenu', function ($rootScope, $log, $state, $stateParams, appConfig) {
+  .directive('adminMenu', function ($rootScope, $log, Admin, $state, $stateParams, appConfig, $timeout) {
     return {
       templateUrl: 'components/admin-menu/admin-menu.html',
       restrict: 'E',
@@ -17,9 +17,25 @@ angular.module('cmeasyApp')
           scope.goHome = $state.go.bind($state, appConfig.state.main);
           scope.$on('$destroy', $rootScope.$on('$stateChangeSuccess', handleStateChangeSuccess));
           handleStateChangeSuccess({}, $state.current, $stateParams, {}, {});
+
+          updateModels();
+          scope.$on('$destroy', $rootScope.$on('$stateChangeSuccess', updateModels));
         }
 
+
         /**
+         *
+         * @returns {*}
+         */
+        function updateModels(){
+          return Admin.getModels()
+            .then(function(models){
+              $timeout(() => {scope.menuItems = models;});
+        });
+      }
+
+
+      /**
          *
          */
         function handleMenuIndexChange(index){

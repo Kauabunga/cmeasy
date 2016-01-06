@@ -17,6 +17,8 @@ export default function(app, cmeasy) {
   app.use(`/${cmeasy.getRootRoute()}/auth`, auth);
   app.use(`/${cmeasy.getApiRoute()}/v1/users`, user);
 
+  app.use(`/${cmeasy.getApiRoute()}/v1/content/schemacomplete`, getCompleteSchemaList(cmeasy));
+
   app.use(`/${cmeasy.getApiRoute()}/v1/content/schema`, routeSchemaRequest(cmeasy));
   app.use(`/${cmeasy.getApiRoute()}/v1/content/:type`, routeContentRequest(cmeasy));
 
@@ -57,6 +59,24 @@ function routeContentRequest(cmeasy){
         else {
           return res.sendStatus(404);
         }
+      });
+  }
+}
+
+/**
+ *
+ * @param cmeasy
+ * @returns {Function}
+ */
+function getCompleteSchemaList(cmeasy){
+  return function(req, res, next){
+    cmeasy.getSchemaController().index()
+      .then(function(completeSchema){
+        return res.status(200).json(completeSchema);
+      })
+      .catch(function(err){
+        console.error('Error getting compelte schema list', err);
+        return res.sendStatus(500);
       });
   }
 }
