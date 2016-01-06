@@ -8,6 +8,7 @@ import renderIndex from './components/render-index/index';
 import auth from './auth/index';
 import user from './api/user/index';
 import _ from 'lodash';
+import Promise from 'bluebird';
 
 /**
  *
@@ -20,7 +21,7 @@ export default function(app, cmeasy) {
   app.use(`/${cmeasy.getApiRoute()}/v1/content/schemacomplete`, getCompleteSchemaList(cmeasy));
 
   app.use(`/${cmeasy.getApiRoute()}/v1/content/schema`, routeSchemaRequest(cmeasy));
-  app.use(`/${cmeasy.getApiRoute()}/v1/content/:type`, routeContentRequest(cmeasy));
+  app.use(`/${cmeasy.getApiRoute()}/v1/content/:type?`, routeContentRequest(cmeasy));
 
   app.use(`/${cmeasy.getRootRoute()}`, renderIndex(app, cmeasy));
 
@@ -32,34 +33,69 @@ export default function(app, cmeasy) {
 function routeContentRequest(cmeasy){
   return function(req, res, next){
 
-    console.log('Routing content request', req.url);
+    console.log('Routing content request', req.params.type, req.url);
 
-    if(! req.params.type) { return res.sendStatus(401); }
-
-    return cmeasy.getSchemaController().index()
-      .then(filterSchemaById(cmeasy, req.params.type))
-      .then(function(schema){
-        if(! schema){
-          return undefined;
-        }
-        else {
-          var cmeasyModel = cmeasy.getModel(req.params.type);
-          if( ! cmeasyModel ){
-            return cmeasy.createModel(schema);
+    if(! req.params.type) {
+      //Get all content
+      //TODO move into cmeasy
+      return cmeasy.getSchemaController().index()
+        .then(function(schemas){
+          return Promise.all(_(schemas)
+            .map(function(schema){
+              return [
+                cmeasy.getModel(schema.meta[cmeasy.getIdKey()]),
+                schema
+              ];
+            })
+            .map(function([model, schema]){
+              if(! model){
+                return cmeasy.createModel(schema).getModelController().index();
+              }
+              else {
+                return model.getModelController().index();
+              }
+            })
+            .value())
+            .then(function(indexes){
+              return _(indexes).filter().value();
+            });
+        })
+        .then(function (...indexes){
+          console.log('All content', indexes);
+          return res.json(indexes);
+        })
+        .catch(function(err){
+          console.error('Error getting all content', err);
+          return res.sendStatus(500);
+        });
+    }
+    else {
+      //Return specific content
+      return cmeasy.getSchemaController().index()
+        .then(filterSchemaById(cmeasy, req.params.type))
+        .then(function(schema){
+          if(! schema){
+            return undefined;
           }
           else {
-            return cmeasyModel;
+            var cmeasyModel = cmeasy.getModel(req.params.type);
+            if( ! cmeasyModel ){
+              return cmeasy.createModel(schema);
+            }
+            else {
+              return cmeasyModel;
+            }
           }
-        }
-      })
-      .then(function(cmeasyModel){
-        if(cmeasyModel){
-          return cmeasyModel.getModelCrud()(req, res, next);
-        }
-        else {
-          return res.sendStatus(404);
-        }
-      });
+        })
+        .then(function(cmeasyModel){
+          if(cmeasyModel){
+            return cmeasyModel.getModelCrud()(req, res, next);
+          }
+          else {
+            return res.sendStatus(404);
+          }
+        });
+    }
   }
 }
 

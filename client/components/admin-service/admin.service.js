@@ -24,6 +24,8 @@ angular.module('cmeasyApp')
         getModel: getModel,
         getModels: getModels,
 
+        getAllContent: getAllContent,
+
         getAll: getAll,
         getItem: getItem,
         saveItem: saveItem,
@@ -46,6 +48,14 @@ angular.module('cmeasyApp')
         .then(function(models){
           return _(models).filter(function(model){return model.meta[appConfig.itemIdKey] === id;}).first();
         });
+    }
+
+    /**
+     *
+     */
+    function getAllContent(options = {}){
+      return $http.get(appConfig.apiRoute, { cache: getCache(options) })
+        .then(getDataFromSuccess);
     }
 
     /**
