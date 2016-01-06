@@ -10,7 +10,7 @@ angular.module('cmeasyApp')
         menuIndex: 1,
         views: {
           admincontent: {
-            template: '<h1>Main state</h1>'
+            template: '<div><admin-title title="Welcome"></admin-title><admin-api-display></admin-api-display></div>'
           }
         }
       });
@@ -22,7 +22,7 @@ angular.module('cmeasyApp')
         menuIndex: 2,
         views: {
           admincontent: {
-            template: '<h1>Content state</h1>'
+            template: '<div><admin-title title="Welcome"></admin-title><admin-api-display></admin-api-display></div>'
           }
         }
       });
@@ -83,7 +83,7 @@ angular.module('cmeasyApp')
         menuIndex: 0,
         views: {
           admincontent: {
-            template: '<h1>Login state</h1>'
+            template: '<admin-title title="Welcome"></admin-title>'
           }
         }
       });

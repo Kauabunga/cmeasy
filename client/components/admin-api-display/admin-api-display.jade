@@ -1,0 +1,14 @@
+
+
+md-content.admin-bottom-container
+  h2 Api Introduction
+
+
+  md-list
+    md-list-item.introduction-list-item(ng-click='showAllContent()')
+      pre {{getAllContentUrl()}}
+
+      pre.ng-hide(ng-hide='! allContent') {{allContent | json}}
+
+
+

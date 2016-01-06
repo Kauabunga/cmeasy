@@ -14,9 +14,17 @@ angular.module('cmeasyApp')
      */
     function init(){
 
+      //put initial cache of getModels from index.template injection
+      getCache().put(appConfig.apiRoute + '/schemacomplete', [
+        200,
+        window._cmeasy.models
+      ]);
+
       return {
         getModel: getModel,
         getModels: getModels,
+
+        getAllContent: getAllContent,
 
         getAll: getAll,
         getItem: getItem,
@@ -45,8 +53,20 @@ angular.module('cmeasyApp')
     /**
      *
      */
-    function getModels(){
-      return $q.when($window._cmeasy.models);
+    function getAllContent(options = {}){
+      return $http.get(appConfig.apiRoute, { cache: getCache(options) })
+        .then(getDataFromSuccess);
+    }
+
+    /**
+     * TODO
+     */
+    function getModels(options = {}){
+      return $http.get(appConfig.apiRoute + '/schemacomplete', { cache: getCache(options) })
+        .then(getDataFromSuccess)
+        .then(function(schemaComplete){
+          return schemaComplete;
+        });
     }
 
     /**
@@ -67,7 +87,8 @@ angular.module('cmeasyApp')
      */
     function saveItem(type, item) {
       return $http.post(appConfig.apiRoute + '/' + type, item)
-        .then(handleChangeResponseForType(type));
+        .then(handleChangeResponseForType(type))
+        .then(getDataFromSuccess);
     }
 
     /**
@@ -78,8 +99,8 @@ angular.module('cmeasyApp')
      */
     function createItem(type, item) {
       return $http.post( appConfig.apiRoute + '/' + type, item)
-        .then(getDataFromSuccess)
-        .then(handleChangeResponseForType(type));
+        .then(handleChangeResponseForType(type))
+        .then(getDataFromSuccess);
     }
 
     /**
@@ -91,7 +112,12 @@ angular.module('cmeasyApp')
     function handleChangeResponseForType(type){
       return function(response) {
         $log.debug('Changed item response', response);
-        return response;
+
+        return getModels({force: true})
+          .then(function(){
+            //return the original response
+            return response;
+          });
       };
     }
     /**
@@ -140,8 +166,8 @@ angular.module('cmeasyApp')
      */
     function deleteItem(type, id) {
       return $http.delete(appConfig.apiRoute + '/' + type + '/' + id)
-        .then(getDataFromSuccess)
-        .then(handleChangeResponseForType(type));
+        .then(handleChangeResponseForType(type))
+        .then(getDataFromSuccess);
     }
 
     /**

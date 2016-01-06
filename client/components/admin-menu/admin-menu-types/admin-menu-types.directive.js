@@ -1,11 +1,13 @@
 'use strict';
 
 angular.module('cmeasyApp')
-  .directive('adminMenuTypes', function ($rootScope, Admin, $log, $state, appConfig) {
+  .directive('adminMenuTypes', function ($rootScope, Admin, $log, $state, appConfig, $timeout) {
     return {
       templateUrl: 'components/admin-menu/admin-menu-types/admin-menu-types.html',
       restrict: 'E',
-      scope: {},
+      scope: {
+        menuItems: '='
+      },
       link: function(scope, element) {
 
         return init();
@@ -18,20 +20,8 @@ angular.module('cmeasyApp')
           scope.openMenu = openMenu;
           scope.getMenuDisplay = getMenuDisplay;
 
-          return Admin.getModels()
-            .then(function(models){
-              scope.menuItems = _(models).map(getMenuItem).value();
-            });
-        }
 
 
-
-        /**
-         *
-         * @param model
-         */
-        function getMenuItem(model){
-          return model;
         }
 
         /**

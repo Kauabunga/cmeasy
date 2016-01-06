@@ -93,9 +93,7 @@ angular.module('cmeasyApp')
          * @param model
          */
         function getCanDeleteItem(model){
-
           console.log('getCanDeleteItem', model);
-
           return model && model.meta ? ! model.meta.disableDelete && ! model.meta.singleton : true;
         }
 
@@ -256,7 +254,7 @@ angular.module('cmeasyApp')
 
                 $log.debug('save response', itemModel);
                 scope.itemModel = itemModel;
-                $stateParams.itemId = itemModel[appConfig.itemInstanceKey];
+                $stateParams.itemId = itemModel[appConfig.itemInstanceKey] || itemModel.meta && itemModel.meta[appConfig.itemIdKey];
 
                 $state.go($state.current.name, $stateParams, { location: 'replace' });
               })

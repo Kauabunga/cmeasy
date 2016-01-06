@@ -37,7 +37,8 @@ export default function(model, schemaController){
       .then(function(schema) {
         return model.getModel().find({})
           .sort(getSortQuery()).execAsync()
-          .then(getUniqueIds(model, schema));
+          .then(getUniqueIds(model, schema))
+          .then(cleanObject);
       });
   }
 
@@ -81,7 +82,8 @@ export default function(model, schemaController){
         else {
           return _(items).first();
         }
-      });
+      })
+      .then(cleanObject);
   }
 
   /**
@@ -93,7 +95,8 @@ export default function(model, schemaController){
     return model.getModel().find(getIdQuery(id, {meta: {singleton: false}})).sort(getSortQuery()).execAsync()
       .then(function(items){
         return _(items).first();
-      });
+      })
+      .then(cleanObject);
   }
 
 
@@ -109,6 +112,7 @@ export default function(model, schemaController){
       .then(function([schema, currentItem]){
         return model.getModel().createAsync(getCreateItem(schema, item, currentItem));
       })
+      .then(cleanObject)
       .then(function(createdItem){
         console.log(`Model:Create:Finish:${model.getId()}:${item[model.getInstanceKey()] || ''}:${createdItem || ''}`);
         return createdItem;
@@ -122,6 +126,7 @@ export default function(model, schemaController){
   function getCreateResolve(item){
 
     return getModelSchema()
+      .then(cleanObject)
       .then(function(schema){
 
         //If the model is not a singleton or it contains an instance key
@@ -315,6 +320,23 @@ export default function(model, schemaController){
           .value();
       }
     };
+  }
+
+/**
+ *
+ * @param item
+ * @returns {*}
+ */
+  function cleanObject(item = {}){
+    if(item instanceof Array){
+      return _(item).map(function(singleItem){
+        return _.omit(singleItem, '_id', '__v');
+      }).value();
+    }
+    else {
+      return _.omit(item, '_id', '__v');
+    }
+
   }
 
 

@@ -4,4 +4,4 @@
 
 md-list
   md-list-item(ng-repeat='menuItem in menuItems track by $index')
-    md-button(ng-click='openMenu($event, menuItem)') {{::getMenuDisplay(menuItem)}}
+    md-button(ng-click='openMenu($event, menuItem)') {{getMenuDisplay(menuItem)}}
