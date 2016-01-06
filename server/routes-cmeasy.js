@@ -38,6 +38,7 @@ function routeContentRequest(cmeasy){
     if(! req.params.type) {
       //Get all content
       //TODO move into cmeasy
+
       return cmeasy.getSchemaController().index()
         .then(function(schemas){
           return Promise.all(_(schemas)
@@ -49,14 +50,14 @@ function routeContentRequest(cmeasy){
             })
             .map(function([model, schema]){
               if(! model){
-                return cmeasy.createModel(schema).getModelController().index();
+                return cmeasy.createModel(schema).getModelController().indexClean();
               }
               else {
-                return model.getModelController().index();
+                return model.getModelController().indexClean();
               }
             })
             .value())
-            .then(function(indexes){
+            .then(function(...indexes){
               return _(indexes).filter().value();
             });
         })
@@ -68,6 +69,8 @@ function routeContentRequest(cmeasy){
           console.error('Error getting all content', err);
           return res.sendStatus(500);
         });
+
+
     }
     else {
       //Return specific content

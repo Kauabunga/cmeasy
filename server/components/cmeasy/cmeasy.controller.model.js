@@ -21,11 +21,14 @@ export default function(model, schemaController){
 
   return {
     index: index,
+    indexClean: _.flow(index, cleanObject),
     create: create,
     show: show,
     history: history,
     destroy: destroy
   };
+
+
 
 
   /**
@@ -35,10 +38,18 @@ export default function(model, schemaController){
   function index() {
     return getModelSchema()
       .then(function(schema) {
-        return model.getModel().find({})
-          .sort(getSortQuery()).execAsync()
-          .then(getUniqueIds(model, schema))
-          .then(cleanObject);
+        if(isSchemaSingleton(schema)){
+          return showSingleton(model.getId())
+            .then(function(singleton){
+              //convert back into an array to keep consistency
+              return [].concat(singleton);
+            });
+        }
+        else {
+          return model.getModel().find({})
+            .sort(getSortQuery()).execAsync()
+            .then(getUniqueIds(model, schema));
+        }
       });
   }
 
@@ -82,8 +93,7 @@ export default function(model, schemaController){
         else {
           return _(items).first();
         }
-      })
-      .then(cleanObject);
+      });
   }
 
   /**
@@ -95,8 +105,7 @@ export default function(model, schemaController){
     return model.getModel().find(getIdQuery(id, {meta: {singleton: false}})).sort(getSortQuery()).execAsync()
       .then(function(items){
         return _(items).first();
-      })
-      .then(cleanObject);
+      });
   }
 
 
@@ -112,7 +121,6 @@ export default function(model, schemaController){
       .then(function([schema, currentItem]){
         return model.getModel().createAsync(getCreateItem(schema, item, currentItem));
       })
-      .then(cleanObject)
       .then(function(createdItem){
         console.log(`Model:Create:Finish:${model.getId()}:${item[model.getInstanceKey()] || ''}:${createdItem || ''}`);
         return createdItem;
@@ -126,7 +134,6 @@ export default function(model, schemaController){
   function getCreateResolve(item){
 
     return getModelSchema()
-      .then(cleanObject)
       .then(function(schema){
 
         //If the model is not a singleton or it contains an instance key
@@ -322,21 +329,49 @@ export default function(model, schemaController){
     };
   }
 
-/**
- *
- * @param item
- * @returns {*}
- */
-  function cleanObject(item = {}){
-    if(item instanceof Array){
-      return _(item).map(function(singleItem){
-        return _.omit(singleItem, '_id', '__v');
+
+  /**
+   *
+   *
+   * @param item
+   * @returns {*}
+   */
+  function cleanObject(item) {
+    if(typeof item.then === 'function'){
+      return item.then(_cleanObject);
+    }
+    else {
+      return _cleanObject(item);
+    }
+  }
+
+  /**
+   *
+   * @param item
+   * @returns {*}
+   * @private
+   */
+  function _cleanObject(item){
+
+    if (item instanceof Array) {
+      return _(item).map(function (singleItem) {
+        if(typeof singleItem.toObject === 'function'){
+          return _.omit(singleItem.toObject(), '_id', '__v');
+        }
+        else {
+          return _.omit(singleItem, '_id', '__v');
+        }
       }).value();
     }
     else {
-      return _.omit(item, '_id', '__v');
-    }
+      if(typeof item.toObject === 'function'){
+        return _.omit(item.toObject(), '_id', '__v');
+      }
+      else {
+        return _.omit(item, '_id', '__v');
+      }
 
+    }
   }
 
 
