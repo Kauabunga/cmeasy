@@ -14,6 +14,7 @@ import _ from 'lodash';
 describe('Cmeasy blogPost model API:', function() {
 
   var blogPostItem;
+  this.timeout(6000);
 
 
   describe('POST /api/v1/content/blogPost', function() {
@@ -183,6 +184,9 @@ describe('Cmeasy blogPost model API:', function() {
 describe('Cmeasy homePage model API:', function() {
 
   var homePageItem;
+
+  this.timeout(6000);
+
 
   describe('POST /api/v1/content/homePage', function() {
     before(createDummyHomePage);
