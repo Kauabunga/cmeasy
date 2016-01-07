@@ -20,8 +20,6 @@ angular.module('cmeasyApp')
           scope.openMenu = openMenu;
           scope.getMenuDisplay = getMenuDisplay;
 
-
-
         }
 
         /**
@@ -49,8 +47,21 @@ angular.module('cmeasyApp')
          *
          */
         function getMenuDisplay(menuItem){
-          return menuItem.meta[appConfig.itemIdKey];
+          return getPrettyDisplay(menuItem.meta[appConfig.itemIdKey]);
         }
+
+
+        /**
+         *
+         * @param id
+         */
+        function getPrettyDisplay(id){
+          // insert a space before all caps
+          return id.replace(/([A-Z])/g, ' $1')
+            // uppercase the first character
+            .replace(/^./, function(str){ return str.toUpperCase(); });
+        }
+
 
       }
     };

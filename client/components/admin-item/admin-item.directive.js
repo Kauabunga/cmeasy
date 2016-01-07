@@ -27,6 +27,7 @@ angular.module('cmeasyApp')
           scope.create = create;
           scope.showHistory = showHistory;
           scope.deleteItem = deleteItem;
+          scope.getItemIdDisplay = getItemIdDisplay;
 
           //TODO populate model instance with defaults if it is a create item
 
@@ -165,6 +166,17 @@ angular.module('cmeasyApp')
               $log.debug('Error creating history dialog');
             });
 
+        }
+
+        /**
+         *
+         * @param id
+         */
+        function getItemIdDisplay(id){
+          // insert a space before all caps
+          return id && id.replace(/([A-Z])/g, ' $1')
+            // uppercase the first character
+            .replace(/^./, function(str){ return str.toUpperCase(); });
         }
 
 

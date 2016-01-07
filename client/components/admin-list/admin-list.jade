@@ -1,7 +1,7 @@
 
 
 .list-admin-top.admin-top-header
-  h1.admin-top-container Select a {{::listTitle}}
+  h1.admin-top-container Select a {{::getListIdDisplay(listTitle)}}
 
   .admin-top-container.align-right.list-admin-actions-container
 
@@ -18,7 +18,7 @@ md-content.admin-bottom-container.list-admin-content
     md-input-container.filter-list-text
       label
         search-svg
-        | Search for a {{::listTitle}}
+        | Search for a {{::getListIdDisplay(listTitle)}}
       input(ng-model='filterText', id='filter-list-input')
 
   md-list.admin-list.admin-fade-in-on-loaded(ng-class='{"is-loaded": !! isLoaded}')

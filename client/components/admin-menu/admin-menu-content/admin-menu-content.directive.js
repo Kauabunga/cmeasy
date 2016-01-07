@@ -52,9 +52,8 @@ angular.module('cmeasyApp')
          *
          */
         function getMenuDisplay(menuItem){
-          return menuItem.meta[appConfig.itemIdKey];
+          return getPrettyDisplay(menuItem.meta[appConfig.itemIdKey]);
         }
-
 
         /**
          *
@@ -62,6 +61,20 @@ angular.module('cmeasyApp')
         function isSingleton(menuItem){
           return menuItem.meta.singleton;
         }
+
+
+        /**
+         *
+         * @param id
+         */
+        function getPrettyDisplay(id){
+          // insert a space before all caps
+          return id.replace(/([A-Z])/g, ' $1')
+            // uppercase the first character
+            .replace(/^./, function(str){ return str.toUpperCase(); });
+        }
+
+
 
       }
     };

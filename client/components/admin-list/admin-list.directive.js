@@ -24,6 +24,7 @@ angular.module('cmeasyApp')
           scope.filterList = filterList;
           scope.getRenderedColumnValue = getRenderedColumnValue;
           scope.getPrettyLabel = getPrettyLabel;
+          scope.getListIdDisplay = getPrettyLabel;
 
           $log.debug('List admin init', getListType());
 
