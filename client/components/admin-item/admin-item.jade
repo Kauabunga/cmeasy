@@ -2,12 +2,9 @@
 
 .admin-top-header.item-admin-top
   .admin-top-container(ng-cloak='')
-    h1
-      span.item-type-title {{::getItemIdDisplay(itemTitle)}}&nbsp;
-      | Content Item
-      span.is-dirty-label.md-warn.ng-hide(ng-show='isDirty && form.$dirty') &nbsp;Edited
-    h2
-      span.ng-hide(ng-hide='hideItemId', ng-if='itemType !== itemId') ID | {{::getItemIdDisplay(itemId)}}
+    h1.item-type-title {{::getItemIdDisplay(itemTitle)}} Content Item
+    h1.md-warn.is-dirty-label.ng-hide(ng-show='isDirty && form.$dirty') &nbsp;Edited
+    h2.ng-hide(ng-hide='hideItemId', ng-if='itemType !== itemId') ID | {{::getItemIdDisplay(itemId)}}
 
 
 
