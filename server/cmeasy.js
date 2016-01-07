@@ -168,6 +168,15 @@ export default class Cmeasy {
 
 }
 
+
+/**
+ * TODO
+ */
+class CmeasyOptions {
+
+}
+
+
 /**
  *
  */
