@@ -68,30 +68,36 @@
         function getBaseMetaFields(){
           return [
             {
-              key: 'definitionKey',
-              type: 'mdInput',
+              type: 'row',
               templateOptions: {
-                label: 'Key',
-                require: true
+                fields: [
+                  {
+                    key: 'definitionKey',
+                    type: 'mdInput',
+                    templateOptions: {
+                      label: 'Key',
+                      require: true
+                    }
+                  },
+                  {
+                    key: 'type',
+                    type: 'mdSelect',
+                    templateOptions: {
+                      label: 'Type',
+                      //TODO get types from server
+                      selectOptions: ['String', 'Select']
+                    }
+                  },
+                  //Only used to show/hide additional field details
+                  {
+                    key: 'displayOptions',
+                    type: 'mdCheckbox',
+                    templateOptions: {
+                      label: 'Display Options'
+                    }
+                  },
+                ]
               }
-            },
-            //Only used to show/hide additional field details
-            {
-              key: 'displayOptions',
-              type: 'mdCheckbox',
-              templateOptions: {
-                label: 'Display Options'
-              }
-            },
-            {
-              key: 'type',
-              type: 'mdSelect',
-              templateOptions: {
-                label: 'Type',
-                //TODO get types from server
-                selectOptions: ['String', 'Select']
-              },
-              hideExpression: '! model.displayOptions'
             },
             {
               key: 'label',

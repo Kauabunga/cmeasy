@@ -5,7 +5,7 @@
     span.item-type-title(ng-if='itemType !== itemId') {{::itemTitle}}&nbsp;
     | Item
     span(ng-hide='hideItemId') &nbsp;{{::itemId}}
-    span.is-dirty-label.ng-hide(ng-show='isDirty && form.$dirty') &nbsp;Edited
+    span.is-dirty-label.md-warn.ng-hide(ng-show='isDirty && form.$dirty') &nbsp;Edited
 
 
   .admin-top-container.align-right.item-actions-container

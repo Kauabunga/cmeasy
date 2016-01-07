@@ -15,6 +15,8 @@ angular.module('cmeasyApp')
         function init(){
 
           scope.goHome = $state.go.bind($state, appConfig.state.main);
+          scope.goContent = $state.go.bind($state, appConfig.state.content);
+          scope.goTypes = $state.go.bind($state, appConfig.state.types, {itemType: 'schema'});
           scope.$on('$destroy', $rootScope.$on('$stateChangeSuccess', handleStateChangeSuccess));
           handleStateChangeSuccess({}, $state.current, $stateParams, {}, {});
 

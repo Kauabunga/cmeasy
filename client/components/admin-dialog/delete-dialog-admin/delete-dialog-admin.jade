@@ -2,7 +2,7 @@ md-dialog.dialog.delete-admin-dialog
 
   h1 {{::deleteTitle}}
 
-  h5 This action is not reversible
+  h5.md-accent This action is not reversible
 
   form(name='deleteAdminForm', ng-submit='confirmDelete(deleteAdminForm)', novalidate='true')
 
@@ -17,5 +17,5 @@ md-dialog.dialog.delete-admin-dialog
 
 
     .buttons.center-align
-      md-button.cancel-button(id='cancel-delete-button', type='button', ng-click='cancel()') Cancel
-      md-button.yes-button(id='submit-delete-button', type='submit') Delete
+      md-button.md-warn.cancel-button(id='cancel-delete-button', type='button', ng-click='cancel()') Cancel
+      md-button.md-primary.yes-button(id='submit-delete-button', type='submit') Delete

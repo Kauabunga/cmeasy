@@ -1,14 +1,15 @@
 
 
 md-content.admin-bottom-container
-  h2 Api Introduction
 
+  h1 Api Introduction
 
-  md-list
+  md-list.md-primary
     md-list-item.introduction-list-item(ng-click='showAllContent()')
-      pre {{getAllContentUrl()}}
+      h3 Get all the content bundled into one payload
+      pre.md-primary {{getAllContentUrl()}}
 
-      pre.ng-hide(ng-hide='! allContent') {{allContent | json}}
+  pre.pre-payload.ng-hide(ng-hide='! allContent || isHideAllContent') {{allContent | json}}
 
 
 

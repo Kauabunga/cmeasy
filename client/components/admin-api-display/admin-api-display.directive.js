@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('cmeasyApp')
-  .directive('adminApiDisplay', function ($state, $log, $http, $q, Admin, appConfig) {
+  .directive('adminApiDisplay', function ($state, $log, $http, $q, Admin, appConfig, $location) {
     return {
       templateUrl: 'components/admin-api-display/admin-api-display.html',
       restrict: 'EA',
@@ -26,7 +26,7 @@ angular.module('cmeasyApp')
          * @returns {string}
          */
         function getAllContentUrl(){
-          return 'http://localhost:9000/admin/api/v1/content';
+          return `${$location.protocol()}://${location.host}/admin/api/v1/content`;
         }
 
 
@@ -35,6 +35,7 @@ angular.module('cmeasyApp')
          * @returns {*}
          */
         function showAllContent(){
+          scope.isHideAllContent === undefined ? scope.isHideAllContent = false : scope.isHideAllContent = ! scope.isHideAllContent; //jshint ignore:line
           return Admin.getAllContent()
             .then(function(allContent){
               scope.allContent = allContent;

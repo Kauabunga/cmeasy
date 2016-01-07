@@ -14,11 +14,12 @@ angular.module('cmeasyApp', [
   'ui.router',
   'validation.match'
 ])
-  .config(function($urlRouterProvider, $locationProvider, $logProvider) {
+  .config(function($urlRouterProvider, $locationProvider, $logProvider, $mdThemingProvider) {
 
     $urlRouterProvider.otherwise('/admin/main');
     $locationProvider.html5Mode(true);
 
     $logProvider.debugEnabled( ! window._cmeasy || window._cmeasy.env === 'development');
 
+    $mdThemingProvider.theme('default').primaryPalette('blue').accentPalette('purple').warnPalette('orange');
   });

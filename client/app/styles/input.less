@@ -2,9 +2,36 @@
 
 md-input-container {
   width: 100%;
-
   padding: 0;
 }
 
 
+.messages {
+  color: @warn-orange;
+}
 
+.input-width-50 {
+  width: 50%;
+}
+
+.formly-field {
+  margin: 0 10px;
+}
+
+.cmeasy-formly-row {
+  ng-form {
+    display: flex;
+    flex-direction: row;
+    .formly-field {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      &:first-child {margin-left: 0;}
+      &:last-child {margin-right: 0;}
+    }
+  }
+  md-checkbox {
+    display: flex;
+    align-items: center;
+  }
+}

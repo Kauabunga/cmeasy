@@ -13,11 +13,14 @@ md-sidenav.admin-left-sidenav(md-component-id='admin-left-nav', md-is-locked-ope
       md-tab(label='Content')
         md-list
           md-list-item
-            md-button(ng-click='goHome($event)') Go Home
+            md-button.md-primary(ng-click='goHome($event)') Dashboard
+            md-button.md-accent(ng-click='goContent($event)') Content
         admin-menu-content(menu-items='menuItems')
 
       md-tab(label='Types')
         md-list
           md-list-item
-            md-button(ng-click='goHome($event)') Go Home
+            md-button.md-primary(ng-click='goHome($event)') Dashboard
+            md-button.md-accent(ng-click='goContent($event)') Content
+            md-button.md-accent(ng-click='goTypes($event)') Types
         admin-menu-types(menu-items='menuItems')

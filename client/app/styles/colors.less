@@ -4,6 +4,43 @@
 @almost-white: #fefefe;
 
 
+@background-color-menu: #f2f2f2;
 
+@background-color-bottom-admin: @almost-white;
+@background-color-top-admin: #333;
+
+@color-top-admin: #ddd;
 
 @dark-grey: #666;
+
+
+@background-color-dialog: #222;
+@color-dialog: #ddd;
+
+@primary-blue: rgb(33,150,243);
+@warn-orange: rgb(255,152,0);
+@accent-purple: rgb(224,64,251);
+
+pre.md-primary {
+  color: @primary-blue !important;
+}
+
+h1, h2, h3, h4, h5 {
+  &.md-primary {
+    color: @primary-blue !important;
+  }
+}
+
+h1, h2, h3, h4, h5 {
+  &.md-accent {
+    color: @accent-purple !important;
+  }
+}
+
+
+h1, h2, h3, h4, h5,
+span, div {
+  &.md-warn {
+    color: @warn-orange;
+  }
+}

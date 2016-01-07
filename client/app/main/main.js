@@ -10,7 +10,7 @@ angular.module('cmeasyApp')
         menuIndex: 1,
         views: {
           admincontent: {
-            template: '<div><admin-title title="Welcome"></admin-title><admin-api-display></admin-api-display></div>'
+            template: '<div><admin-title title="Dashboard"></admin-title><admin-api-display></admin-api-display></div>'
           }
         }
       });
@@ -22,7 +22,7 @@ angular.module('cmeasyApp')
         menuIndex: 2,
         views: {
           admincontent: {
-            template: '<div><admin-title title="Welcome"></admin-title><admin-api-display></admin-api-display></div>'
+            template: '<div><admin-title title="Content"></admin-title></div>'
           }
         }
       });
@@ -31,7 +31,7 @@ angular.module('cmeasyApp')
       .state('admin.types', {
         url: '/types/:itemType',
         authenticate: true,
-        menuIndex: 1,
+        menuIndex: 3,
         views: {
           admincontent: {
             template: '<admin-list list-type-param="itemType" item-state="admin.type"></admin-list>'

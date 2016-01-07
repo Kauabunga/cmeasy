@@ -11,5 +11,5 @@ md-dialog.dialog.save-admin-dialog(id='save-admin-dialog')
       .message(ng-message='required') Need a comment about the change before you can publish
 
     .buttons.center-align
-      md-button.cancel-button(id='cancel-publish-button', type='button', ng-click='cancel()') Cancel
-      md-button.yes-button(id='submit-publish-button', type='submit') Publish
+      md-button.md-warn.cancel-button(id='cancel-publish-button', type='button', ng-click='cancel()') Cancel
+      md-button.md-primary.yes-button(id='submit-publish-button', type='submit') Publish
