@@ -132,7 +132,7 @@ export default class Cmeasy {
   }
 
   getRootRoute(){
-    return this.options.rootRoute;
+    return this.options.rootRoute || 'admin';
   }
 
   getApiRoute(){
