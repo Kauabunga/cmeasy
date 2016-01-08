@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('cmeasyApp')
-  .factory('Admin', function Admin($http, $q, $log, $cacheFactory, $rootScope, $window, $state, appConfig) {
+  .factory('Admin', function Admin($http, $q, $log, $cacheFactory, $rootScope, $window, $state, appConfig, $timeout) {
 
     var adminCache = $cacheFactory('adminCache');
 
@@ -20,6 +20,8 @@ angular.module('cmeasyApp')
         window._cmeasy.models
       ]);
 
+      $timeout(preload, 500);
+
       return {
         getModel: getModel,
         getModels: getModels,
@@ -37,6 +39,24 @@ angular.module('cmeasyApp')
       };
     }
 
+    /**
+     * 
+     * @returns {*}
+     */
+    function preload(){
+      return getModels()
+        .then(function(models){
+          return _(models).map(function(model){
+            $log.debug('model', model);
+
+            return $q.all([
+              getAll(model.meta[appConfig.itemIdKey]),
+              getTypeColumns(model.meta[appConfig.itemIdKey]),
+              getTypeMetadata(model.meta[appConfig.itemIdKey])
+            ]);
+          }).value();
+        });
+    }
 
     /**
      *
@@ -113,7 +133,13 @@ angular.module('cmeasyApp')
       return function(response) {
         $log.debug('Changed item response', response);
 
-        return getModels({force: true})
+
+        return $q.all([
+          getModels({force: true}),
+          getAll(type, {force: true}),
+          getTypeMetadata(type, {force: true}),
+          getTypeColumns(type, {force: true})
+        ])
           .then(function(){
             //return the original response
             return response;

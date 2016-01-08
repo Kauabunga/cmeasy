@@ -13,7 +13,7 @@
 
 
 md-content.admin-bottom-container.list-admin-content
-  .list-admin-filter-container
+  .list-admin-filter-container.admin-fade-in-on-loaded(ng-class='{"is-loaded": !! isLoaded}')
     md-input-container.filter-list-text
       label
         search-svg
