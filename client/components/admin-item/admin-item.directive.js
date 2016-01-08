@@ -231,8 +231,8 @@ angular.module('cmeasyApp')
                 then(function(response){
                   $log.debug('save response', response);
 
-                  scope.itemModelOriginal = response.data;
-                  scope.itemModel = _.cloneDeep(response.data);
+                  scope.itemModelOriginal = response;
+                  scope.itemModel = _.cloneDeep(response);
                   Toast.publishToastMessage();
                   $timeout(function(){ scope.isDirty = false; });
 
@@ -265,10 +265,9 @@ angular.module('cmeasyApp')
               .then(function(itemModel){
 
                 $log.debug('save response', itemModel);
-                scope.itemModel = itemModel;
                 $stateParams.itemId = itemModel[appConfig.itemInstanceKey] || itemModel.meta && itemModel.meta[appConfig.itemIdKey];
 
-                $state.go($state.current.name, $stateParams, { location: 'replace' });
+                $state.go($state.current.name, $stateParams, { reload: true, location: 'replace' });
               })
               .finally(function(){
                 scope.isCreating = false;

@@ -1,8 +1,53 @@
 
+//TODO move to login
+
+.admin-login {
+  md-sidenav {
+    background-color: @background-color-admin-menu-login;
+  }
+  md-input-container .md-input {
+    color: @almost-white;
+    border-color: @almost-white;
+  }
+  label {
+    color: @almost-white;
+  }
+
+  //Admin valid input label
+  md-input-container.md-default-theme:not(.md-input-invalid).md-input-has-value label, md-input-container:not(.md-input-invalid).md-input-has-value {
+    label {
+      color: @primary-blue;
+    }
+
+    input {
+      border-color: @primary-blue;
+    }
+
+  }
+
+
+
+
+}
+
+
+
+
+
+
+
+//TODO Start admin-menu
+
+
+
+
+
 
 md-sidenav {
 
   justify-content: center;
+
+  transition: background-color @transition-speed-slow @transition-ease;
 
   @media(min-width: @desktop-min){
     background-color: transparent;

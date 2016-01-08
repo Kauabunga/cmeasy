@@ -83,7 +83,7 @@ angular.module('cmeasyApp')
         menuIndex: 0,
         views: {
           admincontent: {
-            template: '<admin-title title="Welcome"></admin-title>'
+            template: '<admin-title title=""></admin-title><cmeasy-home-page></cmeasy-home-page>'
           }
         }
       });
