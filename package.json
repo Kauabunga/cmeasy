@@ -119,7 +119,7 @@
   "scripts": {
     "start": "node dist/server",
     "test": "grunt test:coverage && grunt test:e2e",
-    "release": "npm version patch && grunt build && git add ./dist -f && git commit -am 'Cmeasy release'",
+    "release": "git pull && npm version patch && grunt build && git add ./dist -f && git commit -am 'Cmeasy release' && npm publish && git push",
     "pre-commit-hook": "printf '#!/bin/sh\n# Lint stuff before committing\ngrunt jshint' > ./.git/hooks/pre-commit && chmod +x .git/hooks/pre-commit",
     "drop-dev-database": "mongo cmeasy-dev --eval \"db.dropDatabase();\"",
     "drop-test-database": "mongo cmeasy-test --eval \"db.dropDatabase();\"",
