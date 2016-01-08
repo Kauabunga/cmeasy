@@ -8,8 +8,10 @@ var _ = require('lodash');
  *
  * All configurations will extend these options
  *
+ * TODO remove all these process.env.NODE_ENV etc....
+ *
  */
-module.exports = _.merge(getAllConfig(), require('./shared'), require('./' + process.env.NODE_ENV + '.js') || {}, { version: getProjectVersion() });
+module.exports = _.merge(getAllConfig(), require('./shared'), require('./' + (process.env.NODE_ENV || 'production') + '.js') || {}, { version: getProjectVersion() });
 
 /**
  *
