@@ -9,6 +9,12 @@ npm-debug.log
 coverage
 
 
+!dist
+!dist/*
+!dist/server
+!dist/client
+
+
 mocha.conf.js
 protractor.conf.js
 karma.conf.js
