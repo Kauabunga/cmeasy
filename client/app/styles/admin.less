@@ -8,9 +8,20 @@ md-content {
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
 .admin-fade-in-on-loaded {
   opacity: 0;
-  transition: opacity 200ms ease;
+  transition: opacity @transition-speed-faster @transition-ease;
   display: block;
   &.is-loaded {
     opacity: 1;
@@ -18,10 +29,19 @@ md-content {
 }
 
 
+
+
+
+
+
+
+
+
+
 .admin-top-header {
   background-color: @background-color-top-admin;
   width: 100%;
-  min-height: 140px;
+  min-height: @admin-top-min-height;
 
   position: relative;
   padding: 30px 0;
@@ -44,6 +64,33 @@ md-content {
   }
 
 }
+
+.admin-content-container {
+  &:before {
+    content: '';
+    width: 100%;
+    height: @admin-top-min-height;
+    top: 0;
+    left: 0;
+    display: block;
+    position: absolute;
+    background-color: @background-color-admin-menu-login;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 .admin-bottom-container {

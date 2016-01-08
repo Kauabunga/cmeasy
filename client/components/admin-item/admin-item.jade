@@ -1,14 +1,14 @@
 
 
 .admin-top-header.item-admin-top
-  .admin-top-container
+  .admin-top-container.admin-fade-in-on-loaded(ng-class='{"is-loaded": !! isLoaded}')
     h1.item-type-title(ng-cloak='') {{::getItemIdDisplay(itemTitle)}} Content Item
     h1.md-warn.is-dirty-label.ng-hide(ng-show='isDirty && form.$dirty', ng-cloak='') &nbsp;Edited
     h2.ng-hide(ng-hide='hideItemId', ng-if='itemType !== itemId', ng-cloak='') ID | {{::getItemIdDisplay(itemId)}}
 
 
 
-  .admin-top-container.align-right.item-actions-container(ng-cloak='')
+  .admin-top-container.align-right.item-actions-container.admin-fade-in-on-loaded(ng-class='{"is-loaded": !! isLoaded}', ng-cloak='')
     md-button.publish-button.loading-button.md-raised.md-primary(id='publish-item-button', ng-hide='isCreateItem()', ng-click='save($event, itemModel)')
       span(ng-hide='isPublishing') Publish
       loader-svg.loading-button-svg.ng-hide(ng-show='isPublishing')
