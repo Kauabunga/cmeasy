@@ -7,15 +7,62 @@
 [![Test Coverage](https://codeclimate.com/github/Kauabunga/cmeasy/badges/coverage.svg)](https://codeclimate.com/github/Kauabunga/cmeasy/coverage)
 [![Sauce Test Status](https://saucelabs.com/buildstatus/Kauabunga)](https://saucelabs.com/u/Kauabunga)
 
-## Options
-
-See https://github.com/Kauabunga/cmeasy/blob/master/server/options.js
-
 
 
 ## Getting Started
 
-This project was generated with the [Angular Full-Stack Generator](https://github.com/DaftMonk/generator-angular-fullstack) version 3.1.1.
+
+`npm install cmeasy`
+
+
+```
+var cmeasy = require('cmeasy');
+
+cmeasy({ models: [ getHomePageModel(), getBlogModel() ] });
+
+function getBlogModel(){
+  return {
+    name: 'Blog Post',
+    singleton: false,
+    disableDelete: false,
+    disableCreate: false,
+    definition: {
+      title: {
+        type: 'String',
+        label: 'Blog Title',
+        displayColumn: true
+      },
+      category: {
+        type: 'Select',
+        label: 'Blog category',
+        enum: ['Update', 'Random']
+      },
+      content: {
+        type: 'String',
+        label: 'Blog Content'
+      }
+    }
+  }
+}
+
+function getHomePageModel(){
+  return {
+    name: 'Home Page',
+    singleton: true,
+    definition: {
+      title: {
+        type: 'String',
+        label: 'Home Page Title',
+        default: 'Default Home Page Title'
+      }
+    }
+  }
+}
+
+```
+
+
+
 
 ### Prerequisites
 
@@ -42,3 +89,8 @@ Run `grunt build` for building and `grunt serve` for preview.
 ## Testing
 
 Running `npm test` will run the unit tests with karma.
+
+
+## Info
+
+This project was generated with the [Angular Full-Stack Generator](https://github.com/DaftMonk/generator-angular-fullstack) version 3.1.1.
