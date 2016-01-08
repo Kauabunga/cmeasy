@@ -8,7 +8,7 @@
 [![Sauce Test Status](https://saucelabs.com/buildstatus/Kauabunga)](https://saucelabs.com/u/Kauabunga)
 
 
-> API Content Management Library
+> Content API Library
 
 
 ## Getting Started
