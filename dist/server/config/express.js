@@ -130,7 +130,11 @@ function coreExpress(app) {
 
   /* istanbul ignore if */
   if ('development' === env) {
-    app.use(require('connect-livereload')());
+    try {
+      app.use(require('connect-livereload')());
+    } catch (err) {
+      console.error('Error loading connent-livereload module | app.env = ', env);
+    }
   }
 }
 
