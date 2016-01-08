@@ -183,7 +183,7 @@ var Cmeasy = (function () {
   }, {
     key: 'getRootRoute',
     value: function getRootRoute() {
-      return this.options.rootRoute;
+      return this.options.rootRoute || 'admin';
     }
   }, {
     key: 'getApiRoute',
