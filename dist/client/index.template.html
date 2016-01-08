@@ -1,0 +1,209 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie10 lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie10 lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie10 lt-ie9"> <![endif]-->
+<!--[if IE 9]>         <html class="no-js lt-ie10"> <![endif]-->
+<!--[if gt IE 9]><!--><html class="no-js {{currentStateName}}" ng-app="cmeasyApp" ng-csp=""> <!--<![endif]-->
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <!-- TODO this might need to change depending on the configured route -->
+    <base href="/">
+    <title>Cmeasy</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <link rel="stylesheet" href="app/vendor.1092d833.css">
+    <link rel="stylesheet" href="app/app.464778ed.css">
+
+
+    <!-- Font styles -->
+    <style nonce="<%- cspNonce %>">
+
+      @font-face {
+        font-family: 'museo';
+        src: url('/assets/fonts/museo_sans_family_web/MuseoSans_300Web.eot'),
+        url('/assets/fonts/museo_sans_family_web/MuseoSans_300Web.woff') format('woff');
+        font-weight: 300;
+        font-style: normal;
+      }
+
+      @font-face {
+        font-family: 'museo';
+        src: url('/assets/fonts/museo_sans_family_web/MuseoSans_500Web.eot'),
+        url('/assets/fonts/museo_sans_family_web/MuseoSans_500Web.woff') format('woff');
+        font-weight: 500;
+        font-style: normal;
+      }
+
+      @font-face {
+        font-family: 'museo-bold';
+        src: url('/assets/fonts/museo_sans_family_web/MuseoSans_700Web.eot'),
+        url('/assets/fonts/museo_sans_family_web/MuseoSans_700Web.woff') format('woff');
+        font-weight: 700;
+        font-style: normal;
+      }
+
+      div, span, button, input, textarea { font-family: 'museo' !important; }
+      h1, h2, h3, h4, h5, h6 { font-family: 'museo' !important; }
+
+    </style>
+
+
+
+    <!-- LOADING SCREEN STYLES -->
+    <style nonce="<%- cspNonce %>">
+
+      body {
+        /* TODO this might change depending on initial login/admin route */
+        background-color: #f2f2f2;
+      }
+
+      .app-loading-screen.fade-out { opacity: 0; }
+      .app-loading-screen {
+        transition: opacity 500ms ease;
+        /*transition: opacity 5000ms ease;*/
+        -ms-transition: opacity 500ms ease;
+        -moz-transition: opacity 500ms ease;
+        -o-transition: opacity 500ms ease;
+        opacity: 1;
+        height: 100%;
+        width: 100%;
+        z-index: 9999999999999999999999;
+        position: absolute;
+        overflow-y: auto;
+        top: 0;
+        left: 0;
+        background-color: #f2f2f2;
+      }
+
+      .app-loading-screen svg {
+        width: 180px;
+        left: 50%;
+        margin-left: -90px;
+        margin-top: -60px;
+        opacity: 0.5;
+        z-index: 99999999999999999999999;
+        position: fixed;
+        top: 50%;
+      }
+
+    </style>
+
+
+    <!-- LOADING SCREEN SCRIPT - safety script to remove loading screen after timeout -->
+    <!--[if gt IE 9 ]>
+    <script nonce="<%- cspNonce %>">setTimeout(function(){ var el = document.getElementById('app-loading-screen'); if(el){ el.parentNode.removeChild(el); } }, 10000);</script>
+    <![endif]-->
+
+    <!-- Browsehappy styling -->
+    <style nonce="<%- cspNonce %>">
+      html.lt-ie10 .browsehappy h2 {
+        color: #005E76;
+      }
+      html.lt-ie10 .browsehappy hr {
+        width: 100px;
+        border-color: #005E76;
+        border-style: solid;
+        margin-bottom: 20px;
+      }
+      html.lt-ie10 .browsehappy a:hover {
+        color: #005E76;
+      }
+      html.lt-ie10 .browsehappy a {
+        color: #fefefe;
+        font-weight: bold;
+        transition: color 200ms ease;
+        -ms-transition: color 200ms ease;
+        -moz-transition: color 200ms ease;
+        -o-transition: color 200ms ease;
+      }
+      html.lt-ie10 .browsehappy p {
+        font-size: 18px;
+        line-height: 18px;
+        margin-bottom: 0;
+      }
+      html.lt-ie10 .browsehappy {
+        display: block !important;
+        text-align: center;
+        color: #fefefe;
+        top: 60%;
+        position: absolute;
+        width: 100%;
+      }
+      html.lt-ie10 #main-ui-view {
+        display: none !important;
+      }
+    </style>
+
+    <!-- Noscript styling -->
+    <style nonce="<%- cspNonce %>">
+      noscript a:hover {
+        color: #005E76;
+      }
+      noscript a {
+        color: #fefefe;
+        font-weight: bold;
+        transition: color 200ms ease;
+        -ms-transition: color 200ms ease;
+        -moz-transition: color 200ms ease;
+        -o-transition: color 200ms ease;
+      }
+      noscript {
+        display: block !important;
+        text-align: center;
+        color: #fefefe;
+        top: 60%;
+      }
+      noscript h2 {
+        color: #005E76;
+      }
+      noscript hr {
+        width: 100px;
+        border-color: #005E76;
+        border-style: solid;
+        margin-bottom: 20px;
+      }
+      noscript p {
+        font-size: 18px;
+        line-height: 18px;
+        margin-bottom: 0;
+      }
+    </style>
+
+
+  </head>
+  <body>
+
+    <div loading-screen="" id="app-loading-screen" class="app-loading-screen">
+      <noscript><p class="noscript">We need javascript to run our site.</p><p>Please <a href="http://www.enable-javascript.com/">enable javascript</a> to continue into our site.</p></noscript>
+      <div class="browsehappy" style="display: none;">
+        <p>You are using an <strong>outdated</strong> browser.</p><p>Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+      </div>
+
+      <!-- TODO Add svg-->
+    </div>
+
+    <!-- Add your site or application content here -->
+    <div ui-view=""></div>
+
+    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
+    <script async nonce="<%- cspNonce %>">
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-XXXXX-X');
+      ga('send', 'pageview');
+    </script>
+
+    <script src="app/vendor.764b7ed9.js"></script>
+    <script src="app/app.3b7d8ad1.js"></script>
+
+    <script id="cmeasyInjectedVariables" nonce="<%- cspNonce %>">
+      window._cmeasy = <%- cmeasy %>;
+    </script>
+
+  </body>
+</html>
