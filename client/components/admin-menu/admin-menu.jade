@@ -1,26 +1,24 @@
 
 
-md-sidenav.admin-left-sidenav(md-component-id='admin-left-nav', md-is-locked-open="$mdMedia('min-width: 992px')", ng-swipe-left='closeAdminNav()')
+md-content.admin-menu-container
+  md-tabs(md-selected='menuIndex', md-dynamic-height)
+    md-tab(label='Login')
+      admin-login
 
-  md-content
-    md-tabs(md-selected='menuIndex', md-dynamic-height)
-      md-tab(label='Login')
-        admin-login
+    md-tab(label='Main')
+      admin-menu-main(menu-items='menuItems')
 
-      md-tab(label='Main')
-        admin-menu-main(menu-items='menuItems')
+    md-tab(label='Content')
+      md-list
+        md-list-item
+          md-button.md-primary(ng-click='goHome($event)') Dashboard
+          md-button.md-accent(ng-click='goContent($event)') Content
+      admin-menu-content(menu-items='menuItems')
 
-      md-tab(label='Content')
-        md-list
-          md-list-item
-            md-button.md-primary(ng-click='goHome($event)') Dashboard
-            md-button.md-accent(ng-click='goContent($event)') Content
-        admin-menu-content(menu-items='menuItems')
-
-      md-tab(label='Types')
-        md-list
-          md-list-item
-            md-button.md-primary(ng-click='goHome($event)') Dashboard
-            md-button.md-accent(ng-click='goContent($event)') Content
-            md-button.md-accent(ng-click='goTypes($event)') Types
-        admin-menu-types(menu-items='menuItems')
+    md-tab(label='Types')
+      md-list
+        md-list-item
+          md-button.md-primary(ng-click='goHome($event)') Dashboard
+          md-button.md-accent(ng-click='goContent($event)') Content
+          md-button.md-accent(ng-click='goTypes($event)') Types
+      admin-menu-types(menu-items='menuItems')

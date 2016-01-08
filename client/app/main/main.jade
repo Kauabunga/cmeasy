@@ -3,8 +3,11 @@
 
 md-content.admin-container
 
-  admin-menu.admin-menu
+  md-sidenav.admin-left-sidenav(md-component-id='admin-left-nav', md-is-locked-open="$mdMedia('min-width: 992px')", ng-swipe-left='closeAdminNav()')
+    admin-menu.admin-menu
 
   md-content.admin-content-container
      .admin-content-ui-view(ui-view='admincontent')
 
+  md-button.mobile-hamburger.mobile-only.md-fab.md-accent(aria-label='Mobile menu', tabindex='-1' ng-click='openSidenav()')
+    menu-svg

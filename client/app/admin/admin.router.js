@@ -8,7 +8,6 @@ angular.module('cmeasyApp.admin')
         url: '/admin',
         templateUrl: 'app/main/main.html',
         controller: 'MainController',
-        controllerAs: 'main',
         abstract: true
       });
 

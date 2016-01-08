@@ -1,5 +1,14 @@
 
 
+md-sidenav {
+
+  justify-content: center;
+
+  @media(min-width: @desktop-min){
+    background-color: transparent;
+  }
+}
+
 
 admin-menu.admin-menu {
   flex-shrink: 0;
@@ -11,7 +20,6 @@ admin-menu.admin-menu {
   display: flex;
   position: relative;
   height: 100%;
-  align-items: center;
 
   md-content {
     width: 100%;
@@ -25,9 +33,11 @@ admin-menu.admin-menu {
     }
   }
 
-  md-sidenav,
-  md-content{
+  md-content.admin-menu-container {
     background-color: transparent;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
   }
 
   button.md-button {

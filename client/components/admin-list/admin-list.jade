@@ -1,11 +1,11 @@
 
 
 .list-admin-top.admin-top-header
-  h1.admin-top-container Select a {{::getListIdDisplay(listTitle)}}
+  .admin-top-container
+    h1(ng-cloak='') Select a {{::getListIdDisplay(listTitle)}}
 
   .admin-top-container.align-right.list-admin-actions-container
-
-    .list-admin-button-container
+    .list-admin-button-container(ng-cloak='')
       md-button.md-raised.md-primary(id='create-{{::listType}}', ng-show='canCreate', ng-click='createItem()') Create {{::listTitle}}
 
   loader-svg.state-loader(loader-admin='', ng-class='{"is-loaded": !! isLoaded}')
@@ -13,7 +13,6 @@
 
 
 md-content.admin-bottom-container.list-admin-content
-
   .list-admin-filter-container
     md-input-container.filter-list-text
       label
