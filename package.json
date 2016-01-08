@@ -1,7 +1,7 @@
 {
   "name": "cmeasy",
   "version": "0.3.0",
-  "main": "server/app.js",
+  "main": "dist/server/app.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/Kauabunga/cmeasy.git"
@@ -124,6 +124,5 @@
     "drop-test-database": "mongo cmeasy-test --eval \"db.dropDatabase();\"",
     "drop-database": "npm run-script drop-dev-database & npm run-script drop-test-database",
     "update-webdriver": "node node_modules/grunt-protractor-runner/node_modules/protractor/bin/webdriver-manager update"
-  },
-  "private": true
+  }
 }

@@ -17,13 +17,13 @@ services: mongodb
 before_deploy:
   - ls -ltra
   - grunt build
-  - ls -ltra
-  - rm -rf server client .tmp e2e package.json
-  - ls -ltra
-  - mv dist/* .
-  - ls -ltra
-  - rm -rf dist
-  - ls -ltra
+#  - ls -ltra
+#  - rm -rf server client .tmp e2e package.json
+#  - ls -ltra
+#  - mv dist/* .
+#  - ls -ltra
+#  - rm -rf dist
+#  - ls -ltra
 
 deploy:
   provider: heroku
@@ -33,7 +33,7 @@ deploy:
 
 after_script:
   - npm install codeclimate-test-reporter
-  #TODO merge integration and unit tests coverage reports
+  # TODO merge integration and unit tests coverage reports
   - codeclimate-test-reporter < ./coverage/server/integration/lcov.info
 
 addons:
