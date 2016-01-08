@@ -8,14 +8,15 @@
 [![Sauce Test Status](https://saucelabs.com/buildstatus/Kauabunga)](https://saucelabs.com/u/Kauabunga)
 
 
+> API Content Management Library
+
 
 ## Getting Started
 
 
-`npm install cmeasy`
 
 
-```
+```js
 var cmeasy = require('cmeasy');
 
 cmeasy({ models: [ getHomePageModel(), getBlogModel() ] });
@@ -61,7 +62,14 @@ function getHomePageModel(){
 
 ```
 
+## Installation
 
+```bash
+npm install cmeasy
+```
+
+
+## Build & development
 
 
 ### Prerequisites
@@ -82,9 +90,9 @@ function getHomePageModel(){
 
 4. Run `grunt serve` to start the development server. It should automatically open the client in your browser when ready.
 
-## Build & development
+### Build
 
-Run `grunt build` for building and `grunt serve` for preview.
+Run `grunt build` to build the project
 
 ## Testing
 
