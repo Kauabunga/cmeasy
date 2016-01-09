@@ -8,6 +8,8 @@ import request from 'supertest';
 
 describe('User API:', function() {
 
+  this.timeout(10000);
+
   var user;
   var adminUser;
 
