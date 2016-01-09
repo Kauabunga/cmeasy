@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('cmeasyApp')
-  .controller('HistoryAdminDialogCtrl', function ($scope, $http, $log, $state, $stateParams, $mdDialog, $q, Admin, $window) {
+  .controller('HistoryAdminDialogCtrl', function ($scope, $http, $log, $timeout, $state, $stateParams, $mdDialog, $q, Admin, $window) {
 
     return init();
 
@@ -18,6 +18,9 @@ angular.module('cmeasyApp')
       return getHistoryData($stateParams.itemType, $stateParams.itemId)
         .then(function([historyItems]){
           $log.debug('HistoryAdminDialogCtrl', historyItems);
+
+          $timeout(function(){ $scope.isLoaded = true; }, 800);
+          //$timeout(function(){ $scope.isLoaded = true; }, 32);
 
           $scope.historyItems = historyItems;
           $scope.listColumns = [
