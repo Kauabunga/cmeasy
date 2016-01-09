@@ -2,7 +2,7 @@
 
 .admin-top-header.item-admin-top
   .admin-top-container.admin-fade-in-on-loaded(ng-class='{"is-loaded": !! isLoaded}')
-    h1.item-type-title(ng-cloak='') {{::getItemIdDisplay(itemTitle)}} Content Item
+    h1.item-type-title(ng-cloak='') {{::getItemIdDisplay(itemTitle)}}
     h1.md-warn.is-dirty-label.ng-hide(ng-show='isDirty && form.$dirty', ng-cloak='') &nbsp;Edited
     h2.ng-hide(ng-hide='hideItemId', ng-if='itemType !== itemId', ng-cloak='') ID | {{::getItemIdDisplay(itemId)}}
 

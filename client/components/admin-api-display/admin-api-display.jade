@@ -7,7 +7,7 @@ md-content.admin-bottom-container
   md-list.md-primary
     md-list-item.introduction-list-item(ng-click='showAllContent()')
       h3 Get all content bundled into one payload
-      pre.md-primary {{getAllContentUrl()}}
+      pre.md-primary GET | {{getAllContentUrl()}}
 
   pre.pre-payload.ng-hide(ng-hide='! allContent || isHideAllContent') {{allContent | json}}
 
