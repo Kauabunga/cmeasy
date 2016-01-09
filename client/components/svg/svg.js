@@ -238,6 +238,14 @@
       };
     });
 
+  angular.module('cmeasyApp')
+    .directive('githubSvg', function () {
+      return {
+        templateUrl: 'components/svg/github.svg.html',
+        restrict: 'EA'
+      };
+    });
+
 
 
 })();

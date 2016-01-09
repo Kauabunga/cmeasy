@@ -23,6 +23,8 @@ angular.module('cmeasyApp')
       $timeout(preload, 500);
 
       return {
+        getVersion: getVersion,
+
         getModel: getModel,
         getModels: getModels,
 
@@ -48,7 +50,6 @@ angular.module('cmeasyApp')
         .then(function(models){
           return _(models).map(function(model){
             $log.debug('model', model);
-
 
             //TODO this getAll gets called regardless if it is a create item?
             return $q.all([
@@ -228,6 +229,13 @@ angular.module('cmeasyApp')
      */
     function getDataFromSuccess(response){
       return response && response.data || [];
+    }
+
+    /**
+     *
+     */
+    function getVersion(){
+      return $q.when($window._cmeasy.version);
     }
 
 

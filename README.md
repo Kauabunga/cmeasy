@@ -14,8 +14,6 @@
 ## Getting Started
 
 
-
-
 ```js
 require('cmeasy')(
   { 
@@ -43,9 +41,34 @@ require('cmeasy')(
 npm install cmeasy
 ```
 
+## Demo
 
-## Build & development
+See an example running on Heroku @ [https://cmeasy.herokuapp.com/](https://cmeasy.herokuapp.com/)
 
+Or
+
+Deploy your own demo to Heroku @ [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+ 
+
+## Options
+
+TODO
+
+
+
+## Features
+
+TODO
+
+
+
+## Roadmap
+
+TODO
+
+
+
+## Build & Development
 
 ### Prerequisites
 
@@ -57,13 +80,15 @@ npm install cmeasy
 
 ### Developing
 
-1. Run `npm install` to install server dependencies.
+1. Run `git clone https://github.com/Kauabunga/cmeasy.git` to clone the repository
 
-2. Run `bower install` to install front-end dependencies.
+2. Run `npm install` to install server dependencies.
 
-3. Run `mongod` in a separate shell to keep an instance of the MongoDB Daemon running
+3. Run `bower install` to install front-end dependencies.
 
-4. Run `grunt serve` to start the development server. It should automatically open the client in your browser when ready.
+4. Run `mongod` in a separate shell to keep an instance of the MongoDB Daemon running
+
+5. Run `grunt serve` to start the development server. It should automatically open the client in your browser when ready.
 
 ### Build
 
