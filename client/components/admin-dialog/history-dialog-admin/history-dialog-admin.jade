@@ -1,6 +1,7 @@
 md-dialog.dialog.history-admin-dialog
-  h1 History of item: {{::historyItemId}}
+  h1 History
+  h3 ID | {{::getItemIdDisplay(historyItemId)}}
 
   md-list
     md-list-item(id='history-item-{{::historyItems.length - $index}}-button', aria-label='History item {{$index}}' ng-repeat='historyItem in historyItems track by $index', ng-click='selectHistoryItem(historyItem)')
-      span(ng-repeat='label in listColumns track by $index', flex='{{100 / listColumns.length}}') {{::getHistoryItemDisplay(historyItem, label)}}
+      span(ng-repeat='label in listColumns track by $index', flex='{{(100 / listColumns.length).floor()}}') {{::getHistoryItemDisplay(historyItem, label)}}

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('cmeasyApp')
-  .controller('HistoryAdminDialogCtrl', function ($scope, $http, $log, $state, $stateParams, $mdDialog, $q, Admin) {
+  .controller('HistoryAdminDialogCtrl', function ($scope, $http, $log, $state, $stateParams, $mdDialog, $q, Admin, $window) {
 
     return init();
 
@@ -12,6 +12,7 @@ angular.module('cmeasyApp')
 
       $scope.selectHistoryItem = selectHistoryItem;
       $scope.getHistoryItemDisplay = getHistoryItemDisplay;
+      $scope.getItemIdDisplay = getItemIdDisplay;
       $scope.historyItemId = $stateParams.itemId;
 
       return getHistoryData($stateParams.itemType, $stateParams.itemId)
@@ -24,7 +25,6 @@ angular.module('cmeasyApp')
             'comment',
             'dateCreated'
           ];
-
         });
 
     }
@@ -33,9 +33,9 @@ angular.module('cmeasyApp')
      *
      */
     function getHistoryItemDisplay(item, key){
-      var display = _.get(item, key);
-      if(! display){
-        return _.get(item, 'meta.' + key);
+      var display = _.get(item, key) ? _.get(item, key) : _.get(item, 'meta.' + key);
+      if(key === 'dateCreated'){
+        return moment($window.parseInt(display)).fromNow();
       }
       else {
         return display;
@@ -60,6 +60,18 @@ angular.module('cmeasyApp')
     function selectHistoryItem(historyItem){
       $log.debug('selected history item', historyItem);
       $mdDialog.hide(historyItem);
+    }
+
+    /**
+     * TODO refactor this so it is not duplicated errywhere
+     *
+     * @param id
+     */
+    function getItemIdDisplay(id){
+      // insert a space before all caps
+      return id && id.replace(/([A-Z])/g, ' $1')
+          // uppercase the first character
+          .replace(/^./, function(str){ return str.toUpperCase(); });
     }
 
 

@@ -40,7 +40,7 @@ angular.module('cmeasyApp')
     }
 
     /**
-     * 
+     *
      * @returns {*}
      */
     function preload(){
@@ -49,6 +49,8 @@ angular.module('cmeasyApp')
           return _(models).map(function(model){
             $log.debug('model', model);
 
+
+            //TODO this getAll gets called regardless if it is a create item?
             return $q.all([
               getAll(model.meta[appConfig.itemIdKey]),
               getTypeColumns(model.meta[appConfig.itemIdKey]),

@@ -145,9 +145,11 @@ angular.module('cmeasyApp')
 
           var valid = false;
           _.map(scope.listColumns, function(column){
-            if(JSON.stringify(item[column] || '').toLowerCase().indexOf(scope.filterText.toLowerCase()) !== -1){
-              valid = true;
-            }
+            _.map(scope.filterText.toLowerCase().split(' '), function(searchSplit){
+              if(JSON.stringify(item[column] || item.meta && item.meta[column] || '').toLowerCase().indexOf(searchSplit) !== -1){
+                valid = true;
+              }
+            });
           });
 
           return valid;
