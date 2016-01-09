@@ -18,21 +18,20 @@
 require('cmeasy')(
   { 
     models: [ 
-        {
-            name: 'Home Page',
-            singleton: true,
-            definition: {
-              title: {
-                type: 'String',
-                label: 'Home Page Title',
-                default: 'Default Home Page Title'
-              }
-            }
+      {
+        name: 'Home Page',
+        singleton: true,
+        definition: {
+          title: {
+            type: 'String',
+            label: 'Home Page Title',
+            default: 'Default Home Page Title'
           }
-      ] 
+        }
+      }
+    ] 
   }
 );
-
 ```
 
 ## Installation
@@ -43,12 +42,15 @@ npm install cmeasy
 
 ## Demo
 
-See an example running on Heroku @ [https://cmeasy.herokuapp.com/](https://cmeasy.herokuapp.com/)
+See an example running on Heroku [https://cmeasy.herokuapp.com/](https://cmeasy.herokuapp.com/)
 
-Or
+#### Or
 
-Deploy your own demo to Heroku @ [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
- 
+Deploy your own demo to Heroku [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
+___
+
+See [server/options.js](https://github.com/Kauabunga/cmeasy/blob/master/server/options.js) for the demo configuration
 
 ## Options
 
