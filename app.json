@@ -8,9 +8,7 @@
   ],
   "website": "https://cmeasy.herokuapp.com/",
   "repository": "https://github.com/Kauabunga/cmeasy",
-  "logo": "",
   "success_url": "/",
-  "env": {},
   "image": "heroku/nodejs",
   "addons": [
     "mongolab:sandbox"
