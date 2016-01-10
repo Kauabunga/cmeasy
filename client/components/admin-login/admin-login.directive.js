@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('cmeasyApp')
-  .directive('adminLogin', function (Auth, $state, $log, $timeout) {
+  .directive('adminLogin', function (Auth, $state, $log, $timeout, Analytics) {
     return {
       templateUrl: 'components/admin-login/admin-login.html',
       restrict: 'E',
@@ -34,11 +34,15 @@ angular.module('cmeasyApp')
 
           return Auth.login(user)
             .then(() => {
+
+              Analytics.trackEvent('Login', 'Successful');
               // Logged in, redirect to home
               $state.go('admin.main');
               $timeout(() => {scope.submitting = false;}, 300);
             })
             .catch(err => {
+              Analytics.trackEvent('Login', 'Failed');
+
               $log.debug('Error logging in', err);
               scope.submitting = false;
             });

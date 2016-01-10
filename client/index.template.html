@@ -204,7 +204,6 @@
       })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
       ga('create', 'UA-72173420-1');
-      ga('send', 'pageview');
     </script>
 
 
@@ -226,16 +225,18 @@
       <script src="bower_components/angular-formly/dist/formly.js"></script>
       <script src="bower_components/moment/moment.js"></script>
       <script src="bower_components/ngstorage/ngStorage.js"></script>
+      <script src="bower_components/angulartics/src/angulartics.js"></script>
+      <script src="bower_components/angulartics-google-analytics/lib/angulartics-google-analytics.js"></script>
       <!-- endbower -->
       <script src="socket.io-client/socket.io.js"></script>
     <!-- endbuild -->
     <!-- build:js(.tmp) app/app.js -->
       <script src="app/app.js"></script>
       <!-- injector:js -->
-      <script src="app/admin/admin.module.js"></script>
       <script src="components/auth/auth.module.js"></script>
+      <script src="app/admin/admin.module.js"></script>
       <script src="components/util/util.module.js"></script>
-      <script src="components/auth/auth.service.js"></script>
+      <script src="app/account/account.js"></script>
       <script src="app/admin/admin.router.js"></script>
       <script src="app/app.constant.js"></script>
       <script src="app/main/main.controller.js"></script>
@@ -254,8 +255,10 @@
       <script src="components/admin-menu/admin-menu.directive.js"></script>
       <script src="components/admin-service/admin.service.js"></script>
       <script src="components/admin-title/admin-title.directive.js"></script>
-      <script src="app/account/signup/signup.controller.js"></script>
+      <script src="components/analytics/analytics.directive.js"></script>
+      <script src="components/analytics/analytics.service.js"></script>
       <script src="app/account/settings/settings.controller.js"></script>
+      <script src="components/auth/auth.service.js"></script>
       <script src="components/auth/interceptor.service.js"></script>
       <script src="components/auth/router.decorator.js"></script>
       <script src="components/auth/user.service.js"></script>
@@ -277,7 +280,7 @@
       <script src="components/socket/socket.service.js"></script>
       <script src="components/svg/svg.js"></script>
       <script src="components/toast/toast.service.js"></script>
-      <script src="app/account/account.js"></script>
+      <script src="app/account/signup/signup.controller.js"></script>
       <script src="components/util/util.service.js"></script>
       <!-- endinjector -->
     <!-- endbuild -->

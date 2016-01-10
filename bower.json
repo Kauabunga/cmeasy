@@ -16,7 +16,10 @@
     "angular-formly": "~7.3.9",
     "angular-messages": "~1.4.8",
     "moment": "~2.10.6",
-    "ngstorage": "~0.3.10"
+    "ngstorage": "~0.3.10",
+    "angulartics": "~1.0.2",
+    "angulartics-google-analytics": "~0.1.4",
+    "angular-animate": "~1.4.8"
   },
   "devDependencies": {
     "angular-mocks": "~1.4.0"

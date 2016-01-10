@@ -120,7 +120,7 @@ module.exports = function (grunt) {
       bower: {
         files: ['bower.json'],
         tasks: ['wiredep']
-      },
+      }
     },
 
     // Make sure code styles are up to par and there are no obvious mistakes
@@ -233,12 +233,27 @@ module.exports = function (grunt) {
         exclude: [
           '/json3/',
           '/es5-shim/',
-          /font-awesome\.css/
+          /font-awesome\.css/,
+          //Tons of angulartics crap to get rid of
+          /noframework.waypoints.min.js/,
+          /sha1.js/,
+          /angulartics-newrelic-insights.js/,
+          /angulartics-clicky.js/,
+          /angulartics-cnzz.js/,
+          /angulartics-ga-cordova.js/,
+          /angulartics-gtm.js/,
+          /angulartics-piwik.js/,
+          /angulartics-scroll.js/,
+          /angulartics-splunk.js/,
+          /angulartics-woopra.js/,
+          /angulartics-marketo.js/,
+          /angulartics-intercom.js/,
+          /angulartics-inspectlet.js/
         ]
       },
       client: {
         src: '<%= yeoman.client %>/index.template.html',
-        ignorePath: '<%= yeoman.client %>/',
+        ignorePath: '<%= yeoman.client %>/'
       },
       test: {
         src: './karma.conf.js',
@@ -659,10 +674,10 @@ module.exports = function (grunt) {
             '<%= yeoman.client %>/{app,components}/**/*.css'
           ]
         }
-      },
+      }
 
 
-    },
+    }
   });
 
   // Used for delaying livereload until after server has restarted

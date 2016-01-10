@@ -10,7 +10,11 @@ angular.module('cmeasyApp', [
   'ngResource',
   'ngSanitize',
   'ngMaterial',
+  'ngAnimate',
+  'ngMessages',
   'ngStorage',
+  'angulartics',
+  'angulartics.google.analytics',
   'formly',
   'btford.socket-io',
   'ui.router',
@@ -26,10 +30,17 @@ angular.module('cmeasyApp', [
     $mdThemingProvider.theme('default').primaryPalette('blue').accentPalette('purple').warnPalette('orange');
 
   })
-  .run(function($rootScope, $state){
+  .run(function($rootScope, $state, Analytics, $window, $log){
 
+    return init();
 
-    $rootScope.$on('$stateChangeStart', handleStateChangeSuccess());
+    /**
+     *
+     */
+    function init(){
+      $rootScope.$on('$stateChangeStart', handleStateChangeSuccess());
+      $window.onerror = handleOnError;
+    }
 
     /**
      *
@@ -47,6 +58,31 @@ angular.module('cmeasyApp', [
     function updateCurrentStateName(event, toState){
       $rootScope.currentStateName = toState.name.replace(/\./g, '-');
     }
+
+
+    /**
+     *
+     * @param message
+     * @param url
+     * @param lineNumber
+     * @returns {boolean}
+     */
+    function handleOnError(message, url, lineNumber) {
+
+      try {
+        message = message || '';
+        url = url || '';
+        lineNumber = lineNumber || '';
+        var eventLabel = message.toString() + ' ' + url.toString() + ' ' + lineNumber.toString();
+        Analytics.trackEvent('Error', eventLabel);
+      }
+      catch (err) {
+        $log.debug('Error in global error handler!', err);
+      }
+
+      return false;
+    }
+
 
   });
 
