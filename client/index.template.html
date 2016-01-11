@@ -7,8 +7,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <!-- TODO this might need to change depending on the configured route -->
-    <base href="/">
+    <base href="/<%- rootStaticRoute %>">
     <title>Cmeasy</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
@@ -31,24 +30,24 @@
 
       @font-face {
         font-family: 'museo';
-        src: url('/assets/fonts/museo_sans_family_web/MuseoSans_300Web.eot'),
-        url('/assets/fonts/museo_sans_family_web/MuseoSans_300Web.woff') format('woff');
+        src: url('assets/fonts/museo_sans_family_web/MuseoSans_300Web.eot'),
+        url('assets/fonts/museo_sans_family_web/MuseoSans_300Web.woff') format('woff');
         font-weight: 300;
         font-style: normal;
       }
 
       @font-face {
         font-family: 'museo';
-        src: url('/assets/fonts/museo_sans_family_web/MuseoSans_500Web.eot'),
-        url('/assets/fonts/museo_sans_family_web/MuseoSans_500Web.woff') format('woff');
+        src: url('assets/fonts/museo_sans_family_web/MuseoSans_500Web.eot'),
+        url('assets/fonts/museo_sans_family_web/MuseoSans_500Web.woff') format('woff');
         font-weight: 500;
         font-style: normal;
       }
 
       @font-face {
         font-family: 'museo-bold';
-        src: url('/assets/fonts/museo_sans_family_web/MuseoSans_700Web.eot'),
-        url('/assets/fonts/museo_sans_family_web/MuseoSans_700Web.woff') format('woff');
+        src: url('assets/fonts/museo_sans_family_web/MuseoSans_700Web.eot'),
+        url('assets/fonts/museo_sans_family_web/MuseoSans_700Web.woff') format('woff');
         font-weight: 700;
         font-style: normal;
       }
@@ -228,7 +227,9 @@
       <script src="bower_components/angulartics/src/angulartics.js"></script>
       <script src="bower_components/angulartics-google-analytics/lib/angulartics-google-analytics.js"></script>
       <!-- endbower -->
-      <script src="socket.io-client/socket.io.js"></script>
+
+      <!--<script src="socket.io-client/socket.io.js"></script>-->
+
     <!-- endbuild -->
     <!-- build:js(.tmp) app/app.js -->
       <script src="app/app.js"></script>

@@ -32,7 +32,7 @@ export default {
 /**
  *
  */
-function coreExpress(app){
+function coreExpress(app, cmeasy){
   var env = app.get('env');
 
   app.set('views', config.root + '/server/views');
@@ -88,7 +88,7 @@ function coreExpress(app){
  *
  * @param app
  */
-function staticExpress(app){
+function staticExpress(app, cmeasy){
 
   var env = app.get('env');
 
@@ -96,15 +96,16 @@ function staticExpress(app){
 
   /* istanbul ignore if */
   if ('production' === env) {
-    app.use(favicon(path.join(config.root, 'client', 'favicon.ico')));
-    app.use(express.static(app.get('appPath')));
+    app.use(`/${cmeasy.getRootRoute()}`, favicon(path.join(config.root, 'client', 'favicon.ico')));
+    app.use(`/${cmeasy.getRootRoute()}`, express.static(app.get('appPath')));
     app.use(morgan('dev'));
   }
 
 
   if ('development' === env || 'test' === env) {
-    app.use(express.static(path.join(config.root, '.tmp')));
-    app.use(express.static(app.get('appPath')));
+
+    app.use(`/${cmeasy.getRootRoute()}`, express.static(path.join(config.root, '.tmp')));
+    app.use(`/${cmeasy.getRootRoute()}`, express.static(app.get('appPath')));
     app.use(morgan('dev'));
     app.use(errorHandler()); // Error handler - has to be last
   }

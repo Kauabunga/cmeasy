@@ -249,7 +249,15 @@ module.exports = function (grunt) {
           /angulartics-marketo.js/,
           /angulartics-intercom.js/,
           /angulartics-inspectlet.js/
-        ]
+        ],
+        fileTypes: {
+          html: {
+            replace: {
+              js: '<script src="{{filePath}}"></script>',
+              css: '<link rel="stylesheet" href="{{filePath}}" />'
+            }
+          }
+        }
       },
       client: {
         src: '<%= yeoman.client %>/index.template.html',

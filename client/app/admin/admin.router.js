@@ -5,7 +5,6 @@ angular.module('cmeasyApp.admin')
 
     $stateProvider
       .state('admin', {
-        url: '/admin',
         templateUrl: 'app/main/main.html',
         controller: 'MainController',
         abstract: true
