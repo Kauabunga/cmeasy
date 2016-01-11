@@ -43,7 +43,7 @@ function getSchemaType(cmeasy){
 function getMetaType(cmeasy){
 
   return {
-    //TODO allow this to be edited -> updates all endpoints / previous models
+
     [cmeasy.getIdKey()]: {
       $type: String,
       displayColumn: true,

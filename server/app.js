@@ -24,9 +24,11 @@ exports = module.exports = function(userOptions  = {}){
   return new Cmeasy(userOptions)
     .then(function(cmeasy){
 
-      let {app, server, socketio} = connectToServer(cmeasy);
+      //TODO move handle mongo connect from cmeasy options here?
 
-      require('./config/socketio')(socketio);
+      var { app, server, socketio } = prepareExpressServer(cmeasy);
+
+      //require('./config/socketio')(socketio);
 
       require('./config/express').coreExpress(app);
 
@@ -36,7 +38,9 @@ exports = module.exports = function(userOptions  = {}){
 
       require('./routes')(app, cmeasy);
 
-      setImmediate(startServer(app, server));
+      if( ! cmeasy.getOptions().isUserDefinedExpressApp()){
+        setImmediate(startExpressServer(app, server));
+      }
 
       return app;
     });
@@ -48,18 +52,29 @@ exports = module.exports = function(userOptions  = {}){
 /**
  *
  */
-function connectToServer(cmeasy){
-  let app = cmeasy.getExpress()();
-  let server = http.createServer(app);
-  let socketio = require('socket.io')(server, {
-    serveClient: config.env !== 'production',
-    path: '/socket.io-client'
-  });
+function prepareExpressServer(cmeasy){
+
+  var app;
+  var server;
+
+  if(cmeasy.getOptions().isUserDefinedExpressApp()){
+    //TODO validate correctly configured express app?
+    app = cmeasy.getOptions().getExpress();
+  }
+  else {
+    app = cmeasy.getOptions().getExpress()();
+    server = http.createServer(app);
+  }
+
+  //let socketio = require('socket.io')(server, {
+  //  serveClient: config.env !== 'production',
+  //  path: '/socket.io-client'
+  //});
 
   return {
     app: app,
-    server: server,
-    socketio: socketio
+    server: server//,
+    //socketio: socketio
   }
 }
 
@@ -70,7 +85,7 @@ function connectToServer(cmeasy){
  * @param server
  * @returns {Function}
  */
-function startServer(app, server) {
+function startExpressServer(app, server) {
   return function(){
     server.listen(config.port, config.ip, function() {
       console.log('Express server listening on %d, in %s mode', config.port, app.get('env'));

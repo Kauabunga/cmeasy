@@ -90,6 +90,10 @@ export default class Cmeasy {
     };
   }
 
+  getOptions(){
+    return this.options;
+  }
+
   getModels(){
     return this.models;
   }
@@ -104,15 +108,15 @@ export default class Cmeasy {
   }
 
   getMongoose(){
-    return this.options.getMongoose();
+    return this.getOptions().getMongoose();
   }
 
   getExpress(){
-    return this.options.getExpress();
+    return this.getOptions().getExpress();
   }
 
   getRootRoute(){
-    return this.options.getRootRoute();
+    return this.getOptions().getRootRoute();
   }
 
   getApiRoute(){
@@ -155,13 +159,14 @@ export default class Cmeasy {
 class CmeasyOptions {
 
   constructor(options){
+
     this.options = options;
 
-    if( ! options.mongoose){ this.connectToMongo(); }
-
-    if( ! options.environment ) { this.options.environment = 'production'; }
+    if( ! this.isUserDefinedMongoose() ){ this.connectToMongo(); }
+    if( ! this.isUserDefinedEnvironment() ) { this.options.environment = 'production'; }
 
     this.seedMongo();
+
   }
 
   //TODO config urls
@@ -174,13 +179,27 @@ class CmeasyOptions {
     });
   }
 
+  //TODO always seed - i.e. fix tests to handle initial seed
   seedMongo(){
-    // Populate databases with sample data
-    if (config.seedDB) { require('./config/seed')(); }
+    if (config.seedDB) {
+      require('./config/seed')();
+    }
   }
 
   getMongoose(){
     return (this.options.mongoose && Promise.promisifyAll(this.options.mongoose)) || Promise.promisifyAll(mongoose);
+  }
+
+  isUserDefinedEnvironment(){
+    return !! this.options.environment;
+  }
+
+  isUserDefinedMongoose(){
+    return !! this.options.mongoose;
+  }
+
+  isUserDefinedExpressApp(){
+    return !! this.options.express;
   }
 
   getExpress(){

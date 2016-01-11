@@ -4,11 +4,12 @@
 
 'use strict';
 
-
 import express from 'express';
 import mongoose from 'mongoose';
 mongoose.Promise = require('bluebird');
 import http from 'http';
+
+//TODO remove the idea of a cmeasy config file
 import config from './config/environment';
 
 
@@ -18,46 +19,22 @@ import config from './config/environment';
 export default function() {
 
   return {
-
     name: 'Example Cmeasy',
 
-    //TODO
-    app: '',
+    //Use a mongoose instance defined outside of the Cmeasy scope
     mongoose: getMongoose(),
-    express: '',
-    server: '',
-    socketio: '',
+
+    //Use an express app instance defined outside of the Cmeasy scope
+    express: getExpress(),
 
     rootRoute: 'admin',
 
-    auth: {
-      authenticate: () => {},
-      getUserFromToken: () => {}
-    },
-
-    models: getModels()
+    models: [
+      getHomePageModel(),
+      getBlogModel()
+    ]
   };
-}
 
-function getMongoose(){
-
-  mongoose.connect(config.mongo.uri, config.mongo.options);
-  mongoose.connection.on('error', function(err) {
-    console.error('MongoDB connection error: ' + err);
-    process.exit(-1);
-  });
-
-  return mongoose;
-}
-
-/**
- *
- */
-function getModels(){
-  return [
-    getHomePageModel(),
-    getBlogModel()
-  ]
 }
 
 
@@ -92,7 +69,6 @@ function getBlogModel(){
   }
 }
 
-
 /**
  *
  */
@@ -110,4 +86,46 @@ function getHomePageModel(){
       }
     }
   }
+}
+
+/**
+ *
+ * TODO Extend this example a little farther so we are able to serve up a static index / another route entirely
+ * TODO Validate express addons non conflicting - namespace addons/addons only to selected root route?
+ *
+ * @returns {*}
+ */
+function getExpress(){
+  var app = express();
+  var server = http.createServer(app);
+
+  setImmediate(startServer(app, server));
+
+  return app;
+}
+
+
+/**
+ * Start server
+ *
+ * @param server
+ * @returns {Function}
+ */
+function startServer(app, server) {
+  return function(){
+    server.listen(config.port, config.ip, function() {
+      console.log('Express server listening on %d, in %s mode', config.port, app.get('env'));
+    });
+  }
+}
+
+function getMongoose(){
+
+  mongoose.connect(config.mongo.uri, config.mongo.options);
+  mongoose.connection.on('error', function(err) {
+    console.error('MongoDB connection error: ' + err);
+    process.exit(-1);
+  });
+
+  return mongoose;
 }
