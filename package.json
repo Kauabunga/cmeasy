@@ -7,7 +7,7 @@
     "type": "git",
     "url": "git://github.com/Kauabunga/cmeasy.git"
   },
-  "licence": "GPL-2.0",
+  "license": "GPL-2.0",
   "licenses": [
     {
       "type": "GNU",
