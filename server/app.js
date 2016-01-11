@@ -34,6 +34,8 @@ exports = module.exports = function(userOptions  = {}){
 
       require('./routes-cmeasy')(app, cmeasy);
 
+      //TODO serve up static routes base on rootRoute configuration....
+      // i.e. /assets/fonts/xyz.font needs to be served up as /rootRoute/assets/fonts/xyz.font
       require('./config/express').staticExpress(app);
 
       require('./routes')(app, cmeasy);
