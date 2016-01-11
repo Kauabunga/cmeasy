@@ -52,7 +52,7 @@ Deploy your own demo to Heroku [![Deploy](https://www.herokucdn.com/deploy/butto
 
 ___
 
-See [server/options.js](https://github.com/Kauabunga/cmeasy/blob/master/server/options.js) for the demo configuration
+See [server/options.js](https://github.com/Kauabunga/cmeasy/blob/master/server/options.js) for the complete demo configuration
 
 ## Options
 
@@ -72,7 +72,7 @@ require('cmeasy')(
   
 ```
 
-(Changes planned to define a mongoose-like plugin API)
+(Changes planned to define a mongoose-like plugin interface)
 
 
 ### Connect your Express App
@@ -93,6 +93,10 @@ server.listen(9000, '127.0.0.1');
 
 ```
 
+___
+
+[See website for complete API (TODO)](https://cmeasy.herokuapp.com/)
+
 
 ## Features
 
@@ -108,6 +112,7 @@ TODO
 - Basic User Management / Integrations
 - Basic Author/Publisher workflow
 - Draft content versions / API
+- Self documenting API
 
 
 ## Build & Development
