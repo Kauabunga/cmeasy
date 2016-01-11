@@ -83,7 +83,7 @@ exports['default'] = {
 /**
  *
  */
-function coreExpress(app) {
+function coreExpress(app, cmeasy) {
   var env = app.get('env');
 
   app.set('views', _environment2['default'].root + '/server/views');
@@ -142,7 +142,7 @@ function coreExpress(app) {
  *
  * @param app
  */
-function staticExpress(app) {
+function staticExpress(app, cmeasy) {
 
   var env = app.get('env');
 
@@ -150,14 +150,15 @@ function staticExpress(app) {
 
   /* istanbul ignore if */
   if ('production' === env) {
-    app.use((0, _serveFavicon2['default'])(_path2['default'].join(_environment2['default'].root, 'client', 'favicon.ico')));
-    app.use(_express2['default']['static'](app.get('appPath')));
+    app.use('/' + cmeasy.getRootRoute(), (0, _serveFavicon2['default'])(_path2['default'].join(_environment2['default'].root, 'client', 'favicon.ico')));
+    app.use('/' + cmeasy.getRootRoute(), _express2['default']['static'](app.get('appPath')));
     app.use((0, _morgan2['default'])('dev'));
   }
 
   if ('development' === env || 'test' === env) {
-    app.use(_express2['default']['static'](_path2['default'].join(_environment2['default'].root, '.tmp')));
-    app.use(_express2['default']['static'](app.get('appPath')));
+
+    app.use('/' + cmeasy.getRootRoute(), _express2['default']['static'](_path2['default'].join(_environment2['default'].root, '.tmp')));
+    app.use('/' + cmeasy.getRootRoute(), _express2['default']['static'](app.get('appPath')));
     app.use((0, _morgan2['default'])('dev'));
     app.use((0, _errorhandler2['default'])()); // Error handler - has to be last
   }

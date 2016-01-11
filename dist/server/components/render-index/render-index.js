@@ -78,7 +78,9 @@ exports['default'] = function (app, cmeasy) {
           models: models
 
         }),
-        cspNonce: cspNonce
+        cspNonce: cspNonce,
+        rootStaticRoute: cmeasy.getRootRoute() + '/'
+        //rootStaticRoute: ''
       };
     });
   }

@@ -7,8 +7,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <!-- TODO this might need to change depending on the configured route -->
-    <base href="/">
+    <base href="/<%- rootStaticRoute %>">
     <title>Cmeasy</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
@@ -22,24 +21,24 @@
 
       @font-face {
         font-family: 'museo';
-        src: url('/assets/fonts/museo_sans_family_web/MuseoSans_300Web.eot'),
-        url('/assets/fonts/museo_sans_family_web/MuseoSans_300Web.woff') format('woff');
+        src: url('assets/fonts/museo_sans_family_web/MuseoSans_300Web.eot'),
+        url('assets/fonts/museo_sans_family_web/MuseoSans_300Web.woff') format('woff');
         font-weight: 300;
         font-style: normal;
       }
 
       @font-face {
         font-family: 'museo';
-        src: url('/assets/fonts/museo_sans_family_web/MuseoSans_500Web.eot'),
-        url('/assets/fonts/museo_sans_family_web/MuseoSans_500Web.woff') format('woff');
+        src: url('assets/fonts/museo_sans_family_web/MuseoSans_500Web.eot'),
+        url('assets/fonts/museo_sans_family_web/MuseoSans_500Web.woff') format('woff');
         font-weight: 500;
         font-style: normal;
       }
 
       @font-face {
         font-family: 'museo-bold';
-        src: url('/assets/fonts/museo_sans_family_web/MuseoSans_700Web.eot'),
-        url('/assets/fonts/museo_sans_family_web/MuseoSans_700Web.woff') format('woff');
+        src: url('assets/fonts/museo_sans_family_web/MuseoSans_700Web.eot'),
+        url('assets/fonts/museo_sans_family_web/MuseoSans_700Web.woff') format('woff');
         font-weight: 700;
         font-style: normal;
       }
@@ -199,7 +198,7 @@
 
 
     <script src="app/vendor.f7f3e3fd.js"></script>
-    <script src="app/app.67e454f4.js"></script>
+    <script src="app/app.6cd1c49e.js"></script>
 
     <script id="cmeasyInjectedVariables" nonce="<%- cspNonce %>">
       window._cmeasy = <%- cmeasy %>;
