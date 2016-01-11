@@ -50,7 +50,7 @@ exports['default'] = function (app, cmeasy) {
 };
 
 /**
- *
+ * TODO ensure that the connection to the database has been achieved before resolving any of these flows
  */
 function routeContentRequest(cmeasy) {
   return function (req, res, next) {
@@ -59,7 +59,7 @@ function routeContentRequest(cmeasy) {
 
     if (!req.params.type) {
       //Get all content
-      //TODO move into cmeasy
+      //TODO move into cmeasy/schema service
 
       return cmeasy.getSchemaController().index().then(function (schemas) {
         return _bluebird2['default'].all((0, _lodash2['default'])(schemas).map(function (schema) {

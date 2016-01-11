@@ -171,6 +171,4 @@ function getMetaSchema(cmeasy) {
   };
 }
 module.exports = exports['default'];
-
-//TODO allow this to be edited -> updates all endpoints / previous models
 //# sourceMappingURL=cmeasy.schema.js.map

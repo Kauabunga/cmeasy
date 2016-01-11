@@ -33,13 +33,16 @@ exports = module.exports = function () {
   var userOptions = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
   return new _cmeasy2['default'](userOptions).then(function (cmeasy) {
-    var _connectToServer = connectToServer(cmeasy);
 
-    var app = _connectToServer.app;
-    var server = _connectToServer.server;
-    var socketio = _connectToServer.socketio;
+    //TODO move handle mongo connect from cmeasy options here?
 
-    require('./config/socketio')(socketio);
+    var _prepareExpressServer = prepareExpressServer(cmeasy);
+
+    var app = _prepareExpressServer.app;
+    var server = _prepareExpressServer.server;
+    var socketio = _prepareExpressServer.socketio;
+
+    //require('./config/socketio')(socketio);
 
     require('./config/express').coreExpress(app);
 
@@ -49,7 +52,9 @@ exports = module.exports = function () {
 
     require('./routes')(app, cmeasy);
 
-    setImmediate(startServer(app, server));
+    if (!cmeasy.getOptions().isUserDefinedExpressApp()) {
+      setImmediate(startExpressServer(app, server));
+    }
 
     return app;
   });
@@ -58,18 +63,28 @@ exports = module.exports = function () {
 /**
  *
  */
-function connectToServer(cmeasy) {
-  var app = cmeasy.getExpress()();
-  var server = _http2['default'].createServer(app);
-  var socketio = require('socket.io')(server, {
-    serveClient: _configEnvironment2['default'].env !== 'production',
-    path: '/socket.io-client'
-  });
+function prepareExpressServer(cmeasy) {
+
+  var app;
+  var server;
+
+  if (cmeasy.getOptions().isUserDefinedExpressApp()) {
+    //TODO validate correctly configured express app?
+    app = cmeasy.getOptions().getExpress();
+  } else {
+    app = cmeasy.getOptions().getExpress()();
+    server = _http2['default'].createServer(app);
+  }
+
+  //let socketio = require('socket.io')(server, {
+  //  serveClient: config.env !== 'production',
+  //  path: '/socket.io-client'
+  //});
 
   return {
     app: app,
-    server: server,
-    socketio: socketio
+    server: server //,
+    //socketio: socketio
   };
 }
 
@@ -79,7 +94,7 @@ function connectToServer(cmeasy) {
  * @param server
  * @returns {Function}
  */
-function startServer(app, server) {
+function startExpressServer(app, server) {
   return function () {
     server.listen(_configEnvironment2['default'].port, _configEnvironment2['default'].ip, function () {
       console.log('Express server listening on %d, in %s mode', _configEnvironment2['default'].port, app.get('env'));

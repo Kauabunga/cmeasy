@@ -132,6 +132,11 @@ var Cmeasy = (function () {
       };
     }
   }, {
+    key: 'getOptions',
+    value: function getOptions() {
+      return this.options;
+    }
+  }, {
     key: 'getModels',
     value: function getModels() {
       return this.models;
@@ -151,17 +156,17 @@ var Cmeasy = (function () {
   }, {
     key: 'getMongoose',
     value: function getMongoose() {
-      return this.options.getMongoose();
+      return this.getOptions().getMongoose();
     }
   }, {
     key: 'getExpress',
     value: function getExpress() {
-      return this.options.getExpress();
+      return this.getOptions().getExpress();
     }
   }, {
     key: 'getRootRoute',
     value: function getRootRoute() {
-      return this.options.getRootRoute();
+      return this.getOptions().getRootRoute();
     }
   }, {
     key: 'getApiRoute',
@@ -216,11 +221,10 @@ var CmeasyOptions = (function () {
 
     this.options = options;
 
-    if (!options.mongoose) {
+    if (!this.isUserDefinedMongoose()) {
       this.connectToMongo();
     }
-
-    if (!options.environment) {
+    if (!this.isUserDefinedEnvironment()) {
       this.options.environment = 'production';
     }
 
@@ -243,10 +247,11 @@ var CmeasyOptions = (function () {
         process.exit(-1);
       });
     }
+
+    //TODO always seed - i.e. fix tests to handle initial seed
   }, {
     key: 'seedMongo',
     value: function seedMongo() {
-      // Populate databases with sample data
       if (_configEnvironmentIndex2['default'].seedDB) {
         require('./config/seed')();
       }
@@ -255,6 +260,21 @@ var CmeasyOptions = (function () {
     key: 'getMongoose',
     value: function getMongoose() {
       return this.options.mongoose && _bluebird2['default'].promisifyAll(this.options.mongoose) || _bluebird2['default'].promisifyAll(mongoose);
+    }
+  }, {
+    key: 'isUserDefinedEnvironment',
+    value: function isUserDefinedEnvironment() {
+      return !!this.options.environment;
+    }
+  }, {
+    key: 'isUserDefinedMongoose',
+    value: function isUserDefinedMongoose() {
+      return !!this.options.mongoose;
+    }
+  }, {
+    key: 'isUserDefinedExpressApp',
+    value: function isUserDefinedExpressApp() {
+      return !!this.options.express;
     }
   }, {
     key: 'getExpress',
