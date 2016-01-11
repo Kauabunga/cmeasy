@@ -11,14 +11,22 @@ import cheerio from 'cheerio';
 /**
  *
  */
-describe('Render index api:', function() {
+describe.only('Render index api:', function() {
+
+  //TODO need a test to handle the route /admin
+
+  //TODO need a test to handle a different rootRoute
+
+  //TODO need a test to ensure that the referenced resources are served correctly
 
   it('Should inject variables into the index.template.html', function(done) {
     cmeasy.then(function(app) {
       request(app)
-        .get('/admin')
+        .get('/admin/')
         .expect(200)
         .end((err, res) => {
+
+          console.log('Render index api res.text:', res.text);
 
           var $ = cheerio.load(res.text);
 
