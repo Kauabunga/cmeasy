@@ -9,16 +9,21 @@ import express from 'express';
 import mongoose from 'mongoose';
 mongoose.Promise = require('bluebird');
 import http from 'http';
+import config from './config/environment';
+
 
 /**
  *
  */
 export default function() {
+
   return {
+
+    name: 'Example Cmeasy',
 
     //TODO
     app: '',
-    mongoose: '',
+    mongoose: getMongoose(),
     express: '',
     server: '',
     socketio: '',
@@ -34,6 +39,16 @@ export default function() {
   };
 }
 
+function getMongoose(){
+
+  mongoose.connect(config.mongo.uri, config.mongo.options);
+  mongoose.connection.on('error', function(err) {
+    console.error('MongoDB connection error: ' + err);
+    process.exit(-1);
+  });
+
+  return mongoose;
+}
 
 /**
  *

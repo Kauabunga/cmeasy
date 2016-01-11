@@ -32,10 +32,8 @@ export default class Cmeasy {
 
   constructor(options = {}){
     this.name = options.name || 'Cmeasy';
-    this.options = options;
+    this.options = new CmeasyOptions(options);
     this.models = [];
-
-    this.connectToMongo();
 
     this._schema = createSchema(this.getNamespace(), this.getMongoose(), this);
     this._schemaController = createSchemaController(this);
@@ -92,36 +90,6 @@ export default class Cmeasy {
     };
   }
 
-
-  //TODO config urls
-  connectToMongo(){
-
-    var mongoose = this.getMongoose();
-    mongoose.connect(config.mongo.uri, config.mongo.options);
-    mongoose.connection.on('error', function(err) {
-      console.error('MongoDB connection error: ' + err);
-      process.exit(-1);
-    });
-
-    // Populate databases with sample data
-    if (config.seedDB) { require('./config/seed')(); }
-
-    return mongoose;
-  }
-
-
-  getNamespace(){
-    return this.name;
-  }
-
-  getMongoose(){
-    return (this.options.mongoose && Promise.promisifyAll(this.options.mongoose)) || mongoose;
-  }
-
-  getExpress(){
-    return this.options.express || express;
-  }
-
   getModels(){
     return this.models;
   }
@@ -131,8 +99,20 @@ export default class Cmeasy {
       .filter((model) => { return model.getId() === id; }).first();
   }
 
+  getNamespace(){
+    return this.name;
+  }
+
+  getMongoose(){
+    return this.options.getMongoose();
+  }
+
+  getExpress(){
+    return this.options.getExpress();
+  }
+
   getRootRoute(){
-    return this.options.rootRoute || 'admin';
+    return this.options.getRootRoute();
   }
 
   getApiRoute(){
@@ -173,6 +153,43 @@ export default class Cmeasy {
  * TODO
  */
 class CmeasyOptions {
+
+  constructor(options){
+    this.options = options;
+
+    if( ! options.mongoose){ this.connectToMongo(); }
+
+    if( ! options.environment ) { this.options.environment = 'production'; }
+
+    this.seedMongo();
+  }
+
+  //TODO config urls
+  connectToMongo(){
+    var mongoose = this.getMongoose();
+    mongoose.connect(config.mongo.uri, config.mongo.options);
+    mongoose.connection.on('error', function(err) {
+      console.error('MongoDB connection error: ' + err);
+      process.exit(-1);
+    });
+  }
+
+  seedMongo(){
+    // Populate databases with sample data
+    if (config.seedDB) { require('./config/seed')(); }
+  }
+
+  getMongoose(){
+    return (this.options.mongoose && Promise.promisifyAll(this.options.mongoose)) || Promise.promisifyAll(mongoose);
+  }
+
+  getExpress(){
+    return this.options.express || express;
+  }
+
+  getRootRoute(){
+    return this.options.rootRoute || 'admin';
+  }
 
 }
 
@@ -222,14 +239,6 @@ class CmeasyModel {
 
   getInstanceKey(){
     return CMEASY_INSTANCE_ID;
-  }
-
-  isSingleton(){
-    return this.meta.singleton;
-  }
-
-  getDefinition(){
-    return this.definition;
   }
 
 }

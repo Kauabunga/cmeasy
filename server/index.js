@@ -10,5 +10,8 @@ if (env === 'development' || env === 'test') {
   require('babel-core/register');
 }
 
+
+
+
 // Export the application
 exports = module.exports = require('./app')(require('./options')());
