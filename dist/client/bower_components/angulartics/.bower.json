@@ -1,0 +1,30 @@
+{
+  "name": "angulartics",
+  "version": "1.0.2",
+  "main": [
+    "src/angulartics.js"
+  ],
+  "dependencies": {
+    "angular": ">= 1.1.5",
+    "SHA-1": "*"
+  },
+  "devDependencies": {
+    "angular-mocks": ">= 1.1.5",
+    "angular-route": "~1.2",
+    "angular-ui-router": "~0.2"
+  },
+  "resolutions": {
+    "angular": ">= 1.1.5"
+  },
+  "homepage": "https://github.com/angulartics/angulartics",
+  "_release": "1.0.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "1.0.2",
+    "commit": "23f20d7f00bd8b4466eb21bf061069d5c911e819"
+  },
+  "_source": "git://github.com/angulartics/angulartics.git",
+  "_target": "~1.0.2",
+  "_originalSource": "angulartics",
+  "_direct": true
+}

@@ -14,6 +14,8 @@ var cmeasy = require('../..');
 
 describe('User API:', function () {
 
+  this.timeout(10000);
+
   var user;
   var adminUser;
 

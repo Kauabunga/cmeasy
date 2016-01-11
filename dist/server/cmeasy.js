@@ -75,10 +75,8 @@ var Cmeasy = (function () {
     _classCallCheck(this, Cmeasy);
 
     this.name = options.name || 'Cmeasy';
-    this.options = options;
+    this.options = new CmeasyOptions(options);
     this.models = [];
-
-    this.connectToMongo();
 
     this._schema = (0, _componentsCmeasyCmeasySchema2['default'])(this.getNamespace(), this.getMongoose(), this);
     this._schemaController = (0, _componentsCmeasyCmeasyControllerSchema2['default'])(this);
@@ -133,41 +131,6 @@ var Cmeasy = (function () {
         definition: model.definition || {}
       };
     }
-
-    //TODO config urls
-  }, {
-    key: 'connectToMongo',
-    value: function connectToMongo() {
-
-      var mongoose = this.getMongoose();
-      mongoose.connect(_configEnvironmentIndex2['default'].mongo.uri, _configEnvironmentIndex2['default'].mongo.options);
-      mongoose.connection.on('error', function (err) {
-        console.error('MongoDB connection error: ' + err);
-        process.exit(-1);
-      });
-
-      // Populate databases with sample data
-      if (_configEnvironmentIndex2['default'].seedDB) {
-        require('./config/seed')();
-      }
-
-      return mongoose;
-    }
-  }, {
-    key: 'getNamespace',
-    value: function getNamespace() {
-      return this.name;
-    }
-  }, {
-    key: 'getMongoose',
-    value: function getMongoose() {
-      return this.options.mongoose && _bluebird2['default'].promisifyAll(this.options.mongoose) || mongoose;
-    }
-  }, {
-    key: 'getExpress',
-    value: function getExpress() {
-      return this.options.express || _express2['default'];
-    }
   }, {
     key: 'getModels',
     value: function getModels() {
@@ -181,9 +144,24 @@ var Cmeasy = (function () {
       }).first();
     }
   }, {
+    key: 'getNamespace',
+    value: function getNamespace() {
+      return this.name;
+    }
+  }, {
+    key: 'getMongoose',
+    value: function getMongoose() {
+      return this.options.getMongoose();
+    }
+  }, {
+    key: 'getExpress',
+    value: function getExpress() {
+      return this.options.getExpress();
+    }
+  }, {
     key: 'getRootRoute',
     value: function getRootRoute() {
-      return this.options.rootRoute || 'admin';
+      return this.options.getRootRoute();
     }
   }, {
     key: 'getApiRoute',
@@ -232,14 +210,66 @@ var Cmeasy = (function () {
 
 exports['default'] = Cmeasy;
 
-var CmeasyOptions = function CmeasyOptions() {
-  _classCallCheck(this, CmeasyOptions);
-}
+var CmeasyOptions = (function () {
+  function CmeasyOptions(options) {
+    _classCallCheck(this, CmeasyOptions);
 
-/**
- *
- */
-;
+    this.options = options;
+
+    if (!options.mongoose) {
+      this.connectToMongo();
+    }
+
+    if (!options.environment) {
+      this.options.environment = 'production';
+    }
+
+    this.seedMongo();
+  }
+
+  /**
+   *
+   */
+
+  //TODO config urls
+
+  _createClass(CmeasyOptions, [{
+    key: 'connectToMongo',
+    value: function connectToMongo() {
+      var mongoose = this.getMongoose();
+      mongoose.connect(_configEnvironmentIndex2['default'].mongo.uri, _configEnvironmentIndex2['default'].mongo.options);
+      mongoose.connection.on('error', function (err) {
+        console.error('MongoDB connection error: ' + err);
+        process.exit(-1);
+      });
+    }
+  }, {
+    key: 'seedMongo',
+    value: function seedMongo() {
+      // Populate databases with sample data
+      if (_configEnvironmentIndex2['default'].seedDB) {
+        require('./config/seed')();
+      }
+    }
+  }, {
+    key: 'getMongoose',
+    value: function getMongoose() {
+      return this.options.mongoose && _bluebird2['default'].promisifyAll(this.options.mongoose) || _bluebird2['default'].promisifyAll(mongoose);
+    }
+  }, {
+    key: 'getExpress',
+    value: function getExpress() {
+      return this.options.express || _express2['default'];
+    }
+  }, {
+    key: 'getRootRoute',
+    value: function getRootRoute() {
+      return this.options.rootRoute || 'admin';
+    }
+  }]);
+
+  return CmeasyOptions;
+})();
 
 var CmeasyModel = (function () {
   function CmeasyModel(cmeasy, model) {
@@ -290,16 +320,6 @@ var CmeasyModel = (function () {
     key: 'getInstanceKey',
     value: function getInstanceKey() {
       return CMEASY_INSTANCE_ID;
-    }
-  }, {
-    key: 'isSingleton',
-    value: function isSingleton() {
-      return this.meta.singleton;
-    }
-  }, {
-    key: 'getDefinition',
-    value: function getDefinition() {
-      return this.definition;
     }
   }]);
 

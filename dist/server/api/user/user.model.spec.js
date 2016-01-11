@@ -22,6 +22,9 @@ var genUser = function genUser() {
 };
 
 describe('User Model', function () {
+
+  this.timeout(10000);
+
   before(function () {
     // Clear users before testing
     return _userModel2['default'].removeAsync();

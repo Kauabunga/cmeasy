@@ -22,6 +22,10 @@ var _http = require('http');
 
 var _http2 = _interopRequireDefault(_http);
 
+var _configEnvironment = require('./config/environment');
+
+var _configEnvironment2 = _interopRequireDefault(_configEnvironment);
+
 /**
  *
  */
@@ -29,11 +33,14 @@ var _http2 = _interopRequireDefault(_http);
 _mongoose2['default'].Promise = require('bluebird');
 
 exports['default'] = function () {
+
   return {
+
+    name: 'Example Cmeasy',
 
     //TODO
     app: '',
-    mongoose: '',
+    mongoose: getMongoose(),
     express: '',
     server: '',
     socketio: '',
@@ -48,6 +55,17 @@ exports['default'] = function () {
     models: getModels()
   };
 };
+
+function getMongoose() {
+
+  _mongoose2['default'].connect(_configEnvironment2['default'].mongo.uri, _configEnvironment2['default'].mongo.options);
+  _mongoose2['default'].connection.on('error', function (err) {
+    console.error('MongoDB connection error: ' + err);
+    process.exit(-1);
+  });
+
+  return _mongoose2['default'];
+}
 
 /**
  *
