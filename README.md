@@ -145,6 +145,9 @@ Run `grunt build` to build the project
 
 Running `npm test` will run the unit tests with karma.
 
+## Project Structure
+
+TODO
 
 ## Info
 
