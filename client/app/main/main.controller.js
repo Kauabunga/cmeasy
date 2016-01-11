@@ -12,10 +12,7 @@
 
       function init() {
         $scope.openSidenav = openSidenav;
-
-        console.log('ajhsdfjkdfhshafjkskhjfds');
       }
-
 
       /**
        *
@@ -25,6 +22,5 @@
       }
 
     });
-
 
 })(angular);

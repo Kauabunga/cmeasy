@@ -11,7 +11,7 @@ import cheerio from 'cheerio';
 /**
  *
  */
-describe.only('Render index api:', function() {
+describe('Render index api:', function() {
 
   //TODO need a test to handle the route /admin
 
