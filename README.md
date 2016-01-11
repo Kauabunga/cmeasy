@@ -56,8 +56,42 @@ See [server/options.js](https://github.com/Kauabunga/cmeasy/blob/master/server/o
 
 ## Options
 
-TODO
+### Connect your Database
 
+```js
+var mongoose = require('express')();
+mongoose.connect('mongodb://localhost/cmeasy');
+
+require('cmeasy')(
+  {
+    ...
+    mongoose: mongoose
+    ...
+  }
+);
+  
+```
+
+(Changes planned to define a mongoose-like plugin API)
+
+
+### Connect your Express App
+
+```js
+var app = require('express')();
+
+require('cmeasy')(
+  {
+    ...
+    express: app
+    ...
+  }
+);
+
+var server = require('http').createServer(app);
+server.listen(9000, 127.0.0.1);
+
+```
 
 
 ## Features
@@ -68,8 +102,12 @@ TODO
 
 ## Roadmap
 
-TODO
-
+- Default to using in memory database and remove Mongo requirement. Mongo support via dao plugin.
+- Api-check options + Integration tests
+- Refactor angular into separate project. Pure ES5/6 data layer library wrapped in angular module.
+- Basic User Management / Integrations
+- Basic Author/Publisher workflow
+- Draft content versions / API
 
 
 ## Build & Development
