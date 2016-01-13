@@ -1,0 +1,12 @@
+
+
+md-content.admin-bottom-container
+
+
+    h2 Select a Content type
+
+    md-list.admin-content-list
+      md-list-item(ng-repeat='model in models track by $index')
+        md-button(ng-click='openModel(model)') {{getModelLabel(model)}}
+
+
