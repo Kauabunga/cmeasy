@@ -16,15 +16,18 @@ exports = module.exports = {
   authRoute: '/admin/auth/local',
   itemIdKey: '_cmeasyId',
   itemInstanceKey: '_cmeasyInstanceId',
+
+
   state: {
     root: 'admin',
-    main: 'admin.main',
     login: 'admin.login',
     content: 'admin.content',
+    users: 'admin.users',
     types: 'admin.types',
     type: 'admin.type',
     list: 'admin.list',
     item: 'admin.item'
-  }
+  },
+  adminLeftNavId: 'admin-left-nav'
 
 };

@@ -8,6 +8,11 @@ html.admin-login {
 
 
 .home-page-container {
+
+  @media(min-width: @desktop-min) {
+    margin-right: @admin-menu-width;
+  }
+
   display: flex;
   justify-content: center;
   align-items: center;
@@ -17,9 +22,13 @@ html.admin-login {
     color: @almost-white;
   }
 
+  h2 {
+    color: @light-grey;
+  }
+
   h3 {
     margin-top: 0;
-    color: @dark-grey;
+    color: @med-grey;
     font-weight: 500;
   }
 

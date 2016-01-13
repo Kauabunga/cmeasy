@@ -37,7 +37,7 @@ angular.module('cmeasyApp')
 
               Analytics.trackEvent('Login', 'Successful');
               // Logged in, redirect to home
-              $state.go('admin.main');
+              $state.go('admin.content');
               $timeout(() => {scope.submitting = false;}, 300);
             })
             .catch(err => {

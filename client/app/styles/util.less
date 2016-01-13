@@ -1,9 +1,15 @@
 
 
+.mixin-loop (@i, @offset) when (@i > 0) {
+
+  .margin-bottom-@{i} { margin-bottom: @i - 0px; }
+  .margin-top-@{i} { margin-top: @i - 0px; }
+  .margin-left-@{i} { margin-left: @i - 0px; }
+  .margin-right-@{i} { margin-right: @i - 0px; }
 
 
-.margin-bottom-30 {
-  margin-bottom: 30px;
+  .mixin-loop(@i - @offset, @offset);
 }
 
+.mixin-loop(200, 10);
 

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('cmeasyApp')
-  .directive('adminMenuMain', function ($rootScope, $log, $state, $stateParams, appConfig, Auth) {
+  .directive('adminMenuMain', function ($rootScope, $log, $state, $stateParams, appConfig, Auth, $mdSidenav) {
     return {
       templateUrl: 'components/admin-menu/admin-menu-main/admin-menu-main.html',
       restrict: 'E',
@@ -14,16 +14,15 @@ angular.module('cmeasyApp')
          */
         function init(){
 
-          scope.isDashboardStateActive = createIsStateActive(appConfig.state.main);
           scope.isContentStateActive = createIsStateActive(appConfig.state.content);
           scope.isTypesStateActive = createIsStateActive(appConfig.state.types);
           scope.isUsersStateActive = createIsStateActive(appConfig.state.users);
 
-          scope.gotoContent = $state.go.bind($state, appConfig.state.content);
-          scope.gotoDashboard = $state.go.bind($state, appConfig.state.main);
-          scope.gotoTypes = $state.go.bind($state, appConfig.state.types, {itemType: 'schema'});
+          scope.gotoContent = _.compose(closeSidenav, $state.go.bind($state, appConfig.state.content));
+          scope.gotoUsers = _.compose(closeSidenav, $state.go.bind($state, appConfig.state.users));
+          scope.gotoTypes = _.compose(closeSidenav, $state.go.bind($state, appConfig.state.types, {itemType: 'schema'}));
 
-          scope.logout = _.compose($state.go.bind($state, appConfig.state.login), Auth.logout);
+          scope.logout = _.compose(closeSidenav, $state.go.bind($state, appConfig.state.login), Auth.logout);
         }
 
         /**
@@ -37,6 +36,13 @@ angular.module('cmeasyApp')
           }
         }
 
+
+        /**
+         *
+         */
+        function closeSidenav(){
+          $mdSidenav(appConfig.adminLeftNavId).close();
+        }
 
       }
     };

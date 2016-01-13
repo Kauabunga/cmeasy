@@ -3,17 +3,6 @@
 angular.module('cmeasyApp')
   .config(function($stateProvider) {
 
-    $stateProvider
-      .state('admin.main', {
-        url: '/main',
-        authenticate: true,
-        menuIndex: 1,
-        views: {
-          admincontent: {
-            template: '<div><admin-title title="Dashboard"></admin-title><admin-api-display></admin-api-display></div>'
-          }
-        }
-      });
 
     $stateProvider
       .state('admin.content', {
@@ -23,6 +12,18 @@ angular.module('cmeasyApp')
         views: {
           admincontent: {
             template: '<div><admin-title title="Edit & Create Content"></admin-title><admin-content-list></admin-content-list></div>'
+          }
+        }
+      });
+
+    $stateProvider
+      .state('admin.users', {
+        url: '/users',
+        authenticate: true,
+        menuIndex: 1,
+        views: {
+          admincontent: {
+            template: '<admin-title title="TODO | Users"></admin-title>'
           }
         }
       });
@@ -83,7 +84,8 @@ angular.module('cmeasyApp')
         menuIndex: 0,
         views: {
           admincontent: {
-            template: '<admin-title title=""></admin-title><cmeasy-home-page></cmeasy-home-page>'
+            template: '<admin-title title=""></admin-title>' +
+              '<cmeasy-home-page></cmeasy-home-page>'
           }
         }
       });

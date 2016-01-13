@@ -6,7 +6,7 @@
 
 
   angular.module('cmeasyApp')
-    .controller('MainController', function ($scope, $mdSidenav) {
+    .controller('MainController', function ($scope, $mdSidenav, appConfig) {
 
       return init();
 
@@ -18,7 +18,7 @@
        *
        */
       function openSidenav() {
-        $mdSidenav('admin-left-nav').open();
+        $mdSidenav(appConfig.adminLeftNavId).open();
       }
 
     });
