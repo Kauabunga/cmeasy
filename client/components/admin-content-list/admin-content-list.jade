@@ -2,11 +2,12 @@
 
 md-content.admin-bottom-container
 
+  h2 Select a Content type
 
-    h2 Select a Content type
+  loader-svg.state-loader.bottom-loader(loader-admin='', ng-class='{"is-loaded": !! isLoaded}')
 
-    md-list.admin-content-list
-      md-list-item(ng-repeat='model in models track by $index')
-        md-button(ng-click='openModel(model)') {{getModelLabel(model)}}
+  md-list.admin-content-list.admin-fade-in-on-loaded(ng-class='{"is-loaded": !! isLoaded}')
+    md-list-item(ng-repeat='model in models track by $index')
+      md-button(ng-click='openModel(model)') {{getModelLabel(model)}}
 
 

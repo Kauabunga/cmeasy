@@ -20,7 +20,9 @@ angular.module('cmeasyApp')
 
           return Admin.getModels()
             .then(function(models){
+
               scope.models = models;
+              $timeout(function(){scope.isLoaded = true;}, 32);
             });
         }
 
