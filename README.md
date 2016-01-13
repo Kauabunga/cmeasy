@@ -108,13 +108,18 @@ TODO
 
 ## Roadmap
 
+TODO - Give these a priority
+
+- Demo site showing the decouple presentation app using this library - Home Page + Blog.
 - Default to using in memory database and remove Mongo requirement. Mongo support via dao plugin.
 - Api-check options + Integration tests
 - Refactor angular into separate project. Pure ES5/6 data layer library wrapped in angular module.
 - Basic User Management / Integrations
 - Basic Author/Publisher workflow
 - Draft content versions / API
-- Self documenting API
+- Self documenting Content API
+- More field types + field type plugin api
+- Order property for fields presentation order in form
 
 
 ## Build & Development
