@@ -4,7 +4,7 @@
 [![Npm Version](https://img.shields.io/npm/dm/cmeasy.svg)](https://www.npmjs.com/package/cmeasy)
 [![Build Status](https://travis-ci.org/Kauabunga/cmeasy.svg)](https://travis-ci.org/Kauabunga/cmeasy)
 [![Dependency Status](https://david-dm.org/Kauabunga/cmeasy.svg)](https://david-dm.org/Kauabunga/cmeasy)
-[![Heroku](http://heroku-badge.herokuapp.com/?app=cmeasy&svg=1)](https://cmeasy.herokuapp.com/)
+[![Heroku](http://heroku-badge.herokuapp.com/?app=cmeasy&svg=1)](https://cmeasy.herokuapp.com/admin/login)
 [![Code Climate](https://codeclimate.com/github/Kauabunga/cmeasy/badges/gpa.svg)](https://codeclimate.com/github/Kauabunga/cmeasy)
 [![Test Coverage](https://codeclimate.com/github/Kauabunga/cmeasy/badges/coverage.svg)](https://codeclimate.com/github/Kauabunga/cmeasy/coverage)
 [![Sauce Test Status](https://saucelabs.com/buildstatus/Kauabunga)](https://saucelabs.com/u/Kauabunga)
@@ -44,7 +44,7 @@ npm install cmeasy
 
 ## Demo
 
-See an example running on Heroku [https://cmeasy.herokuapp.com/](https://cmeasy.herokuapp.com/)
+See an example running on Heroku [https://cmeasy.herokuapp.com/](https://cmeasy.herokuapp.com/admin/login)
 
 #### Or
 
@@ -55,6 +55,26 @@ ___
 See [server/options.js](https://github.com/Kauabunga/cmeasy/blob/master/server/options.js) for the complete demo configuration
 
 ## Options
+
+
+### Connect your Express App
+
+```js
+var express = require('express');
+var app = express();
+
+require('cmeasy')(
+  {
+    ...
+    express: app
+    ...
+  }
+);
+
+var server = require('http').createServer(app);
+server.listen(9000, '127.0.0.1');
+
+```
 
 ### Connect your Database
 
@@ -75,27 +95,9 @@ require('cmeasy')(
 (Changes planned to define a mongoose-like plugin interface)
 
 
-### Connect your Express App
-
-```js
-var app = require('express')();
-
-require('cmeasy')(
-  {
-    ...
-    express: app
-    ...
-  }
-);
-
-var server = require('http').createServer(app);
-server.listen(9000, '127.0.0.1');
-
-```
-
 ___
 
-[See website for complete API (TODO)](https://cmeasy.herokuapp.com/)
+[See website for complete API (TODO)](https://cmeasy.herokuapp.com/admin/login)
 
 
 ## Features
