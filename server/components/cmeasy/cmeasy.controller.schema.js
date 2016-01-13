@@ -237,6 +237,8 @@ function getUniqueIds(cmeasy){
   return function (entity) {
     return _(entity)
       .map((item)=>{ return item.toObject(); })
+
+      //TODO this seems to be failing when upgrading to lodash 4.0.0???
       .uniq('meta.' + cmeasy.getIdKey())
       .value();
 

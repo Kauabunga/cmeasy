@@ -11,14 +11,12 @@ md-content.admin-menu-container
     md-tab(label='Content')
       md-list
         md-list-item
-          md-button.md-primary(ng-click='goHome($event)') Dashboard
-          md-button.md-accent(ng-click='goContent($event)') Content
+          md-button.back-button.md-accent(ng-click='goContent($event)') Back
       admin-menu-content(menu-items='menuItems')
 
     md-tab(label='Types')
+
       md-list
         md-list-item
-          md-button.md-primary(ng-click='goHome($event)') Dashboard
-          //md-button.md-accent(ng-click='goContent($event)') Content
-          md-button.md-accent(ng-click='goTypes($event)') Types
+          md-button.back-button.md-accent(ng-click='goTypes($event)') Back
       admin-menu-types(menu-items='menuItems')

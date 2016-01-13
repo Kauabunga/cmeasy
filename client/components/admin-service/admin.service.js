@@ -82,14 +82,11 @@ angular.module('cmeasyApp')
     }
 
     /**
-     * TODO
+     *
      */
     function getModels(options = {}){
       return $http.get(appConfig.apiRoute + '/schemacomplete', { cache: getCache(options) })
-        .then(getDataFromSuccess)
-        .then(function(schemaComplete){
-          return schemaComplete;
-        });
+        .then(getDataFromSuccess);
     }
 
     /**

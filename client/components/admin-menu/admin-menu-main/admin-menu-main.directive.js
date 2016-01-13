@@ -13,10 +13,30 @@ angular.module('cmeasyApp')
          *
          */
         function init(){
+
+          scope.isDashboardStateActive = createIsStateActive(appConfig.state.main);
+          scope.isContentStateActive = createIsStateActive(appConfig.state.content);
+          scope.isTypesStateActive = createIsStateActive(appConfig.state.types);
+          scope.isUsersStateActive = createIsStateActive(appConfig.state.users);
+
           scope.gotoContent = $state.go.bind($state, appConfig.state.content);
+          scope.gotoDashboard = $state.go.bind($state, appConfig.state.main);
           scope.gotoTypes = $state.go.bind($state, appConfig.state.types, {itemType: 'schema'});
+
           scope.logout = _.compose($state.go.bind($state, appConfig.state.login), Auth.logout);
         }
+
+        /**
+         *
+         * @param state
+         * @returns {Function}
+         */
+        function createIsStateActive(state){
+          return function (){
+            return $state.current.name === state;
+          }
+        }
+
 
       }
     };

@@ -7,8 +7,10 @@ angular.module('cmeasyApp')
       restrict: 'E',
       scope: {
         listTitle: '@',
+        listType: '@',
         listTypeParam: '@',
-        itemState: '@'
+        itemState: '@',
+        disableCreate: '@'
       },
       link: function (scope, element, attrs) {
 
@@ -26,7 +28,7 @@ angular.module('cmeasyApp')
           scope.getPrettyLabel = getPrettyLabel;
           scope.getListIdDisplay = getPrettyLabel;
 
-          $log.debug('List admin init', getListType());
+          $log.debug('List admin init', getListType(), $stateParams[scope.listTypeParam]);
 
           return Admin.getModel(getListType())
             .then(function(model){
@@ -37,7 +39,6 @@ angular.module('cmeasyApp')
               scope.canCreate = getCanCreateModel(model);
               scope.list = scope.list || [];
               scope.filterText = '';
-
 
               return getListData(getListType(), { force: !! getCanCreateModel(model) })
                 .then(function([allItems, itemColumns]){
@@ -87,7 +88,7 @@ angular.module('cmeasyApp')
          * @param listOption
          */
         function openListItem(listItem){
-          $state.go(getItemState(), { itemType: getListType(), itemId: getListItemId(listItem) });
+          $state.go(getItemState(), { itemType: getItemType(listItem), itemId: getListItemId(listItem) });
         }
 
         /**
@@ -176,7 +177,13 @@ angular.module('cmeasyApp')
          *
          */
         function getCanCreateModel(model){
-          return model ? ! model.meta.disableCreate : true;
+
+          if(scope.disableCreate){
+            return false;
+          }
+          else {
+            return model ? ! model.meta.disableCreate : true;
+          }
         }
 
         /**
@@ -212,7 +219,7 @@ angular.module('cmeasyApp')
         function getPrettyLabel(label){
 
           // replace all . with a space
-          return label.replace(/\./g, ' ')
+          return label && label.replace(/\./g, ' ')
             //replace all underscores
             .replace(/_/g, ' ')
             // insert a space before all caps
@@ -226,7 +233,15 @@ angular.module('cmeasyApp')
          * @returns {*|listType}
          */
         function getListType(){
-          return $stateParams[scope.listTypeParam];
+          return scope.listType || $stateParams[scope.listTypeParam];
+        }
+
+
+        /**
+         *
+         */
+        function getItemType(getItemType){
+          return getListType();
         }
 
 

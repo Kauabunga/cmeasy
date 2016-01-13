@@ -19,10 +19,10 @@ angular.module('cmeasyApp')
       .state('admin.content', {
         url: '/content',
         authenticate: true,
-        menuIndex: 2,
+        menuIndex: 1,
         views: {
           admincontent: {
-            template: '<div><admin-title title="Content"></admin-title></div>'
+            template: '<div><admin-title title="Edit & Create Content"></admin-title><admin-content-list></admin-content-list></div>'
           }
         }
       });
@@ -31,7 +31,7 @@ angular.module('cmeasyApp')
       .state('admin.types', {
         url: '/types/:itemType',
         authenticate: true,
-        menuIndex: 3,
+        menuIndex: 1,
         views: {
           admincontent: {
             template: '<admin-list list-type-param="itemType" item-state="admin.type"></admin-list>'

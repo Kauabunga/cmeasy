@@ -2,13 +2,19 @@
 
 
 md-list
-  md-list-item
-    md-button(ng-click='gotoContent()') Content
-  md-list-item
-    md-button(ng-click='gotoTypes()') Types
-  md-list-item
-    md-button(ng-click='gotoUsers()') Users
-  md-list-item
+  md-list-item.content-menu-item
+    md-button(ng-class='{"md-primary": isDashboardStateActive()}', ng-click='gotoDashboard()') Dashboard
+
+  md-list-item.content-menu-item
+    md-button(ng-class='{"md-primary": isContentStateActive()}', ng-click='gotoContent()') Content
+
+  md-list-item.types-menu-item
+    md-button(ng-class='{"md-primary": isTypesStateActive()}', ng-click='gotoTypes()') Types
+
+  md-list-item.users-menu-item
+    md-button(ng-class='{"md-primary": isUsersStateActive()}', ng-click='gotoUsers()') Users
+
+  md-list-item.logout-menu-item
     md-button(ng-click='logout()') Logout
 
 

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('cmeasyApp')
-  .directive('adminMenuTypes', function ($rootScope, Admin, $log, $state, appConfig, $timeout) {
+  .directive('adminMenuTypes', function ($rootScope, Admin, $log, $state, appConfig, Util, $stateParams) {
     return {
       templateUrl: 'components/admin-menu/admin-menu-types/admin-menu-types.html',
       restrict: 'E',
@@ -16,10 +16,9 @@ angular.module('cmeasyApp')
          *
          */
         function init(){
-
           scope.openMenu = openMenu;
           scope.getMenuDisplay = getMenuDisplay;
-
+          scope.isMenuActive = isMenuActive;
         }
 
         /**
@@ -37,6 +36,16 @@ angular.module('cmeasyApp')
 
         /**
          *
+         * @param menu
+         * @returns {boolean}
+         */
+        function isMenuActive(menu){
+          $log.debug(menu);
+          return $stateParams['itemId'] === getId(menu);
+        }
+
+        /**
+         *
          */
         function getId(menuItem){
           return menuItem.meta[appConfig.itemIdKey];
@@ -47,19 +56,7 @@ angular.module('cmeasyApp')
          *
          */
         function getMenuDisplay(menuItem){
-          return getPrettyDisplay(menuItem.meta[appConfig.itemIdKey]);
-        }
-
-
-        /**
-         *
-         * @param id
-         */
-        function getPrettyDisplay(id){
-          // insert a space before all caps
-          return id.replace(/([A-Z])/g, ' $1')
-            // uppercase the first character
-            .replace(/^./, function(str){ return str.toUpperCase(); });
+          return Util.getPrettyLabel(menuItem.meta[appConfig.itemIdKey]);
         }
 
 

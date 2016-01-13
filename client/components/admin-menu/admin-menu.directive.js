@@ -32,6 +32,7 @@ angular.module('cmeasyApp')
         function updateModels(){
           return Admin.getModels()
             .then(function(models){
+              $log.debug('Admin menu update models', models);
               $timeout(() => {scope.menuItems = models;});
         });
       }

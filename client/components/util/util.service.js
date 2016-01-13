@@ -29,6 +29,24 @@ function UtilService($window) {
       return a;
     },
 
+
+
+    /**
+     *
+     * @param label
+     */
+    getPrettyLabel(label){
+
+      // replace all . with a space
+      return label && label.replace(/\./g, ' ')
+        //replace all underscores
+        .replace(/_/g, ' ')
+        // insert a space before all caps
+        .replace(/([A-Z])/g, ' $1')
+        // uppercase the first character
+        .replace(/^./, function(str){ return str.toUpperCase(); });
+    },
+
     /**
      * Test whether or not a given url is same origin
      *
