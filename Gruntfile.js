@@ -469,8 +469,8 @@ module.exports = function (grunt) {
       dist: [
         'newer:babel:client',
         'jade',
-        'less',
-        'imagemin'
+        'less'//,
+//        'imagemin'
       ]
     },
 

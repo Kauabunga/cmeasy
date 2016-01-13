@@ -25,6 +25,5 @@
   },
   "_source": "git://github.com/angulartics/angulartics.git",
   "_target": "~1.0.2",
-  "_originalSource": "angulartics",
-  "_direct": true
+  "_originalSource": "angulartics"
 }

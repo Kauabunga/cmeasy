@@ -1,1 +1,0 @@
-{"version":3,"sources":["../../../../server/components/render-index/index.js"],"names":[],"mappings":";AACA,YAAY,CAAC;;;;;;;;2BAEW,gBAAgB","file":"index.js","sourcesContent":["\n'use strict';\n\nimport renderIndex from './render-index';\n\nexport default renderIndex;\n\n"]}

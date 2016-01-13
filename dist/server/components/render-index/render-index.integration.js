@@ -28,9 +28,17 @@ var _cheerio2 = _interopRequireDefault(_cheerio);
 var cmeasy = require('../..');
 describe('Render index api:', function () {
 
+  //TODO need a test to handle the route /admin
+
+  //TODO need a test to handle a different rootRoute
+
+  //TODO need a test to ensure that the referenced resources are served correctly
+
   it('Should inject variables into the index.template.html', function (done) {
     cmeasy.then(function (app) {
-      (0, _supertest2['default'])(app).get('/admin').expect(200).end(function (err, res) {
+      (0, _supertest2['default'])(app).get('/admin/').expect(200).end(function (err, res) {
+
+        console.log('Render index api res.text:', res.text);
 
         var $ = _cheerio2['default'].load(res.text);
 

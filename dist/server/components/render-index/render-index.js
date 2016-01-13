@@ -48,7 +48,7 @@ exports['default'] = function (app, cmeasy) {
 
     var cspNonce = _uuid2['default'].v4().replace(/-/g, '');
 
-    return _bluebird2['default'].all([getIndexAsString(), getInjectedVariables(cspNonce)]).then(function (_ref) {
+    return _bluebird2['default'].all([getIndexAsString(), getInjectedVariables(cspNonce, req)]).then(function (_ref) {
       var _ref2 = _slicedToArray(_ref, 2);
 
       var ejsIndexTemplate = _ref2[0];
@@ -64,7 +64,7 @@ exports['default'] = function (app, cmeasy) {
   /**
    *
    */
-  function getInjectedVariables(cspNonce) {
+  function getInjectedVariables(cspNonce, req) {
     return _bluebird2['default'].all([cmeasy.getSchemaController().index()]).then(function (_ref3) {
       var _ref32 = _slicedToArray(_ref3, 1);
 
@@ -76,8 +76,8 @@ exports['default'] = function (app, cmeasy) {
           version: _configEnvironment2['default'].version,
           rootRoute: cmeasy.getRootRoute(),
           models: models
-
         }),
+        requestPath: req.path,
         cspNonce: cspNonce,
         rootStaticRoute: cmeasy.getRootRoute() + '/'
         //rootStaticRoute: ''

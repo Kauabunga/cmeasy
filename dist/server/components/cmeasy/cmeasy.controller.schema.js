@@ -230,7 +230,10 @@ function getUniqueIds(cmeasy) {
   return function (entity) {
     return (0, _lodash2['default'])(entity).map(function (item) {
       return item.toObject();
-    }).uniq('meta.' + cmeasy.getIdKey()).value();
+    })
+
+    //TODO this seems to be failing when upgrading to lodash 4.0.0???
+    .uniq('meta.' + cmeasy.getIdKey()).value();
   };
 }
 
