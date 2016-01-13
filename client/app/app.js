@@ -23,7 +23,7 @@ angular.module('cmeasyApp', [
   .config(function($urlRouterProvider, $locationProvider, $logProvider, $mdThemingProvider) {
 
     $locationProvider.html5Mode(true);
-    $urlRouterProvider.otherwise('/main');
+    $urlRouterProvider.otherwise('/content');
     $logProvider.debugEnabled( ! window._cmeasy || window._cmeasy.env === 'development');
     $mdThemingProvider.theme('default').primaryPalette('blue').accentPalette('purple').warnPalette('orange');
 

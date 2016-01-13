@@ -18,7 +18,7 @@ angular.module('cmeasyApp.auth')
 
           event.preventDefault();
           return Auth.isLoggedIn(_.noop).then(is => {
-            $state.go(is ? appConfig.state.main : appConfig.state.login);
+            $state.go(is ? appConfig.state.content : appConfig.state.login);
           });
         });
       } else {

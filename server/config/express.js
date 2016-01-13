@@ -14,7 +14,7 @@ import cookieParser from 'cookie-parser';
 import errorHandler from 'errorhandler';
 import path from 'path';
 import lusca from 'lusca';
-import config from './environment';
+import config from './environment/index';
 import passport from 'passport';
 import session from 'express-session';
 import connectMongo from 'connect-mongo';
@@ -35,19 +35,21 @@ export default {
 function coreExpress(app, cmeasy){
   var env = app.get('env');
 
+  //TODO what can we do with this - do we need to set a view engine? Can we see if one is already set?
   app.set('views', config.root + '/server/views');
   app.set('view engine', 'jade');
-  app.use(compression());
-  app.use(bodyParser.urlencoded({ extended: false }));
-  app.use(bodyParser.json());
-  app.use(methodOverride());
-  app.use(cookieParser());
-  app.use(passport.initialize());
+
+  app.use(`/${cmeasy.getRootRoute()}`, compression());
+  app.use(`/${cmeasy.getRootRoute()}`, bodyParser.urlencoded({ extended: false }));
+  app.use(`/${cmeasy.getRootRoute()}`, bodyParser.json());
+  app.use(`/${cmeasy.getRootRoute()}`, methodOverride());
+  app.use(`/${cmeasy.getRootRoute()}`, cookieParser());
+  app.use(`/${cmeasy.getRootRoute()}`, passport.initialize());
 
   // Persist sessions with mongoStore / sequelizeStore
   // We need to enable sessions for passport-twitter because it's an
   // oauth 1.0 strategy, and Lusca depends on sessions
-  app.use(session({
+  app.use(`/${cmeasy.getRootRoute()}`, session({
     secret: config.secrets.session,
     saveUninitialized: true,
     resave: false,
@@ -63,7 +65,7 @@ function coreExpress(app, cmeasy){
    */
   /* istanbul ignore if */
   if ('test' !== env) {
-    app.use(lusca({
+    app.use(`/${cmeasy.getRootRoute()}`, lusca({
       csrf: {
         angular: true
       },
@@ -79,7 +81,7 @@ function coreExpress(app, cmeasy){
 
   /* istanbul ignore if */
   if ('development' === env) {
-    try { app.use(require('connect-livereload')()); }
+    try { app.use(`/${cmeasy.getRootRoute()}`, require('connect-livereload')()); }
     catch(err) { console.error('Error loading connent-livereload module | app.env = ', env); }
   }
 }
@@ -92,21 +94,21 @@ function staticExpress(app, cmeasy){
 
   var env = app.get('env');
 
+  //TODO what does this do to the other app?
   app.set('appPath', path.join(config.root, 'client'));
 
   /* istanbul ignore if */
   if ('production' === env) {
     app.use(`/${cmeasy.getRootRoute()}`, favicon(path.join(config.root, 'client', 'favicon.ico')));
     app.use(`/${cmeasy.getRootRoute()}`, express.static(app.get('appPath')));
-    app.use(morgan('dev'));
+    app.use(`/${cmeasy.getRootRoute()}`, morgan('dev'));
   }
 
 
   if ('development' === env || 'test' === env) {
-
     app.use(`/${cmeasy.getRootRoute()}`, express.static(path.join(config.root, '.tmp')));
     app.use(`/${cmeasy.getRootRoute()}`, express.static(app.get('appPath')));
-    app.use(morgan('dev'));
-    app.use(errorHandler()); // Error handler - has to be last
+    app.use(`/${cmeasy.getRootRoute()}`, morgan('dev'));
+    app.use(`/${cmeasy.getRootRoute()}`, errorHandler()); // Error handler - has to be last
   }
 }

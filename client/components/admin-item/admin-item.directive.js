@@ -116,7 +116,7 @@ angular.module('cmeasyApp')
          *
          */
         function getMainState(){
-          return appConfig.state.main;
+          return appConfig.state.content;
         }
 
         /**

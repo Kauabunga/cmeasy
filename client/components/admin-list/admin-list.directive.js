@@ -134,7 +134,7 @@ angular.module('cmeasyApp')
          * @returns {string}
          */
         function getMainState(){
-          return appConfig.state.main;
+          return appConfig.state.content;
         }
 
         /**
@@ -240,7 +240,7 @@ angular.module('cmeasyApp')
         /**
          *
          */
-        function getItemType(getItemType){
+        function getItemType(){
           return getListType();
         }
 

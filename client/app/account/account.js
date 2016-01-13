@@ -6,12 +6,12 @@ angular.module('cmeasyApp')
     $stateProvider
       .state('admin.logout', {
         url: '/logout?referrer',
-        referrer: 'main',
+        referrer: 'content',
         template: '',
         controller: function($state, Auth) {
           var referrer = $state.params.referrer ||
                           $state.current.referrer ||
-                          'main';
+                          'content';
           Auth.logout();
           $state.go(referrer);
         }

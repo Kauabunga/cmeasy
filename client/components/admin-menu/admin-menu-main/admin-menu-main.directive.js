@@ -33,7 +33,7 @@ angular.module('cmeasyApp')
         function createIsStateActive(state){
           return function (){
             return $state.current.name === state;
-          }
+          };
         }
 
 

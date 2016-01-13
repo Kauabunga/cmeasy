@@ -69,7 +69,7 @@ angular.module('cmeasyApp')
          * @returns {boolean}
          */
         function isMenuActive(menu){
-          return $stateParams['itemType'] === getId(menu);
+          return $stateParams.itemType === getId(menu); //
         }
 
 
