@@ -79,7 +79,7 @@ server.listen(9000, '127.0.0.1');
 ### Connect your Database
 
 ```js
-var mongoose = require('express')();
+var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/cmeasy');
 
 require('cmeasy')(
