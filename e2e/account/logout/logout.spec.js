@@ -35,7 +35,7 @@ describe('Logout View', function() {
 
     it('should logout a user and redirecting to "/login"', function() {
 
-      browser.getCurrentUrl().should.eventually.equal(config.baseUrl + '/main');
+      browser.getCurrentUrl().should.eventually.equal(config.baseUrl + '/content');
 
       browser.get(config.baseUrl + '/logout');
 

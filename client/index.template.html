@@ -60,11 +60,12 @@
 
 
     <!-- LOADING SCREEN STYLES -->
-    <style nonce="<%- cspNonce %>">
+    <style nonce="<%- cspNonce %>" moo="<%- requestPath %>">
 
       body {
         /* TODO this might change depending on initial login/admin route */
-        background-color: #f2f2f2;
+
+        background-color: <%= requestPath === '/login' ? '#333' : '#eee' %>;
       }
 
       .app-loading-screen.fade-out { opacity: 0; }
@@ -82,7 +83,7 @@
         overflow-y: auto;
         top: 0;
         left: 0;
-        background-color: #f2f2f2;
+        background-color: <%= requestPath === '/login' ? '#333' : '#eee' %>;
       }
 
       .app-loading-screen svg {

@@ -47,9 +47,9 @@ describe('Login View', function() {
 
   describe('with local auth', function() {
 
-    it('should login a user and redirecting to "/main"', function() {
+    it('should login a user and redirecting to "/content"', function() {
       page.login(testUser);
-      browser.getCurrentUrl().should.eventually.equal(config.baseUrl + '/main');
+      browser.getCurrentUrl().should.eventually.equal(config.baseUrl + '/content');
     });
 
     describe('and invalid credentials', function() {
