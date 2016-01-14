@@ -120,6 +120,7 @@ TODO - Give these a priority
 - Self documenting Content API
 - More field types + field type plugin api
 - Order property for fields presentation order in form
+- JSON export / import
 
 
 ## Build & Development
