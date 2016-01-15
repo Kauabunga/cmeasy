@@ -50,9 +50,9 @@ var _lusca = require('lusca');
 
 var _lusca2 = _interopRequireDefault(_lusca);
 
-var _environment = require('./environment');
+var _environmentIndex = require('./environment/index');
 
-var _environment2 = _interopRequireDefault(_environment);
+var _environmentIndex2 = _interopRequireDefault(_environmentIndex);
 
 var _passport = require('passport');
 
@@ -86,20 +86,22 @@ exports['default'] = {
 function coreExpress(app, cmeasy) {
   var env = app.get('env');
 
-  app.set('views', _environment2['default'].root + '/server/views');
+  //TODO what can we do with this - do we need to set a view engine? Can we see if one is already set?
+  app.set('views', _environmentIndex2['default'].root + '/server/views');
   app.set('view engine', 'jade');
-  app.use((0, _compression2['default'])());
-  app.use(_bodyParser2['default'].urlencoded({ extended: false }));
-  app.use(_bodyParser2['default'].json());
-  app.use((0, _methodOverride2['default'])());
-  app.use((0, _cookieParser2['default'])());
-  app.use(_passport2['default'].initialize());
+
+  app.use('/' + cmeasy.getRootRoute(), (0, _compression2['default'])());
+  app.use('/' + cmeasy.getRootRoute(), _bodyParser2['default'].urlencoded({ extended: false }));
+  app.use('/' + cmeasy.getRootRoute(), _bodyParser2['default'].json());
+  app.use('/' + cmeasy.getRootRoute(), (0, _methodOverride2['default'])());
+  app.use('/' + cmeasy.getRootRoute(), (0, _cookieParser2['default'])());
+  app.use('/' + cmeasy.getRootRoute(), _passport2['default'].initialize());
 
   // Persist sessions with mongoStore / sequelizeStore
   // We need to enable sessions for passport-twitter because it's an
   // oauth 1.0 strategy, and Lusca depends on sessions
-  app.use((0, _expressSession2['default'])({
-    secret: _environment2['default'].secrets.session,
+  app.use('/' + cmeasy.getRootRoute(), (0, _expressSession2['default'])({
+    secret: _environmentIndex2['default'].secrets.session,
     saveUninitialized: true,
     resave: false,
     store: new mongoStore({
@@ -114,7 +116,7 @@ function coreExpress(app, cmeasy) {
    */
   /* istanbul ignore if */
   if ('test' !== env) {
-    app.use((0, _lusca2['default'])({
+    app.use('/' + cmeasy.getRootRoute(), (0, _lusca2['default'])({
       csrf: {
         angular: true
       },
@@ -131,7 +133,7 @@ function coreExpress(app, cmeasy) {
   /* istanbul ignore if */
   if ('development' === env) {
     try {
-      app.use(require('connect-livereload')());
+      app.use('/' + cmeasy.getRootRoute(), require('connect-livereload')());
     } catch (err) {
       console.error('Error loading connent-livereload module | app.env = ', env);
     }
@@ -146,21 +148,21 @@ function staticExpress(app, cmeasy) {
 
   var env = app.get('env');
 
-  app.set('appPath', _path2['default'].join(_environment2['default'].root, 'client'));
+  //TODO what does this do to the other app?
+  app.set('appPath', _path2['default'].join(_environmentIndex2['default'].root, 'client'));
 
   /* istanbul ignore if */
   if ('production' === env) {
-    app.use('/' + cmeasy.getRootRoute(), (0, _serveFavicon2['default'])(_path2['default'].join(_environment2['default'].root, 'client', 'favicon.ico')));
+    app.use('/' + cmeasy.getRootRoute(), (0, _serveFavicon2['default'])(_path2['default'].join(_environmentIndex2['default'].root, 'client', 'favicon.ico')));
     app.use('/' + cmeasy.getRootRoute(), _express2['default']['static'](app.get('appPath')));
-    app.use((0, _morgan2['default'])('dev'));
+    app.use('/' + cmeasy.getRootRoute(), (0, _morgan2['default'])('dev'));
   }
 
   if ('development' === env || 'test' === env) {
-
-    app.use('/' + cmeasy.getRootRoute(), _express2['default']['static'](_path2['default'].join(_environment2['default'].root, '.tmp')));
+    app.use('/' + cmeasy.getRootRoute(), _express2['default']['static'](_path2['default'].join(_environmentIndex2['default'].root, '.tmp')));
     app.use('/' + cmeasy.getRootRoute(), _express2['default']['static'](app.get('appPath')));
-    app.use((0, _morgan2['default'])('dev'));
-    app.use((0, _errorhandler2['default'])()); // Error handler - has to be last
+    app.use('/' + cmeasy.getRootRoute(), (0, _morgan2['default'])('dev'));
+    app.use('/' + cmeasy.getRootRoute(), (0, _errorhandler2['default'])()); // Error handler - has to be last
   }
 }
 module.exports = exports['default'];
