@@ -40,7 +40,7 @@ function routeContentRequest(cmeasy){
 
       //Get all content
       return getAllContent(cmeasy)
-        .then(function (...indexes){
+        .then(function (indexes){
           console.log('All content', indexes);
           return res.json(indexes);
         })
@@ -85,7 +85,7 @@ function routeContentJsRequest(cmeasy){
 
     //Get all content as js
     return getAllContent(cmeasy)
-      .then(function (...indexes) {
+      .then(function (indexes) {
         console.log('All content as js', indexes);
 
         return res.status(200)
@@ -152,9 +152,20 @@ function getAllContent(cmeasy){
             return model.getModelController().indexClean();
           }
         })
+        .map(function(index){
+          return index.then(function(indexResult){
+            //TODO should probably handle singleton differently here
+            if(indexResult.length > 0){
+              return {[indexResult[0][cmeasy.getIdKey()]]: indexResult };
+            }
+            else {
+              return undefined;
+            }
+          });
+        })
         .value())
-        .then(function(...indexes){
-          return _(indexes).filter().value();
+        .then(function(indexes){
+          return _(indexes).reduce(_.merge);
         });
     });
 }

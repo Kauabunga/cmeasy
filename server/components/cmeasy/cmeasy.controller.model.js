@@ -356,22 +356,30 @@ export default function(model, schemaController){
     if (item instanceof Array) {
       return _(item).map(function (singleItem) {
         if(typeof singleItem.toObject === 'function'){
-          return _.omit(singleItem.toObject(), '_id', '__v');
+          return _.omit(singleItem.toObject(), getCleanProperties());
         }
         else {
-          return _.omit(singleItem, '_id', '__v');
+          return _.omit(singleItem, getCleanProperties());
         }
       }).value();
     }
     else {
       if(typeof item.toObject === 'function'){
-        return _.omit(item.toObject(), '_id', '__v');
+        return _.omit(item.toObject(), getCleanProperties());
       }
       else {
-        return _.omit(item, '_id', '__v');
+        return _.omit(item, getCleanProperties());
       }
 
     }
+  }
+
+  /**
+   *
+   * @returns {string[]}
+   */
+  function getCleanProperties(){
+    return ['_id', '__v', 'author', 'comment', 'dateCreated'];
   }
 
 
