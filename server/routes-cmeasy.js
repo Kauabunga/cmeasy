@@ -22,6 +22,7 @@ export default function(app, cmeasy) {
 
   app.use(`/${cmeasy.getApiRoute()}/v1/content/schema`, routeSchemaRequest(cmeasy));
   app.use(`/${cmeasy.getApiRoute()}/v1/content/:type?`, routeContentRequest(cmeasy));
+  app.use(`/${cmeasy.getApiRoute()}/v1/content.js`, routeContentJsRequest(cmeasy));
 
   app.use(`/${cmeasy.getRootRoute()}`, renderIndex(app, cmeasy));
 
@@ -35,32 +36,10 @@ function routeContentRequest(cmeasy){
 
     console.log('Routing content request', req.params.type, req.url);
 
-    if(! req.params.type) {
-      //Get all content
-      //TODO move into cmeasy/schema service
+    if( ! req.params.type ) {
 
-      return cmeasy.getSchemaController().index()
-        .then(function(schemas){
-          return Promise.all(_(schemas)
-            .map(function(schema){
-              return [
-                cmeasy.getModel(schema.meta[cmeasy.getIdKey()]),
-                schema
-              ];
-            })
-            .map(function([model, schema]){
-              if(! model){
-                return cmeasy.createModel(schema).getModelController().indexClean();
-              }
-              else {
-                return model.getModelController().indexClean();
-              }
-            })
-            .value())
-            .then(function(...indexes){
-              return _(indexes).filter().value();
-            });
-        })
+      //Get all content
+      return getAllContent(cmeasy)
         .then(function (...indexes){
           console.log('All content', indexes);
           return res.json(indexes);
@@ -70,26 +49,11 @@ function routeContentRequest(cmeasy){
           return res.sendStatus(500);
         });
 
-
     }
     else {
+
       //Return specific content
-      return cmeasy.getSchemaController().index()
-        .then(filterSchemaById(cmeasy, req.params.type))
-        .then(function(schema){
-          if(! schema){
-            return undefined;
-          }
-          else {
-            var cmeasyModel = cmeasy.getModel(req.params.type);
-            if( ! cmeasyModel ){
-              return cmeasy.createModel(schema);
-            }
-            else {
-              return cmeasyModel;
-            }
-          }
-        })
+      return getContentModel(cmeasy, req.params.type)
         .then(function(cmeasyModel){
           if(cmeasyModel){
             return cmeasyModel.getModelCrud()(req, res, next);
@@ -98,8 +62,101 @@ function routeContentRequest(cmeasy){
             return res.sendStatus(404);
           }
         });
+
     }
   }
+}
+
+/**
+ * TODO extend this so individual content pieces can be grabbed
+ *
+ * e.g. api/v1/content/homePage.js
+ *
+ * @param cmeasy
+ */
+function routeContentJsRequest(cmeasy){
+
+  //TODO configure this
+  const prependJs = 'window._cmeasy_content = ';
+
+  return function(req, res, next) {
+
+    console.log('Routing content js request', req.params.type, req.url);
+
+    //Get all content as js
+    return getAllContent(cmeasy)
+      .then(function (...indexes) {
+        console.log('All content as js', indexes);
+
+        return res.status(200)
+          .set('Cache-Control', 'no-cache, no-store, must-revalidate')
+          .set('Pragma', 'no-cache')
+          .set('Expires', 0)
+          .set('Content-Type', 'application/javascript')
+          .send(prependJs + JSON.stringify(indexes));
+      })
+      .catch(function (err) {
+        console.error('Error getting all content as js', err);
+        return res.sendStatus(500);
+      });
+
+  }
+
+}
+
+/**
+ *
+ * @param cmeasy
+ * @param type
+ * @returns {*}
+ */
+function getContentModel(cmeasy, type){
+  return cmeasy.getSchemaController().index()
+    .then(filterSchemaById(cmeasy, type))
+    .then(function(schema){
+      if(! schema){
+        return undefined;
+      }
+      else {
+        var cmeasyModel = cmeasy.getModel(type);
+        if( ! cmeasyModel ){
+          return cmeasy.createModel(schema);
+        }
+        else {
+          return cmeasyModel;
+        }
+      }
+    });
+}
+
+/**
+ *
+ * @param cmeasy
+ * @returns {*}
+ */
+function getAllContent(cmeasy){
+  return cmeasy.getSchemaController().index()
+    .then(function(schemas){
+      return Promise.all(_(schemas)
+        .map(function(schema){
+          return [
+            cmeasy.getModel(schema.meta[cmeasy.getIdKey()]),
+            schema
+          ];
+        })
+        .map(function([model, schema]){
+          if(! model){
+            return cmeasy.createModel(schema).getModelController().indexClean();
+          }
+          else {
+            return model.getModelController().indexClean();
+          }
+        })
+        .value())
+        .then(function(...indexes){
+          return _(indexes).filter().value();
+        });
+    });
 }
 
 /**
