@@ -16,12 +16,28 @@ angular.module('cmeasyApp')
       errorToastMessage: errorToastMessage,
       successToastMessage: successToastMessage,
 
+      undoToast: undoToast,
+
       publishToastMessage: publishToastMessage,
       genericErrorToastMessage: genericErrorToastMessage,
       finishErrorToastMessage: finishErrorToastMessage,
       saveErrorToastMessage: saveErrorToastMessage
     };
 
+
+    /**
+     *
+     * @param message
+     */
+    function undoToast(message){
+      return $mdToast.show(
+        $mdToast.simple()
+          .content(message || 'Press to reverse action')
+          .position('bottom right')
+          .action('Undo')
+          .hideDelay(16000)
+      );
+    }
 
     /**
      *

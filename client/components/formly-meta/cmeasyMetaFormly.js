@@ -10,13 +10,13 @@
         name: 'cmeasyMeta',
         templateUrl: 'components/formly-meta/formlyTemplates/cmeasyMeta.html',
         defaultOptions: {},
-        controller: ['$scope', '$log', '$timeout', '$http', '$q', controller]
+        controller: ['$scope', '$log', '$timeout', '$http', '$q', 'Toast', controller]
       });
 
       /**
        *
        */
-      function controller($scope, $log, $timeout, $http, $q){
+      function controller($scope, $log, $timeout, $http, $q, Toast){
 
         return init();
 
@@ -34,6 +34,17 @@
          */
         function removeField($event){
           $log.debug('Removing field @ index', getIndex());
+
+          var undoClone = _.cloneDeep(getMetaFieldsParentModel()[getIndex()]);
+
+          $log.debug('undoClone', undoClone);
+          Toast.undoToast()
+            .then(function(response){
+              if(response === 'ok'){
+                getMetaFieldsParentModel().push(undoClone);
+              }
+            });
+
           getMetaFieldsParentModel().splice(getIndex(), 1);
         }
 
