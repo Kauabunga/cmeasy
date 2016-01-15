@@ -96,7 +96,7 @@
                     templateOptions: {
                       label: 'Type',
                       //TODO get types from server
-                      selectOptions: ['String', 'Select']
+                      selectOptions: ['String', 'Select', 'Html']
                     }
                   },
                   //Only used to show/hide additional field details
@@ -106,7 +106,7 @@
                     templateOptions: {
                       label: 'Display Options'
                     }
-                  },
+                  }
                 ]
               }
             },
@@ -115,6 +115,14 @@
               type: 'mdInput',
               templateOptions: {
                 label: 'Label'
+              },
+              hideExpression: '! model.displayOptions'
+            },
+            {
+              key: 'order',
+              type: 'mdInput',
+              templateOptions: {
+                label: 'Order'
               },
               hideExpression: '! model.displayOptions'
             }

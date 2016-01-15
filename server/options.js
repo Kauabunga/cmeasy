@@ -62,7 +62,7 @@ function getBlogModel(){
         enum: ['Update', 'Random']
       },
       content: {
-        type: 'String',
+        type: 'Html',
         label: 'Blog Content'
       }
     }

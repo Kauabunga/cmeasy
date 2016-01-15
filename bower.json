@@ -19,7 +19,8 @@
     "ngstorage": "~0.3.10",
     "angulartics": "~1.0.2",
     "angulartics-google-analytics": "~0.1.4",
-    "angular-animate": "~1.4.8"
+    "angular-animate": "~1.4.8",
+    "ngWig": "ng-wig#~2.3.3"
   },
   "devDependencies": {
     "angular-mocks": "~1.4.0"

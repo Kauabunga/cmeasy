@@ -80,6 +80,7 @@
               return _.merge(value, {[DEFINITION_KEY]: key});
             })
             .filter(isDefinitionIncluded($scope.originalModel))
+            .sortBy('order')
             .value();
         }
 
@@ -120,16 +121,13 @@
          */
         function getDefinitionAsObject(definition){
 
-          console.log(definition);
-
-
           if(definition.length === 0){
             return {};
           }
           if(definition.length === 1){
 
             if(definition[0] && getDefinitionKeyFromObject(definition[0])){
-              return getDefinitionFromObject(definition[0]);
+              return getDefinitionFromObject(definition[0], 0);
             }
             else {
               return {};
@@ -141,10 +139,10 @@
               $log.debug('getDefinitionAsObject: result, value, index', result, value, index);
 
               if(index === 1){
-                result = result && getDefinitionKeyFromObject(result) ? getDefinitionFromObject(result) : {};
+                result = result && getDefinitionKeyFromObject(result) ? getDefinitionFromObject(result, 0) : {};
               }
 
-              return value && getDefinitionKeyFromObject(value) ? _.merge(result, getDefinitionFromObject(value)) : result;
+              return value && getDefinitionKeyFromObject(value) ? _.merge(result, getDefinitionFromObject(value, index)) : result;
             });
           }
         }
@@ -155,9 +153,9 @@
          * @param value
          * @returns {*}
          */
-        function getDefinitionFromObject(value){
+        function getDefinitionFromObject(value, index){
 
-          return {[getDefinitionKeyFromObject(value)]: _.omit(value, 'definitionKey')};
+          return {[getDefinitionKeyFromObject(value)]: _.merge({ order: index }, _.omit(value, 'definitionKey'))};
 
         }
 

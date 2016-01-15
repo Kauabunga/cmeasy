@@ -1,11 +1,20 @@
 
 
 
+button.md-button.md-raised {
+  color: @almost-white;
+  background-color: #777;
+  &:not([disabled]):hover {
+    background-color: #999;
+  }
+}
+
+
+
 button.md-button {
 
   > span {margin: 0 10px;}
   span { text-transform: none; }
-
 
   border-radius: 0;
   &.md-raised,

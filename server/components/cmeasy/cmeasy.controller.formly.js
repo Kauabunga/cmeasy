@@ -46,6 +46,7 @@ function createModelFormlyFields(id, schemaController){
       .then(flatten)
       .then(function(modelSchema){
         return _(modelSchema)
+          .sortBy('order')
           .map(getPathField)
           .filter()
           .value();
@@ -109,12 +110,11 @@ function getFieldTypeMap(){
     },
 
     string: function(path){
-      if(path.html){
-        return { type: 'WYSIWYG'};
-      }
-      else {
-        return { type: 'mdInput'};
-      }
+      return { type: 'mdInput'};
+    },
+
+    html: function(path){
+      return { type: 'WYSIWYG'};
     },
 
     number: function(path){

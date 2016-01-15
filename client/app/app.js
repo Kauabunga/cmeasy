@@ -16,6 +16,7 @@ angular.module('cmeasyApp', [
   'angulartics',
   'angulartics.google.analytics',
   'formly',
+  'ngWig',
   'btford.socket-io',
   'ui.router',
   'validation.match'

@@ -62,6 +62,7 @@ export default class Cmeasy {
 
   createModel(model){
     var existingModel = this.getModel(model.meta._cmeasyId);
+
     if(existingModel){
       return existingModel
     }
@@ -86,8 +87,19 @@ export default class Cmeasy {
         disableDelete: model.disableDelete || false,
         disableCreate: model.disableCreate || false
       },
-      definition: model.definition || {}
+      definition: this.getDefaultDefinition(model.definition || {})
     };
+  }
+
+  getDefaultDefinition(definition){
+    var index = 0;
+
+    //Add a default order to the items
+    _(definition).map(function(definitionItem){
+      definitionItem.order = definitionItem.order || (++index) * 10;
+    }).value();
+
+    return definition;
   }
 
   getOptions(){
@@ -235,6 +247,7 @@ class CmeasyModel {
   getModel(){
     return this._model;
   }
+
 
   getModelFormly(){
     return this._modelFormly;
