@@ -61,6 +61,9 @@ __Or__
 
 ```html
 <script src="api/v1/content.js"></script>
+<script>
+  console.log(window._cmeasy_content);
+</script>
 ```
 
 ## Installation
