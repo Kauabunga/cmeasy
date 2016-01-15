@@ -15,6 +15,7 @@
 
 ## Getting Started
 
+### Define your content
 
 ```js
 require('cmeasy')(
@@ -36,10 +37,30 @@ require('cmeasy')(
 );
 ```
 
+### Access your content
+
+```js
+require('http').get({
+  host: '127.0.0.1',
+  path: '/api/v1/content/homePage'
+});
+```
+
+__Or__
+
+```js
+
+require('cmeasy')({ /* ... */ })
+  .then(function(cmeasy){
+    cmeasy.getModel('homePage').index();
+  });
+
+```
+
 ## Installation
 
 ```bash
-npm install cmeasy
+npm install cmeasy --save
 ```
 
 ## Demo
@@ -104,6 +125,10 @@ ___
 
 TODO
 
+ - Define content models via config or web client
+ - Content and content model CRUD API
+ - User management - with + without email service
+ - 
 
 
 ## Roadmap
@@ -121,7 +146,9 @@ TODO - Give these a priority
 - More field types + field type plugin api
 - Order property for fields presentation order in form
 - JSON export / import
-
+- Improve protractor automation coverage
+- Performance test mongo
+- Performance test API
 
 ## Build & Development
 
