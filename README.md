@@ -57,6 +57,12 @@ require('cmeasy')({ /* ... */ })
 
 ```
 
+__Or__
+
+```html
+<script src="api/v1/content.js"></script>
+```
+
 ## Installation
 
 ```bash
