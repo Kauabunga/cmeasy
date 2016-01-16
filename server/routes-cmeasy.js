@@ -159,7 +159,7 @@ function getAllContent(cmeasy){
               return {[indexResult[0][cmeasy.getIdKey()]]: indexResult };
             }
             else {
-              return undefined;
+              return {};
             }
           });
         })
