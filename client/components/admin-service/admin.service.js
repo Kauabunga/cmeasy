@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('cmeasyApp')
-  .factory('Admin', function Admin($http, $q, $log, $cacheFactory, $rootScope, $window, $state, appConfig, $timeout) {
+  .factory('Admin', function Admin($http, $q, $log, $cacheFactory, $rootScope, $window, $state, appConfig, $timeout, Analytics) {
 
     var adminCache = $cacheFactory('adminCache');
 
@@ -15,10 +15,7 @@ angular.module('cmeasyApp')
     function init(){
 
       //put initial cache of getModels from index.template injection
-      getCache().put(appConfig.apiRoute + '/schemacomplete', [
-        200,
-        window._cmeasy.models
-      ]);
+      getCache().put(appConfig.apiRoute + '/schemacomplete', [ 200, window._cmeasy.models ]);
 
       $timeout(preload, 500);
 
@@ -73,6 +70,8 @@ angular.module('cmeasyApp')
         });
     }
 
+
+
     /**
      *
      */
@@ -107,6 +106,7 @@ angular.module('cmeasyApp')
      */
     function saveItem(type, item) {
       return $http.post(appConfig.apiRoute + '/' + type, item)
+        .then(sendAnalytics('Save', type))
         .then(handleChangeResponseForType(type))
         .then(getDataFromSuccess);
     }
@@ -119,6 +119,7 @@ angular.module('cmeasyApp')
      */
     function createItem(type, item) {
       return $http.post( appConfig.apiRoute + '/' + type, item)
+        .then(sendAnalytics('Create', type))
         .then(handleChangeResponseForType(type))
         .then(getDataFromSuccess);
     }
@@ -132,7 +133,6 @@ angular.module('cmeasyApp')
     function handleChangeResponseForType(type){
       return function(response) {
         $log.debug('Changed item response', response);
-
 
         return $q.all([
           getModels({force: true}),
@@ -192,6 +192,7 @@ angular.module('cmeasyApp')
      */
     function deleteItem(type, id) {
       return $http.delete(appConfig.apiRoute + '/' + type + '/' + id)
+        .then(sendAnalytics('Delete', type))
         .then(handleChangeResponseForType(type))
         .then(getDataFromSuccess);
     }
@@ -227,6 +228,17 @@ angular.module('cmeasyApp')
     function getDataFromSuccess(response){
       return response && response.data || [];
     }
+
+    /**
+     *
+     */
+    function sendAnalytics(eventType, eventLabel){
+      return function(response){
+        Analytics.trackEvent(eventType, eventLabel);
+        return response;
+      };
+    }
+
 
     /**
      *
