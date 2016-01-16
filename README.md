@@ -76,10 +76,13 @@ npm install cmeasy --save
 
 See an example running on Heroku [https://cmeasy.herokuapp.com/](https://cmeasy.herokuapp.com/admin/login)
 
-#### Or
+__Or__
 
 Deploy your own demo to Heroku [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
+__Or__
+
+See an example React app using the content on [jsfiddle.net](https://jsfiddle.net/Kauabunga/69z2wepo/27741)
 ___
 
 See [server/options.js](https://github.com/Kauabunga/cmeasy/blob/master/server/options.js) for the complete demo configuration
