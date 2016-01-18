@@ -87,6 +87,18 @@ ___
 
 See [server/options.js](https://github.com/Kauabunga/cmeasy/blob/master/server/options.js) for the complete demo configuration
 
+
+
+## Features
+
+TODO
+
+ - Define content models via config or web client
+ - Content and content model CRUD API
+ - User management - with + without email service
+ - 
+
+
 ## Options
 
 
@@ -128,19 +140,20 @@ require('cmeasy')(
 (Changes planned to define a mongoose-like plugin interface)
 
 
-___
-
-[See website for complete API (TODO)](https://cmeasy.herokuapp.com/admin/login)
-
-
-## Features
+### Config doc
 
 TODO
 
- - Define content models via config or web client
- - Content and content model CRUD API
- - User management - with + without email service
- - 
+### API doc
+
+TODO
+
+### Controller doc
+
+TODO
+
+
+[See website for complete API (TODO)](https://cmeasy.herokuapp.com/admin/login)
 
 
 ## Roadmap
