@@ -46,6 +46,9 @@
     "uuid": "^2.0.1"
   },
   "devDependencies": {
+    "@types/express": "^4.0.33",
+    "@types/mongoose": "^4.5.36",
+    "@types/node": "^6.0.42",
     "autoprefixer": "^6.0.0",
     "babel-core": "^5.6.4",
     "chai": "^3.2.0",
