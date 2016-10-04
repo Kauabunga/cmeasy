@@ -183,12 +183,13 @@ class CmeasyOptions {
 
   //TODO config urls
   connectToMongo(){
-    var mongoose = this.getMongoose();
-    mongoose.connect(config.mongo.uri, config.mongo.options);
-    mongoose.connection.on('error', function(err) {
-      console.error('MongoDB connection error: ' + err);
-      process.exit(-1);
-    });
+    if (!mongoose.connection.readyState) {
+      mongoose.connect(config.mongo.uri, config.mongo.options);
+      mongoose.connection.on('error', function(err) {
+        console.error('MongoDB connection error: ' + err);
+        process.exit(-1);
+      });
+    }
   }
 
   //TODO always seed - i.e. fix tests to handle initial seed
