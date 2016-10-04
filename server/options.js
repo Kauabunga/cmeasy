@@ -1,9 +1,7 @@
 'use strict';
 
-import express from 'express';
 import mongoose from 'mongoose';
 mongoose.Promise = require('bluebird');
-import http from 'http';
 
 // TODO remove the idea of a cmeasy config file
 import config from './config/environment';
@@ -14,9 +12,6 @@ export default function() {
 
     // Use a mongoose instance defined outside of the Cmeasy scope
     mongoose: getMongoose(),
-
-    // Use an express app instance defined outside of the Cmeasy scope
-    express: getExpress(),
 
     rootRoute: 'admin',
 
@@ -55,9 +50,6 @@ function getBlogModel() {
   }
 }
 
-/**
- *
- */
 function getHomePageModel() {
   return {
 
@@ -71,37 +63,6 @@ function getHomePageModel() {
         default: 'Default Home Page Title'
       }
     }
-  }
-}
-
-/**
- *
- * TODO Extend this example a little farther so we are able to serve up a static index / another route entirely
- * TODO Validate express addons non conflicting - namespace addons/addons only to selected root route?
- *
- * @returns {*}
- */
-function getExpress() {
-  var app = express();
-  var server = http.createServer(app);
-
-  startServer(app, server);
-
-  return app;
-}
-
-
-/**
- * Start server
- *
- * @param server
- * @returns {Function}
- */
-function startServer(app, server) {
-  return function() {
-    server.listen(config.port, config.ip, function() {
-      console.log('Express server listening on %d, in %s mode', config.port, app.get('env'));
-    });
   }
 }
 
