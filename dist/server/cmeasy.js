@@ -262,7 +262,7 @@ var CmeasyOptions = (function () {
       }
     }
 
-    //TODO always seed - i.e. fix tests to handle initial seed
+    // TODO always seed - i.e. fix tests to handle initial seed
   }, {
     key: 'seedMongo',
     value: function seedMongo() {

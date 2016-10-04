@@ -15,8 +15,10 @@ var _apiUserUserModel = require('../api/user/user.model');
 
 var _apiUserUserModel2 = _interopRequireDefault(_apiUserUserModel);
 
-exports['default'] = function () {
+var debug = require('debug')('cmeasy:config:seed');
 
+exports['default'] = function () {
+  debug('Populating users');
   return _apiUserUserModel2['default'].find({}).removeAsync().then(function () {
     return _apiUserUserModel2['default'].createAsync({
       provider: 'local',
@@ -30,7 +32,7 @@ exports['default'] = function () {
       email: 'admin@admin.com',
       password: 'admin'
     }).then(function (users) {
-      console.log('Finished populating users');
+      debug('Finished populating users');
       return users;
     });
   });

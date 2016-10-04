@@ -50,7 +50,7 @@ function prepareExpressServer(cmeasy) {
   var server;
 
   if (cmeasy.getOptions().isUserDefinedExpressApp()) {
-    //TODO validate correctly configured express app?
+    // TODO validate correctly configured express app?
     app = cmeasy.getOptions().getExpress();
   } else {
     app = cmeasy.getOptions().getExpress()();
