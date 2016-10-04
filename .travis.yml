@@ -1,7 +1,7 @@
 language: node_js
 
 node_js:
-- 4.2.3
+  - 4.2.3
 
 matrix:
   fast_finish: true
@@ -9,8 +9,11 @@ matrix:
   - node_js: 5.1.1
 
 before_script:
-- npm install -g bower grunt-cli
-- bower install
+  - npm install -g bower grunt-cli
+  - bower install
+
+env:
+  - CXX=g++-4.8
 
 services: mongodb
 
