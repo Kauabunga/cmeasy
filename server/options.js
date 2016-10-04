@@ -1,7 +1,3 @@
-/**
- * Main application routes
- */
-
 'use strict';
 
 import express from 'express';
@@ -9,22 +5,17 @@ import mongoose from 'mongoose';
 mongoose.Promise = require('bluebird');
 import http from 'http';
 
-//TODO remove the idea of a cmeasy config file
+// TODO remove the idea of a cmeasy config file
 import config from './config/environment';
 
-
-/**
- *
- */
 export default function() {
-
   return {
     name: 'Example Cmeasy',
 
-    //Use a mongoose instance defined outside of the Cmeasy scope
+    // Use a mongoose instance defined outside of the Cmeasy scope
     mongoose: getMongoose(),
 
-    //Use an express app instance defined outside of the Cmeasy scope
+    // Use an express app instance defined outside of the Cmeasy scope
     express: getExpress(),
 
     rootRoute: 'admin',
@@ -34,14 +25,9 @@ export default function() {
       getBlogModel()
     ]
   };
-
 }
 
-
-/**
- *
- */
-function getBlogModel(){
+function getBlogModel() {
   return {
 
     name: 'Blog Post',
@@ -72,7 +58,7 @@ function getBlogModel(){
 /**
  *
  */
-function getHomePageModel(){
+function getHomePageModel() {
   return {
 
     name: 'Home Page',
@@ -95,11 +81,11 @@ function getHomePageModel(){
  *
  * @returns {*}
  */
-function getExpress(){
+function getExpress() {
   var app = express();
   var server = http.createServer(app);
 
-  setImmediate(startServer(app, server));
+  startServer(app, server);
 
   return app;
 }
@@ -112,20 +98,20 @@ function getExpress(){
  * @returns {Function}
  */
 function startServer(app, server) {
-  return function(){
+  return function() {
     server.listen(config.port, config.ip, function() {
       console.log('Express server listening on %d, in %s mode', config.port, app.get('env'));
     });
   }
 }
 
-function getMongoose(){
-
-  mongoose.connect(config.mongo.uri, config.mongo.options);
-  mongoose.connection.on('error', function(err) {
-    console.error('MongoDB connection error: ' + err);
-    process.exit(-1);
-  });
-
+function getMongoose() {
+  if (!mongoose.connection.readyState) {
+    mongoose.connect(config.mongo.uri, config.mongo.options);
+    mongoose.connection.on('error', function(err) {
+      console.error('MongoDB connection error: ' + err);
+      process.exit(-1);
+    });
+  }
   return mongoose;
 }
