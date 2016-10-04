@@ -1,31 +1,31 @@
 'use strict';
 
 const cmeasy = require('../../app');
+const express = require('express');
 import User from './user.model';
 import request from 'supertest';
-const express = require('express');
 
-describe.only('User API:', function () {
+describe('User API:', function() {
 
   this.timeout(10000);
 
   let user;
   let adminUser;
   let app;
-  before(function () {
+  before(function() {
     app = express();
-    return User.removeAsync().then(function () {
+    return User.removeAsync().then(function() {
       user = new User({
         name: 'Fake User',
         email: 'test@example.com',
         password: 'password'
       });
       return user.saveAsync()
-        .then(function (savedUser) {
+        .then(function(savedUser) {
           user = savedUser.toObject();
         });
     })
-      .then(function () {
+      .then(function() {
         adminUser = new User({
           name: 'Admin User',
           email: 'admin@example.com',
@@ -33,11 +33,11 @@ describe.only('User API:', function () {
           role: 'admin'
         });
         return adminUser.saveAsync()
-          .then(function (savedUser) {
+          .then(function(savedUser) {
             adminUser = savedUser.toObject();
           });
       })
-      .then(function () {
+      .then(function() {
         return cmeasy({
           express: app
         });
@@ -45,14 +45,14 @@ describe.only('User API:', function () {
   });
 
   // Clear users after testing
-  after(function () {
+  after(function() {
     return User.removeAsync();
   });
 
-  describe('GET /api/users', function () {
+  describe('GET /api/users', function() {
 
     let token;
-    before(function (done) {
+    before(function(done) {
       request(app)
         .post('/admin/auth/local')
         .send({
@@ -67,7 +67,7 @@ describe.only('User API:', function () {
         });
     });
 
-    it('should not get a list of users if they are not authenticated', function (done) {
+    it('should not get a list of users if they are not authenticated', function(done) {
       request(app)
         .get('/admin/api/v1/users')
         .expect(403)
@@ -77,7 +77,7 @@ describe.only('User API:', function () {
         });
     });
 
-    it('should get a list of all users', function (done) {
+    it('should get a list of all users', function(done) {
       request(app)
         .get('/admin/api/v1/users')
         .set('authorization', 'Bearer ' + token)
@@ -89,7 +89,7 @@ describe.only('User API:', function () {
         });
     });
 
-    it('should get a single user', function (done) {
+    it('should get a single user', function(done) {
       request(app)
         .get('/admin/api/v1/users/' + user._id)
         .set('authorization', 'Bearer ' + token)
@@ -103,10 +103,10 @@ describe.only('User API:', function () {
 
   });
 
-  describe('POST /api/users', function () {
+  describe('POST /api/users', function() {
 
     var token;
-    before(function (done) {
+    before(function(done) {
       request(app)
         .post('/admin/auth/local')
         .send({
@@ -121,7 +121,7 @@ describe.only('User API:', function () {
         });
     });
 
-    it('should fail to create a user', function (done) {
+    it('should fail to create a user', function(done) {
       var createUser = {
         email: 'create@create.com'
       };
@@ -141,7 +141,7 @@ describe.only('User API:', function () {
     });
 
 
-    it('should fail to create a user with the same email', function (done) {
+    it('should fail to create a user with the same email', function(done) {
       var createUser = {
         email: 'test@example.com'
       };
@@ -157,7 +157,7 @@ describe.only('User API:', function () {
     });
 
     //Note: this needs to run after the GET tests otherwise there will be an added user to the index test
-    it('should create a user', function (done) {
+    it('should create a user', function(done) {
       var createUser = {
         email: 'create@create.com',
         password: 'create'
@@ -179,12 +179,12 @@ describe.only('User API:', function () {
 
   });
 
-  describe('DELETE /api/users', function () {
+  describe('DELETE /api/users', function() {
 
     var token;
     var deleteUser;
 
-    before(function (done) {
+    before(function(done) {
       request(app)
         .post('/admin/auth/local')
         .send({
@@ -204,7 +204,7 @@ describe.only('User API:', function () {
           });
 
           return deleteUser.saveAsync()
-            .then(function (savedUser) {
+            .then(function(savedUser) {
               deleteUser = savedUser.toObject();
               done();
             });
@@ -212,7 +212,7 @@ describe.only('User API:', function () {
         });
     });
 
-    it('should destroy a user', function (done) {
+    it('should destroy a user', function(done) {
       request(app)
         .delete('/admin/api/v1/users/' + deleteUser._id)
         .set('authorization', 'Bearer ' + token)
@@ -228,10 +228,10 @@ describe.only('User API:', function () {
 
   });
 
-  describe('GET /api/users/me', function () {
+  describe('GET /api/users/me', function() {
 
     var token;
-    before(function (done) {
+    before(function(done) {
       request(app)
         .post('/admin/auth/local')
         .send({
@@ -246,7 +246,7 @@ describe.only('User API:', function () {
         });
     });
 
-    it('should respond with a user profile when authenticated', function (done) {
+    it('should respond with a user profile when authenticated', function(done) {
       request(app)
         .get('/admin/api/v1/users/me')
         .set('authorization', 'Bearer ' + token)
@@ -258,7 +258,7 @@ describe.only('User API:', function () {
         });
     });
 
-    it('should respond with a 401 when not authenticated', function (done) {
+    it('should respond with a 401 when not authenticated', function(done) {
       request(app)
         .get('/admin/api/v1/users/me')
         .expect(401)
