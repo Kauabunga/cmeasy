@@ -29,9 +29,7 @@ var _bluebird = require('bluebird');
 
 var _bluebird2 = _interopRequireDefault(_bluebird);
 
-/**
- *
- */
+var debug = require('debug')('cmeasy:controller:schema');
 
 exports['default'] = function (cmeasy) {
 
@@ -45,7 +43,6 @@ exports['default'] = function (cmeasy) {
 
   /**
    * Gets a list of Generateds
-   *
    */
   function index() {
     return cmeasy.getSchema().find({}).sort(getSchemaSortQuery()).execAsync().then(getUniqueIds(cmeasy)).then(removeMetaSchema(cmeasy));
@@ -53,29 +50,26 @@ exports['default'] = function (cmeasy) {
 
   /**
    * Gets a single Generated from the DB
-   *
    */
   function show(id) {
-
-    console.log('Schema:Show:Start:' + id);
+    debug('show:start:' + id);
 
     return cmeasy.getSchema().find(getSchemaShowQuery(id)).sort(getSchemaSortQuery()).execAsync().then(function (items) {
       return (0, _lodash2['default'])(items).first();
     }).then(function () {
       var item = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
-      console.log('Schema:Show:Finish:' + id + ':' + item);
+      debug('show:finish:' + id + ':' + item);
       return item;
     });
   }
 
   /**
    * Creates a new Generated in the DB
-   *
    */
   function create(item) {
 
-    console.log('Schema:Create:Start:' + (item.meta && item.meta._cmeasyId));
+    debug('Schema:Create:Start:' + (item.meta && item.meta._cmeasyId));
 
     //TODO If there is no schema id then explode??
 
@@ -92,14 +86,13 @@ exports['default'] = function (cmeasy) {
       }
 
     return cmeasy.getSchema().createAsync(getDefaultSchema(cmeasy, item)).then(function (item) {
-      console.log('Schema:Create:Finish:' + (item.meta && item.meta._cmeasyId));
+      debug('create:finish:' + (item.meta && item.meta._cmeasyId));
       return item;
     });
   }
 
   /**
    * Gets the history of an item
-   *
    */
   function history(id) {
     return cmeasy.getSchema().find(getSchemaShowQuery(id)).sort(getSchemaSortQuery()).execAsync();
@@ -113,7 +106,6 @@ exports['default'] = function (cmeasy) {
   }
 
   /**
-   *
    * @param item
    * @returns {*}
    */
@@ -123,9 +115,6 @@ exports['default'] = function (cmeasy) {
     }).value());
   }
 
-  /**
-   *
-   */
   function getSchemaSortQuery() {
     return { 'meta.dateCreated': -1 };
   }
@@ -157,15 +146,13 @@ exports['default'] = function (cmeasy) {
   }
 
   /**
-   * TODO this should be grabbed from the meta schema meta?????
-   *
+   * TODO this should be grabbed from the meta schema meta?
    * TODO create public content types that can be submitted to
    */
   function getBaseSchema(cmeasy, item) {
     var _ref;
 
     return _ref = {
-
       dateCreated: {
         type: 'Date',
         'default': Date.now,
@@ -175,7 +162,6 @@ exports['default'] = function (cmeasy) {
         unique: false,
         required: true
       },
-
       author: {
         type: 'String',
         'default': 'Server',
@@ -184,7 +170,6 @@ exports['default'] = function (cmeasy) {
         disableDisplay: true,
         unique: false
       },
-
       comment: {
         type: 'String',
         'default': 'Server',
@@ -193,7 +178,6 @@ exports['default'] = function (cmeasy) {
         disableDisplay: true,
         unique: false
       }
-
     }, _defineProperty(_ref, cmeasy.getIdKey(), {
       type: 'String',
       'default': getIdFromItem(item, cmeasy),
@@ -216,30 +200,21 @@ exports['default'] = function (cmeasy) {
   }
 };
 
-/**
- *
- */
 function getIdFromItem(item, cmeasy) {
   return item && item.meta && item.meta[cmeasy.getIdKey()];
 }
 
-/**
- *
- */
 function getUniqueIds(cmeasy) {
   return function (entity) {
     return (0, _lodash2['default'])(entity).map(function (item) {
       return item.toObject();
     })
 
-    //TODO this seems to be failing when upgrading to lodash 4.0.0???
+    // TODO this seems to be failing when upgrading to lodash 4.0.0?
     .uniq('meta.' + cmeasy.getIdKey()).value();
   };
 }
 
-/**
- *
- */
 function removeMetaSchema(cmeasy) {
   return function () {
     var items = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
@@ -248,9 +223,6 @@ function removeMetaSchema(cmeasy) {
   };
 }
 
-/**
- *
- */
 function isMetaSchema(cmeasy) {
   return function (item) {
     return !item.meta || item.meta[cmeasy.getIdKey()] !== cmeasy.getSchemaMetaId();

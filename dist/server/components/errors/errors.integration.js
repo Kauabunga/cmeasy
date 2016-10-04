@@ -2,35 +2,41 @@
 
 var _interopRequireDefault = require('babel-runtime/helpers/interop-require-default')['default'];
 
+var _express = require('express');
+
+var _express2 = _interopRequireDefault(_express);
+
 var _supertest = require('supertest');
 
 var _supertest2 = _interopRequireDefault(_supertest);
 
-var _bluebird = require('bluebird');
+var cmeasy = require('../../app');
+var options = require('../../options')();
+var portfinder = require('portfinder');
 
-var _bluebird2 = _interopRequireDefault(_bluebird);
-
-var _uuid = require('uuid');
-
-var _uuid2 = _interopRequireDefault(_uuid);
-
-var _lodash = require('lodash');
-
-var _lodash2 = _interopRequireDefault(_lodash);
-
-/**
- *
- */
-var cmeasy = require('../..');
 describe('Error API:', function () {
 
   this.timeout(10000);
 
-  it('should get 404ed', function (done) {
-    cmeasy.then(function (app) {
-      (0, _supertest2['default'])(app).get('/assets/mooooo').expect(404).end(function (err, res) {
+  var app = undefined;
+  before(function (done) {
+    app = (0, _express2['default'])();
+    options.express = app;
+
+    portfinder.getPort(function (error, port) {
+      if (error) {
+        return done(error);
+      }
+      process.env.PORT = port;
+      cmeasy(options).then(function () {
         done();
       });
+    });
+  });
+
+  it('should get 404ed', function (done) {
+    (0, _supertest2['default'])(app).get('/assets/mooooo').expect(404).end(function (err, res) {
+      done();
     });
   });
 });

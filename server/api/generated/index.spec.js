@@ -31,7 +31,6 @@ var crudStub = {
   destroy: 'crudStub.destroy'
 };
 
-
 // require the index with our stubbed out modules
 var generatedIndex = proxyquire('./index.js', {
   'express': {
@@ -39,13 +38,12 @@ var generatedIndex = proxyquire('./index.js', {
       return routerStub;
     }
   },
-  './generated.controller.crud': function(){ return generatedCtrlStub; }
+  './generated.controller.crud': function() {
+    return generatedCtrlStub;
+  }
 })(crudStub, formlyStub);
 
-
-
-
-describe('Generated API Router:', function() {
+describe.only('Generated API Router:', function() {
 
   it('should return an express router instance', function() {
     generatedIndex.should.equal(routerStub);
@@ -60,7 +58,6 @@ describe('Generated API Router:', function() {
     });
 
   });
-
 
   describe('GET /api/generated/:id', function() {
 
@@ -101,8 +98,6 @@ describe('Generated API Router:', function() {
     });
 
   });
-
-
 
 });
 

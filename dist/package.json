@@ -46,6 +46,9 @@
     "uuid": "^2.0.1"
   },
   "devDependencies": {
+    "@types/express": "^4.0.33",
+    "@types/mongoose": "^4.5.36",
+    "@types/node": "^6.0.42",
     "autoprefixer": "^6.0.0",
     "babel-core": "^5.6.4",
     "chai": "^3.2.0",
@@ -53,6 +56,7 @@
     "chai-things": "^0.2.0",
     "cheerio": "^0.19.0",
     "connect-livereload": "^0.5.3",
+    "debug": "^2.2.0",
     "grunt": "~0.4.5",
     "grunt-angular-templates": "^0.5.4",
     "grunt-babel": "~5.0.0",
@@ -107,7 +111,9 @@
     "mocha": "^2.2.5",
     "open": "~0.0.4",
     "phantomjs": "^1.9.18",
+    "portfinder": "^1.0.7",
     "proxyquire": "^1.0.1",
+    "ramda": "^0.22.1",
     "requirejs": "~2.1.11",
     "sinon": "^1.16.1",
     "sinon-chai": "^2.8.0",

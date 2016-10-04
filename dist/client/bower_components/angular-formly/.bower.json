@@ -47,7 +47,7 @@
     "tag": "v7.3.9",
     "commit": "0dd0a04a8c74b58adeafb8fcfc070f5eb00fb387"
   },
-  "_source": "git://github.com/formly-js/angular-formly.git",
+  "_source": "https://github.com/formly-js/angular-formly.git",
   "_target": "~7.3.9",
   "_originalSource": "angular-formly"
 }

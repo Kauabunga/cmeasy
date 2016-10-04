@@ -44,7 +44,7 @@
     "tag": "v1.5.2",
     "commit": "4d77627691b903900980d37ffa888e1d60a6404c"
   },
-  "_source": "git://github.com/TheSharpieOne/angular-validation-match.git",
+  "_source": "https://github.com/TheSharpieOne/angular-validation-match.git",
   "_target": "~1.5.2",
   "_originalSource": "angular-validation-match"
 }

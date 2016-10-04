@@ -108,6 +108,7 @@ var Cmeasy = (function () {
     key: 'createModel',
     value: function createModel(model) {
       var existingModel = this.getModel(model.meta._cmeasyId);
+
       if (existingModel) {
         return existingModel;
       } else {
@@ -128,8 +129,20 @@ var Cmeasy = (function () {
 
       return {
         meta: (_meta = {}, _defineProperty(_meta, this.getIdKey(), _lodash2['default'].camelCase(model.name)), _defineProperty(_meta, 'author', 'Cmeasy User'), _defineProperty(_meta, 'comment', 'Cmeasy init'), _defineProperty(_meta, 'singleton', model.singleton || false), _defineProperty(_meta, 'disableDelete', model.disableDelete || false), _defineProperty(_meta, 'disableCreate', model.disableCreate || false), _meta),
-        definition: model.definition || {}
+        definition: this.getDefaultDefinition(model.definition || {})
       };
+    }
+  }, {
+    key: 'getDefaultDefinition',
+    value: function getDefaultDefinition(definition) {
+      var index = 0;
+
+      //Add a default order to the items
+      (0, _lodash2['default'])(definition).map(function (definitionItem) {
+        definitionItem.order = definitionItem.order || ++index * 10;
+      }).value();
+
+      return definition;
     }
   }, {
     key: 'getOptions',
@@ -240,12 +253,13 @@ var CmeasyOptions = (function () {
   _createClass(CmeasyOptions, [{
     key: 'connectToMongo',
     value: function connectToMongo() {
-      var mongoose = this.getMongoose();
-      mongoose.connect(_configEnvironmentIndex2['default'].mongo.uri, _configEnvironmentIndex2['default'].mongo.options);
-      mongoose.connection.on('error', function (err) {
-        console.error('MongoDB connection error: ' + err);
-        process.exit(-1);
-      });
+      if (!mongoose.connection.readyState) {
+        mongoose.connect(_configEnvironmentIndex2['default'].mongo.uri, _configEnvironmentIndex2['default'].mongo.options);
+        mongoose.connection.on('error', function (err) {
+          console.error('MongoDB connection error: ' + err);
+          process.exit(-1);
+        });
+      }
     }
 
     //TODO always seed - i.e. fix tests to handle initial seed

@@ -48,7 +48,7 @@ function createModelColumns(id, schemaController) {
 function createModelFormlyFields(id, schemaController) {
   return function () {
     return schemaController.show(id).then(getSchemaDefinition).then(_cmeasyFlattenService2['default']).then(function (modelSchema) {
-      return (0, _lodash2['default'])(modelSchema).map(getPathField).filter().value();
+      return (0, _lodash2['default'])(modelSchema).sortBy('order').map(getPathField).filter().value();
     });
   };
 }
@@ -106,11 +106,11 @@ function getFieldTypeMap() {
     },
 
     string: function string(path) {
-      if (path.html) {
-        return { type: 'WYSIWYG' };
-      } else {
-        return { type: 'mdInput' };
-      }
+      return { type: 'mdInput' };
+    },
+
+    html: function html(path) {
+      return { type: 'WYSIWYG' };
     },
 
     number: function number(path) {

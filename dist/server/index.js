@@ -11,6 +11,5 @@ if (env === 'development' || env === 'test') {
 }
 
 // Export the application
-//TODO create
 exports = module.exports = require('./app')(require('./options')());
 //# sourceMappingURL=index.js.map
