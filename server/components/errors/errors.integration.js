@@ -1,29 +1,39 @@
 'use strict';
 
-
-var cmeasy = require('../..');
+const cmeasy = require('../../app');
+const options = require('../../options')();
+const portfinder = require('portfinder');
+import express from 'express';
 import request from 'supertest';
-import Promise from 'bluebird';
-import uuid from 'uuid';
-import _ from 'lodash';
 
-
-/**
- *
- */
 describe('Error API:', function() {
 
   this.timeout(10000);
 
-  it('should get 404ed', function(done) {
-    cmeasy.then(function(app) {
-      request(app)
-        .get('/assets/mooooo')
-        .expect(404)
-        .end((err, res) => {
+  let app;
+  before(function(done) {
+    app = express();
+    options.express = app;
+
+    portfinder.getPort(function(error, port) {
+      if (error) {
+        return done(error);
+      }
+      process.env.PORT = port;
+      cmeasy(options)
+        .then(function() {
           done();
         });
     });
+  });
+
+  it('should get 404ed', function(done) {
+    request(app)
+      .get('/assets/mooooo')
+      .expect(404)
+      .end((err, res) => {
+        done();
+      });
   });
 
 });
