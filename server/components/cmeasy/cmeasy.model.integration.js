@@ -1,61 +1,70 @@
 'use strict';
 
-
-var cmeasy = require('../..');
+const cmeasy = require('../../app');
+const express = require('express');
+const options = require('../../options')();
+const portfinder = require('portfinder');
 import request from 'supertest';
 import Promise from 'bluebird';
 import uuid from 'uuid';
 import _ from 'lodash';
 
-
-/**
- *
- */
 describe('Cmeasy blogPost model API:', function() {
 
-  var blogPostItem;
   this.timeout(6000);
 
+  let app;
+  let blogPostItem;
+  before(function(done) {
+    app = express();
+    options.express = app;
+
+    portfinder.getPort(function(error, port) {
+      if (error) {
+        return done(error);
+      }
+      process.env.PORT = port;
+      cmeasy(options)
+        .then(function() {
+          done();
+        });
+    });
+  });
 
   describe('POST /api/v1/content/blogPost', function() {
     before(createDummyBlogPost);
     after(deleteDummyBlogPost);
     it('should create a blog post entry', function(done) {
       var newBlogPost = _.merge(blogPostItem, getDefaultBlogPost());
-      cmeasy.then(function(app) {
-        request(app)
-          .post('/admin/api/v1/content/blogPost')
-          .send(newBlogPost)
-          .expect(200)
-          .expect('Content-Type', /json/)
-          .end((err, res) => {
-            res.body.title.toString().should.equal(newBlogPost.title.toString());
-            res.body.content.toString().should.equal(newBlogPost.content.toString());
-            done();
-          });
-      });
+      request(app)
+        .post('/admin/api/v1/content/blogPost')
+        .send(newBlogPost)
+        .expect(200)
+        .expect('Content-Type', /json/)
+        .end((err, res) => {
+          console.log(res.body);
+          res.body.title.toString().should.equal(newBlogPost.title.toString());
+          res.body.content.toString().should.equal(newBlogPost.content.toString());
+          done();
+        });
     });
   });
-
 
 
   describe('GET /api/v1/content/blogPost', function() {
     before(createDummyBlogPost);
     after(deleteDummyBlogPost);
     it('should get a blog post entry', function(done) {
-      cmeasy.then(function(app) {
-        request(app)
-          .get('/admin/api/v1/content/blogPost/' + blogPostItem._cmeasyInstanceId.toString())
-          .expect(200)
-          .expect('Content-Type', /json/)
-          .end((err, res) => {
-            res.body.title.toString().should.equal(blogPostItem.title.toString());
-            res.body.content.toString().should.equal(blogPostItem.content.toString());
-            done();
-          });
-      });
+      request(app)
+        .get('/admin/api/v1/content/blogPost/' + blogPostItem._cmeasyInstanceId.toString())
+        .expect(200)
+        .expect('Content-Type', /json/)
+        .end((err, res) => {
+          res.body.title.toString().should.equal(blogPostItem.title.toString());
+          res.body.content.toString().should.equal(blogPostItem.content.toString());
+          done();
+        });
     });
-
   });
 
 
@@ -69,131 +78,98 @@ describe('Cmeasy blogPost model API:', function() {
     });
     after(deleteAllDummyBlogPost);
     it('should get a all blog post entry', function(done) {
-      cmeasy.then(function(app) {
-        request(app)
-          .get('/admin/api/v1/content/blogPost')
-          .expect(200)
-          .expect('Content-Type', /json/)
-          .end((err, res) => {
-            res.body.length.should.equal(5);
-            done();
-          });
-      });
+      request(app)
+        .get('/admin/api/v1/content/blogPost')
+        .expect(200)
+        .expect('Content-Type', /json/)
+        .end((err, res) => {
+          res.body.length.should.equal(5);
+          done();
+        });
     });
-
   });
 
 
-  /**
-   *
-   * @returns {*}
-   */
   function createDummyBlogPost() {
-    return cmeasy.then(function(app) {
-      return new Promise((success)=>{
-        return request(app)
-          .post('/admin/api/v1/content/blogPost')
-          .send(getDefaultBlogPost())
-          .expect(200)
-          .expect('Content-Type', /json/)
-          .end((err, res) => {
-            blogPostItem = res.body;
-            success(res.body);
-          });
-      })
+    return new Promise((success) => {
+      return request(app)
+        .post('/admin/api/v1/content/blogPost')
+        .send(getDefaultBlogPost())
+        .expect(200)
+        .expect('Content-Type', /json/)
+        .end((err, res) => {
+          console.log(res.statusCode);
+          console.log(res.body);
+          blogPostItem = res.body;
+          success(res.body);
+        });
     });
   }
 
-  /**
-   *
-   * @returns {*}
-   */
-  function deleteDummyBlogPost(){
-    return cmeasy.then(function(app) {
-      return new Promise((success)=>{
-        return request(app)
-          .delete('/admin/api/v1/content/blogPost/' + blogPostItem._cmeasyInstanceId.toString())
-          .expect(200)
-          .expect('Content-Type', /json/)
-          .end((err, res) => {
-            success();
-          });
-      })
+  function deleteDummyBlogPost() {
+    return new Promise((success) => {
+      return request(app)
+        .delete('/admin/api/v1/content/blogPost/' + blogPostItem._cmeasyInstanceId.toString())
+        .expect(200)
+        .expect('Content-Type', /json/)
+        .end((err, res) => {
+          success();
+        });
     });
   }
 
-  /**
-   *
-   * @returns {*}
-   */
-  function deleteAllDummyBlogPost(){
-    return cmeasy.then(function(app) {
-      return new Promise((success)=>{
-        request(app)
-          .get('/admin/api/v1/content/blogPost')
-          .expect(200)
-          .expect('Content-Type', /json/)
-          .end((err, res) => {
-            return Promise.all(
-
-              _(res.body).map((item) => {
-                return new Promise((success, failure) => {
-                  request(app)
-                    .delete('/admin/api/v1/content/blogPost/' + item._cmeasyInstanceId.toString())
-                    .expect(200)
-                    .expect('Content-Type', /json/)
-                    .end((err, res) => {
-                      if(err){
-                        failure();
-                      }
-                      else {
-                        success(res.body);
-                      }
-                    });
-                });
-              }).value()
-
-            ).then((res)=>{return success(res);});
-
+  function deleteAllDummyBlogPost() {
+    return new Promise((success) => {
+      request(app)
+        .get('/admin/api/v1/content/blogPost')
+        .expect(200)
+        .expect('Content-Type', /json/)
+        .end((err, res) => {
+          return Promise.all(
+            _(res.body).map((item) => {
+              return new Promise((success, failure) => {
+                request(app)
+                  .delete('/admin/api/v1/content/blogPost/' + item._cmeasyInstanceId.toString())
+                  .expect(200)
+                  .expect('Content-Type', /json/)
+                  .end((err, res) => {
+                    if (err) {
+                      failure();
+                    }
+                    else {
+                      success(res.body);
+                    }
+                  });
+              });
+            }).value()
+          ).then((res) => {
+            return success(res);
           });
-      })
+
+        })
     });
   }
 
-  /**
-   *
-   * @returns {{title: string, content: string}}
-   */
-  function getDefaultBlogPost(){
+  function getDefaultBlogPost() {
     return {
       title: 'Test blog title ' + uuid.v4(),
       content: 'Test blog content ' + uuid.v4()
     }
   }
 
+  /**
+   * Singleton item
+   */
+  describe('Cmeasy homePage model API:', function() {
 
-});
+    this.timeout(6000);
 
-
-
-/**
- *
- * Singleton item
- *
- */
-describe('Cmeasy homePage model API:', function() {
-
-  var homePageItem;
-
-  this.timeout(6000);
-
-
-  describe('POST /api/v1/content/homePage', function() {
-    before(createDummyHomePage);
-    after(deleteDummyHomePage);
-    it('should create a home page entry', function(done) {
-      var newHomePage = _.merge(homePageItem, getDefaultHomePage());
-      cmeasy.then(function(app) {
+    let homePageItem;
+    describe('POST /api/v1/content/homePage', function() {
+      before(createDummyHomePage);
+      after(deleteDummyHomePage);
+      it('should create a home page entry', function(done) {
+        var newHomePage = _.merge(homePageItem, getDefaultHomePage());
         request(app)
           .post('/admin/api/v1/content/homePage')
           .send(newHomePage)
@@ -205,14 +181,11 @@ describe('Cmeasy homePage model API:', function() {
           });
       });
     });
-  });
 
-
-  describe('GET /api/v1/content/homePage', function() {
-    before(createDummyHomePage);
-    after(deleteDummyHomePage);
-    it('should get a home page entry', function(done) {
-      cmeasy.then(function(app) {
+    describe('GET /api/v1/content/homePage', function() {
+      before(createDummyHomePage);
+      after(deleteDummyHomePage);
+      it('should get a home page entry', function(done) {
         request(app)
           .get('/admin/api/v1/content/homePage/' + homePageItem._cmeasyId.toString())
           .expect(200)
@@ -223,18 +196,16 @@ describe('Cmeasy homePage model API:', function() {
           });
       });
     });
-  });
 
 
-  describe('GET /api/v1/content/homePage with multiple versions', function() {
-    before(() => {
-      return createDummyHomePage()
-        .then(createDummyHomePage)
-        .then(createDummyHomePage);
-    });
-    after(deleteDummyHomePage);
-    it('should only get a single home page entry', function(done) {
-      cmeasy.then(function(app) {
+    describe('GET /api/v1/content/homePage with multiple versions', function() {
+      before(() => {
+        return createDummyHomePage()
+          .then(createDummyHomePage)
+          .then(createDummyHomePage);
+      });
+      after(deleteDummyHomePage);
+      it('should only get a single home page entry', function(done) {
         request(app)
           .get('/admin/api/v1/content/homePage')
           .expect(200)
@@ -245,18 +216,16 @@ describe('Cmeasy homePage model API:', function() {
           });
       });
     });
-  });
 
-  describe('GET /api/v1/content/homePage history with multiple versions', function() {
-    before(() => {
-      return createDummyHomePage()
-        .then(createDummyHomePage)
-        .then(createDummyHomePage)
-        .then(createDummyHomePage);
-    });
-    after(deleteDummyHomePage);
-    it('should only get a single home page entry', function(done) {
-      cmeasy.then(function(app) {
+    describe('GET /api/v1/content/homePage history with multiple versions', function() {
+      before(() => {
+        return createDummyHomePage()
+          .then(createDummyHomePage)
+          .then(createDummyHomePage)
+          .then(createDummyHomePage);
+      });
+      after(deleteDummyHomePage);
+      it('should only get a single home page entry', function(done) {
         request(app)
           .get('/admin/api/v1/content/homePage/homePage/history')
           .expect(200)
@@ -267,12 +236,10 @@ describe('Cmeasy homePage model API:', function() {
           });
       });
     });
-  });
 
-  describe('GET /api/v1/content/homePage without prior instance', function() {
-    after(deleteDummyHomePage);
-    it('should get a home page entry', function(done) {
-      cmeasy.then(function(app) {
+    describe('GET /api/v1/content/homePage without prior instance', function() {
+      after(deleteDummyHomePage);
+      it('should get a home page entry', function(done) {
         request(app)
           .get('/admin/api/v1/content/homePage/' + 'homePage')
           .expect(200)
@@ -284,16 +251,8 @@ describe('Cmeasy homePage model API:', function() {
       });
     });
 
-  });
-
-
-  /**
-   *
-   * @returns {*}
-   */
-  function createDummyHomePage() {
-    return cmeasy.then(function(app) {
-      return new Promise((success)=>{
+    function createDummyHomePage() {
+      return new Promise((success) => {
         return request(app)
           .post('/admin/api/v1/content/homePage')
           .send(getDefaultHomePage())
@@ -303,17 +262,11 @@ describe('Cmeasy homePage model API:', function() {
             homePageItem = res.body;
             success(res.body);
           });
-      })
-    });
-  }
+      });
+    }
 
-  /**
-   *
-   * @returns {*}
-   */
-  function deleteDummyHomePage(){
-    return cmeasy.then(function(app) {
-      return new Promise((success)=>{
+    function deleteDummyHomePage() {
+      return new Promise((success) => {
         return request(app)
           .delete('/admin/api/v1/content/homePage/' + homePageItem._cmeasyId.toString())
           .expect(200)
@@ -321,19 +274,13 @@ describe('Cmeasy homePage model API:', function() {
           .end((err, res) => {
             success();
           });
-      })
-    });
-  }
-
-  /**
-   *
-   * @returns {{title: string, content: string}}
-   */
-  function getDefaultHomePage(){
-    return {
-      title: 'Test home page title ' + uuid.v4()
+      });
     }
-  }
 
-
+    function getDefaultHomePage() {
+      return {
+        title: 'Test home page title ' + uuid.v4()
+      }
+    }
+  });
 });

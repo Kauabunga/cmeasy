@@ -1,14 +1,9 @@
 'use strict';
 
 import _ from 'lodash';
-import uuid from 'uuid';
-import Promise from 'bluebird';
+const R = require('ramda');
 
-
-/**
- *
- */
-export default function(namespace, mongoose, cmeasy){
+export default function(namespace, mongoose, cmeasy) {
   var schemaModel = createMongooseModel(namespace, mongoose, cmeasy);
 
   addMetaSchema(schemaModel, cmeasy);
@@ -16,17 +11,20 @@ export default function(namespace, mongoose, cmeasy){
   return schemaModel;
 }
 
-/**
- *
- */
-function createMongooseModel(namespace, mongoose, cmeasy){
-  return mongoose.model(getMongoSchemaName(namespace, cmeasy), new mongoose.Schema(getSchemaType(cmeasy), getOptions()));
+function createMongooseModel(namespace, mongoose, cmeasy) {
+  let model;
+  if (R.contains(getMongoSchemaName(namespace, cmeasy), mongoose.modelNames())) {
+    model = mongoose.model(getMongoSchemaName(namespace, cmeasy));
+  } else {
+    model = mongoose.model(
+      getMongoSchemaName(namespace, cmeasy),
+      new mongoose.Schema(getSchemaType(cmeasy), getOptions())
+    );
+  }
+  return model;
 }
 
-/**
- *
- */
-function getSchemaType(cmeasy){
+function getSchemaType(cmeasy) {
   return {
     meta: getMetaType(cmeasy),
     definition: {}
@@ -34,16 +32,13 @@ function getSchemaType(cmeasy){
 }
 
 /**
- *
  * Defines both the mongoose Schema.meta types and the MetaSchema.definition.meta instance
  *
  * TODO reuse this for defaulting a new Schema.meta values
- *
  */
-function getMetaType(cmeasy){
+function getMetaType(cmeasy) {
 
   return {
-
     [cmeasy.getIdKey()]: {
       $type: String,
       displayColumn: true,
@@ -87,56 +82,35 @@ function getMetaType(cmeasy){
   }
 }
 
-/**
- *
- */
-function getOptions(){
+function getOptions() {
   return {
     strict: false,
     typeKey: '$type'
   };
 }
 
-/**
- * Meta Schema defining schema structure/definition
- */
-function addMetaSchema(schemaModel, cmeasy){
+function addMetaSchema(schemaModel, cmeasy) {
   schemaModel.createAsync(getMetaSchema(cmeasy));
   return schemaModel;
 }
 
-/**
- *
- */
-function getMongoSchemaName(namespace, cmeasy){
+function getMongoSchemaName(namespace, cmeasy) {
   return `${getSafeName(namespace)}_Schema_${cmeasy.getSchemaMetaId()}`;
 }
 
-/**
- *
- * @param name
- */
-function getSafeName(name){
+function getSafeName(name) {
   return _.camelCase((name || '').toString().replace(/\s/g, ''));
 }
 
-/**
- * Replace all $type references with type
- */
-function getMetaSchemaType(cmeasy){
+function getMetaSchemaType(cmeasy) {
   return _(getMetaType(cmeasy))
-    .map(function(item, key){
+    .map(function(item, key) {
       return {[key]: _.merge(_.omit(item, '$type'), {type: getPrototypeName(item.$type)})};
     })
     .reduce(_.merge);
 }
 
-/**
- *
- * @param prototype
- * @returns {*}
- */
-function getPrototypeName(prototype){
+function getPrototypeName(prototype) {
   if (typeof prototype.name !== 'undefined') {
     return prototype.name;
   }
@@ -145,13 +119,8 @@ function getPrototypeName(prototype){
   }
 }
 
-/**
- *
- * @param model
- */
-function getMetaSchema(cmeasy){
+function getMetaSchema(cmeasy) {
   return {
-
     meta: {
       dateCreated: Date.now(),
       author: 'Server',
