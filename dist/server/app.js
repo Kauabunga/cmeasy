@@ -1,7 +1,3 @@
-/**
- * Main application file
- */
-
 'use strict';
 
 var _interopRequireDefault = require('babel-runtime/helpers/interop-require-default')['default'];
@@ -14,21 +10,10 @@ var _http = require('http');
 
 var _http2 = _interopRequireDefault(_http);
 
-var _lodash = require('lodash');
-
-var _lodash2 = _interopRequireDefault(_lodash);
-
 var _cmeasy = require('./cmeasy');
 
 var _cmeasy2 = _interopRequireDefault(_cmeasy);
 
-/**
- * Expose app
- *
- * TODO expose as app and also expose as express route
- *
- * @type {Function}
- */
 exports = module.exports = function initialiseCmeasy() {
   var userOptions = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
@@ -51,6 +36,7 @@ exports = module.exports = function initialiseCmeasy() {
 
     require('./routes')(app, cmeasy);
 
+    console.log(cmeasy.getOptions().isUserDefinedExpressApp());
     if (!cmeasy.getOptions().isUserDefinedExpressApp()) {
       setImmediate(startExpressServer(server));
     }
@@ -60,7 +46,6 @@ exports = module.exports = function initialiseCmeasy() {
 };
 
 function prepareExpressServer(cmeasy) {
-
   var app;
   var server;
 
@@ -72,15 +57,9 @@ function prepareExpressServer(cmeasy) {
     server = _http2['default'].createServer(app);
   }
 
-  //let socketio = require('socket.io')(server, {
-  //  serveClient: config.env !== 'production',
-  //  path: '/socket.io-client'
-  //});
-
   return {
     app: app,
-    server: server //,
-    //socketio: socketio
+    server: server
   };
 }
 
@@ -93,7 +72,7 @@ function prepareExpressServer(cmeasy) {
 function startExpressServer(server) {
   return function startServer() {
     server.listen(_configEnvironment2['default'].port, _configEnvironment2['default'].ip, function listenCallback() {
-      console.log('Express server listening on %d, in %s mode', _configEnvironment2['default'].port, process.env);
+      console.log('Express server listening on ' + _configEnvironment2['default'].port + ', in ' + process.env.NODE_ENV + ' mode');
     });
   };
 }
