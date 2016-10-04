@@ -181,6 +181,14 @@ Contributing is awesome!
 
 Please ensure your contributions come with tests.
 
+#### Release
+
+ 1. Ensure all tests pass
+ 2. Ensure linting passes
+ 3. `npm version <patch|minor|major>`
+ 4. `git push && git push --tags`
+ 5. `npm publish`
+
 ### Build
 
 Run `grunt build` to build the project
