@@ -18,23 +18,21 @@
 ### Define your content
 
 ```js
-require('cmeasy')(
-  { 
-    models: [ 
-      {
-        name: 'Home Page',
-        singleton: true,
-        definition: {
-          title: {
-            type: 'String',
-            label: 'Home Page Title',
-            default: 'Default Home Page Title'
-          }
+require('cmeasy')({ 
+  models: [ 
+    {
+      name: 'Home Page',
+      singleton: true,
+      definition: {
+        title: {
+          type: 'String',
+         label: 'Home Page Title',
+           default: 'Default Home Page Title'
         }
       }
-    ] 
-  }
-);
+    }
+  ] 
+});
 ```
 
 ### Access your content
@@ -108,13 +106,11 @@ TODO
 var express = require('express');
 var app = express();
 
-require('cmeasy')(
-  {
-    // ...
-    express: app
-    // ...
-  }
-);
+require('cmeasy')({
+  // ...
+  express: app
+  // ...
+});
 
 var server = require('http').createServer(app);
 server.listen(9000, '127.0.0.1');
@@ -127,13 +123,11 @@ server.listen(9000, '127.0.0.1');
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/cmeasy');
 
-require('cmeasy')(
-  {
-    // ...
-    mongoose: mongoose
-    // ...
-  }
-);
+require('cmeasy')({
+  // ...
+  mongoose: mongoose
+  // ...
+});
   
 ```
 
