@@ -1,24 +1,9 @@
-/**
- * Main application file
- */
-
 'use strict';
 
-
 import config from './config/environment';
-
 import http from 'http';
-import _ from 'lodash';
 import Cmeasy from './cmeasy';
 
-
-/**
- * Expose app
- *
- * TODO expose as app and also expose as express route
- *
- * @type {Function}
- */
 exports = module.exports = function initialiseCmeasy(userOptions = {}) {
 
   return new Cmeasy(userOptions)
@@ -37,6 +22,7 @@ exports = module.exports = function initialiseCmeasy(userOptions = {}) {
 
       require('./routes')(app, cmeasy);
 
+      console.log(cmeasy.getOptions().isUserDefinedExpressApp());
       if (!cmeasy.getOptions().isUserDefinedExpressApp()) {
         setImmediate(startExpressServer(server));
       }
@@ -47,9 +33,7 @@ exports = module.exports = function initialiseCmeasy(userOptions = {}) {
 
 };
 
-
 function prepareExpressServer(cmeasy) {
-
   var app;
   var server;
 
@@ -62,18 +46,11 @@ function prepareExpressServer(cmeasy) {
     server = http.createServer(app);
   }
 
-  //let socketio = require('socket.io')(server, {
-  //  serveClient: config.env !== 'production',
-  //  path: '/socket.io-client'
-  //});
-
   return {
     app: app,
-    server: server//,
-    //socketio: socketio
+    server: server
   }
 }
-
 
 /**
  * Start server
@@ -84,7 +61,7 @@ function prepareExpressServer(cmeasy) {
 function startExpressServer(server) {
   return function startServer() {
     server.listen(config.port, config.ip, function listenCallback() {
-      console.log('Express server listening on %d, in %s mode', config.port, process.env);
+      console.log(`Express server listening on ${config.port}, in ${process.env.NODE_ENV} mode`);
     });
   }
 }
