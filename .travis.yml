@@ -1,7 +1,7 @@
 language: node_js
 
 node_js:
-- 4.2.3
+  - 4.2.3
 
 matrix:
   fast_finish: true
@@ -9,8 +9,8 @@ matrix:
   - node_js: 5.1.1
 
 before_script:
-- npm install -g bower grunt-cli
-- bower install
+  - npm install -g bower grunt-cli
+  - bower install
 
 services: mongodb
 
@@ -29,7 +29,15 @@ after_script:
   # TODO merge integration and unit tests coverage reports
   - codeclimate-test-reporter < ./coverage/server/integration/lcov.info
 
+env:
+  - CXX=g++-4.8
+
 addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-4.8
   code_climate:
     repo_token: c0f8ef3f1117d8416655a3aa7c8f89f2afec95569c1deb67d5be1168be4d4674
   sauce_connect:

@@ -1,28 +1,20 @@
-
 'use strict';
-
 
 import express from 'express';
 import config from '../../config/environment';
 import createCrudController from './generated.controller.crud';
 import _ from 'lodash';
 
-
-/**
- *
- */
-module.exports = function(modelController, formlyController){
+module.exports = function(modelController, formlyController) {
   //TODO user the Router as passed in via options
   return createModelRoute(modelController, formlyController, express.Router());
 };
 
-
 /**
- *
  * @param router
  * @returns {Function}
  */
-function createModelRoute(modelController, formlyController, router){
+function createModelRoute(modelController, formlyController, router) {
 
   let crudController = createCrudController(modelController);
 
@@ -41,13 +33,12 @@ function createModelRoute(modelController, formlyController, router){
 }
 
 /**
- *
  * @param fn
  * @returns {Function}
  */
-function gettifyPromise(fn){
-  return function(req, res){
-    return fn().then((payload)=>{
+function gettifyPromise(fn) {
+  return function(req, res) {
+    return fn().then((payload) => {
       return res.status(200).json(payload);
     })
     .catch((err) => {

@@ -14,6 +14,8 @@ var _mongoose = require('mongoose');
 
 var mongoose = require('bluebird').promisifyAll(require('mongoose'));
 
+var R = require('ramda');
+
 var UserSchema = new _mongoose.Schema({
   name: String,
   email: {
@@ -203,19 +205,26 @@ UserSchema.methods = {
     var salt = new Buffer(this.salt, 'base64');
 
     if (!callback) {
-      return _crypto2['default'].pbkdf2Sync(password, salt, defaultIterations, defaultKeyLength).toString('base64');
+      return _crypto2['default'].pbkdf2Sync(password, salt, defaultIterations, defaultKeyLength, 'sha1').toString('base64');
     }
 
-    return _crypto2['default'].pbkdf2(password, salt, defaultIterations, defaultKeyLength, function (err, key) {
-      if (err) {
-        callback(err);
-      } else {
-        callback(null, key.toString('base64'));
+    return _crypto2['default'].pbkdf2(password, salt, defaultIterations, defaultKeyLength, 'sha1', function (error, key) {
+      if (error) {
+        return callback(error);
       }
+
+      callback(null, key.toString('base64'));
     });
   }
 };
 
-exports['default'] = mongoose.model('User', UserSchema);
+var User = undefined;
+if (R.contains('User', mongoose.modelNames())) {
+  User = mongoose.model('User');
+} else {
+  User = mongoose.model('User', UserSchema);
+}
+
+exports['default'] = User;
 module.exports = exports['default'];
 //# sourceMappingURL=user.model.js.map

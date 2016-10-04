@@ -339,18 +339,26 @@ exports['default'] = function (model, schemaController) {
     if (item instanceof Array) {
       return (0, _lodash2['default'])(item).map(function (singleItem) {
         if (typeof singleItem.toObject === 'function') {
-          return _lodash2['default'].omit(singleItem.toObject(), '_id', '__v');
+          return _lodash2['default'].omit(singleItem.toObject(), getCleanProperties());
         } else {
-          return _lodash2['default'].omit(singleItem, '_id', '__v');
+          return _lodash2['default'].omit(singleItem, getCleanProperties());
         }
       }).value();
     } else {
       if (typeof item.toObject === 'function') {
-        return _lodash2['default'].omit(item.toObject(), '_id', '__v');
+        return _lodash2['default'].omit(item.toObject(), getCleanProperties());
       } else {
-        return _lodash2['default'].omit(item, '_id', '__v');
+        return _lodash2['default'].omit(item, getCleanProperties());
       }
     }
+  }
+
+  /**
+   *
+   * @returns {string[]}
+   */
+  function getCleanProperties() {
+    return ['_id', '__v', 'author', 'comment', 'dateCreated'];
   }
 };
 

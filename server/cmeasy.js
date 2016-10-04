@@ -30,7 +30,7 @@ const CMEASY_INSTANCE_ID = '_cmeasyInstanceId';
  */
 export default class Cmeasy {
 
-  constructor(options = {}){
+  constructor(options = {}) {
     this.name = options.name || 'Cmeasy';
     this.options = new CmeasyOptions(options);
     this.models = [];
@@ -42,28 +42,28 @@ export default class Cmeasy {
 
     return Promise.all(this.generateModels(options.models))
       .then((models) => {
-        return(this);
+        return (this);
       });
   }
 
-  generateModels(models){
+  generateModels(models) {
     return _(models).map(this.initModel.bind(this)).value();
   }
 
-  initModel(model){
+  initModel(model) {
     return this.getSchemaController()
       .create(this.getModelSchema(model))
       .then(this.getAsObject.bind(this))
       .then(this.createModel.bind(this))
-      .catch(function(error){
+      .catch(function(error) {
         console.error('error', error);
       });
   }
 
-  createModel(model){
+  createModel(model) {
     var existingModel = this.getModel(model.meta._cmeasyId);
 
-    if(existingModel){
+    if (existingModel) {
       return existingModel
     }
     else {
@@ -73,11 +73,11 @@ export default class Cmeasy {
     }
   }
 
-  getAsObject(obj){
+  getAsObject(obj) {
     return obj.toObject()
   }
 
-  getModelSchema(model){
+  getModelSchema(model) {
     return {
       meta: {
         [this.getIdKey()]: _.camelCase(model.name),
@@ -91,74 +91,77 @@ export default class Cmeasy {
     };
   }
 
-  getDefaultDefinition(definition){
+  getDefaultDefinition(definition) {
     var index = 0;
 
     //Add a default order to the items
-    _(definition).map(function(definitionItem){
+    _(definition).map(function(definitionItem) {
       definitionItem.order = definitionItem.order || (++index) * 10;
     }).value();
 
     return definition;
   }
 
-  getOptions(){
+  getOptions() {
     return this.options;
   }
 
-  getModels(){
+  getModels() {
     return this.models;
   }
 
-  getModel(id){
+  getModel(id) {
     return _(this.models)
-      .filter((model) => { return model.getId() === id; }).first();
+      .filter((model) => {
+        return model.getId() === id;
+      }).first();
   }
 
-  getNamespace(){
+  getNamespace() {
     return this.name;
   }
 
-  getMongoose(){
+  getMongoose() {
     return this.getOptions().getMongoose();
   }
 
-  getExpress(){
+  getExpress() {
     return this.getOptions().getExpress();
   }
 
-  getRootRoute(){
+  getRootRoute() {
     return this.getOptions().getRootRoute();
   }
 
-  getApiRoute(){
+  getApiRoute() {
     return `${this.getRootRoute()}/api`;
   }
 
-  getSchema(){
+  getSchema() {
     return this._schema;
   }
 
-  getSchemaController(){
+  getSchemaController() {
     return this._schemaController;
   }
 
-  getSchemaMetaId(){
+  getSchemaMetaId() {
     return 'CmeasyMetaSchema';
   }
-  getSchemaCrud(){
+
+  getSchemaCrud() {
     return this._schemaCrud;
   }
 
-  getSchemaFormly(){
+  getSchemaFormly() {
     return this._schemaFormly;
   }
 
-  getIdKey(){
+  getIdKey() {
     return CMEASY_ID;
   }
 
-  getInstanceKey(){
+  getInstanceKey() {
     return CMEASY_INSTANCE_ID;
   }
 
@@ -170,55 +173,60 @@ export default class Cmeasy {
  */
 class CmeasyOptions {
 
-  constructor(options){
+  constructor(options) {
 
     this.options = options;
 
-    if( ! this.isUserDefinedMongoose() ){ this.connectToMongo(); }
-    if( ! this.isUserDefinedEnvironment() ) { this.options.environment = 'production'; }
+    if (!this.isUserDefinedMongoose()) {
+      this.connectToMongo();
+    }
+    if (!this.isUserDefinedEnvironment()) {
+      this.options.environment = 'production';
+    }
 
     this.seedMongo();
 
   }
 
   //TODO config urls
-  connectToMongo(){
-    var mongoose = this.getMongoose();
-    mongoose.connect(config.mongo.uri, config.mongo.options);
-    mongoose.connection.on('error', function(err) {
-      console.error('MongoDB connection error: ' + err);
-      process.exit(-1);
-    });
+  connectToMongo() {
+    if (!mongoose.connection.readyState) {
+      mongoose.connect(config.mongo.uri, config.mongo.options);
+      mongoose.connection.on('error', function(err) {
+        console.error('MongoDB connection error: ' + err);
+        process.exit(-1);
+      });
+    }
   }
 
   //TODO always seed - i.e. fix tests to handle initial seed
-  seedMongo(){
+  seedMongo() {
     if (config.seedDB) {
       require('./config/seed')();
     }
   }
 
-  getMongoose(){
+  getMongoose() {
     return (this.options.mongoose && Promise.promisifyAll(this.options.mongoose)) || Promise.promisifyAll(mongoose);
   }
 
-  isUserDefinedEnvironment(){
-    return !! this.options.environment;
+  isUserDefinedEnvironment() {
+    return !!this.options.environment;
   }
 
-  isUserDefinedMongoose(){
-    return !! this.options.mongoose;
+  isUserDefinedMongoose() {
+    return !!this.options.mongoose;
   }
 
-  isUserDefinedExpressApp(){
-    return !! this.options.express;
+  isUserDefinedExpressApp() {
+    return !!this.options.express;
   }
 
-  getExpress(){
+  getExpress() {
     return this.options.express || express;
   }
 
-  getRootRoute(){
+  getRootRoute() {
     return this.options.rootRoute || 'admin';
   }
 
@@ -230,7 +238,7 @@ class CmeasyOptions {
  */
 class CmeasyModel {
 
-  constructor(cmeasy, model){
+  constructor(cmeasy, model) {
 
     this.meta = model.meta;
     this.definition = model.definition;
@@ -244,32 +252,32 @@ class CmeasyModel {
 
   }
 
-  getModel(){
+  getModel() {
     return this._model;
   }
 
 
-  getModelFormly(){
+  getModelFormly() {
     return this._modelFormly;
   }
 
-  getModelController(){
+  getModelController() {
     return this._modelController;
   }
 
-  getModelCrud(){
+  getModelCrud() {
     return this._modelCrud;
   }
 
-  getId(){
+  getId() {
     return this.meta._cmeasyId;
   }
 
-  getIdKey(){
+  getIdKey() {
     return CMEASY_ID;
   }
 
-  getInstanceKey(){
+  getInstanceKey() {
     return CMEASY_INSTANCE_ID;
   }
 

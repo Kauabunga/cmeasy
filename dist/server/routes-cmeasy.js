@@ -4,6 +4,8 @@
 
 'use strict';
 
+var _defineProperty = require('babel-runtime/helpers/define-property')['default'];
+
 var _slicedToArray = require('babel-runtime/helpers/sliced-to-array')['default'];
 
 var _interopRequireDefault = require('babel-runtime/helpers/interop-require-default')['default'];
@@ -45,6 +47,7 @@ exports['default'] = function (app, cmeasy) {
 
   app.use('/' + cmeasy.getApiRoute() + '/v1/content/schema', routeSchemaRequest(cmeasy));
   app.use('/' + cmeasy.getApiRoute() + '/v1/content/:type?', routeContentRequest(cmeasy));
+  app.use('/' + cmeasy.getApiRoute() + '/v1/content.js', routeContentJsRequest(cmeasy));
 
   app.use('/' + cmeasy.getRootRoute(), (0, _componentsRenderIndexIndex2['default'])(app, cmeasy));
 };
@@ -58,35 +61,9 @@ function routeContentRequest(cmeasy) {
     console.log('Routing content request', req.params.type, req.url);
 
     if (!req.params.type) {
+
       //Get all content
-      //TODO move into cmeasy/schema service
-
-      return cmeasy.getSchemaController().index().then(function (schemas) {
-        return _bluebird2['default'].all((0, _lodash2['default'])(schemas).map(function (schema) {
-          return [cmeasy.getModel(schema.meta[cmeasy.getIdKey()]), schema];
-        }).map(function (_ref) {
-          var _ref2 = _slicedToArray(_ref, 2);
-
-          var model = _ref2[0];
-          var schema = _ref2[1];
-
-          if (!model) {
-            return cmeasy.createModel(schema).getModelController().indexClean();
-          } else {
-            return model.getModelController().indexClean();
-          }
-        }).value()).then(function () {
-          for (var _len = arguments.length, indexes = Array(_len), _key = 0; _key < _len; _key++) {
-            indexes[_key] = arguments[_key];
-          }
-
-          return (0, _lodash2['default'])(indexes).filter().value();
-        });
-      }).then(function () {
-        for (var _len2 = arguments.length, indexes = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-          indexes[_key2] = arguments[_key2];
-        }
-
+      return getAllContent(cmeasy).then(function (indexes) {
         console.log('All content', indexes);
         return res.json(indexes);
       })['catch'](function (err) {
@@ -94,19 +71,9 @@ function routeContentRequest(cmeasy) {
         return res.sendStatus(500);
       });
     } else {
+
       //Return specific content
-      return cmeasy.getSchemaController().index().then(filterSchemaById(cmeasy, req.params.type)).then(function (schema) {
-        if (!schema) {
-          return undefined;
-        } else {
-          var cmeasyModel = cmeasy.getModel(req.params.type);
-          if (!cmeasyModel) {
-            return cmeasy.createModel(schema);
-          } else {
-            return cmeasyModel;
-          }
-        }
-      }).then(function (cmeasyModel) {
+      return getContentModel(cmeasy, req.params.type).then(function (cmeasyModel) {
         if (cmeasyModel) {
           return cmeasyModel.getModelCrud()(req, res, next);
         } else {
@@ -115,6 +82,90 @@ function routeContentRequest(cmeasy) {
       });
     }
   };
+}
+
+/**
+ * TODO extend this so individual content pieces can be grabbed
+ *
+ * e.g. api/v1/content/homePage.js
+ *
+ * @param cmeasy
+ */
+function routeContentJsRequest(cmeasy) {
+
+  //TODO configure this
+  var prependJs = 'window._cmeasy_content = ';
+
+  return function (req, res, next) {
+
+    console.log('Routing content js request', req.params.type, req.url);
+
+    //Get all content as js
+    return getAllContent(cmeasy).then(function (indexes) {
+      console.log('All content as js', indexes);
+
+      return res.status(200).set('Cache-Control', 'no-cache, no-store, must-revalidate').set('Pragma', 'no-cache').set('Expires', 0).set('Content-Type', 'application/javascript').send(prependJs + JSON.stringify(indexes));
+    })['catch'](function (err) {
+      console.error('Error getting all content as js', err);
+      return res.sendStatus(500);
+    });
+  };
+}
+
+/**
+ *
+ * @param cmeasy
+ * @param type
+ * @returns {*}
+ */
+function getContentModel(cmeasy, type) {
+  return cmeasy.getSchemaController().index().then(filterSchemaById(cmeasy, type)).then(function (schema) {
+    if (!schema) {
+      return undefined;
+    } else {
+      var cmeasyModel = cmeasy.getModel(type);
+      if (!cmeasyModel) {
+        return cmeasy.createModel(schema);
+      } else {
+        return cmeasyModel;
+      }
+    }
+  });
+}
+
+/**
+ *
+ * @param cmeasy
+ * @returns {*}
+ */
+function getAllContent(cmeasy) {
+  return cmeasy.getSchemaController().index().then(function (schemas) {
+    return _bluebird2['default'].all((0, _lodash2['default'])(schemas).map(function (schema) {
+      return [cmeasy.getModel(schema.meta[cmeasy.getIdKey()]), schema];
+    }).map(function (_ref2) {
+      var _ref22 = _slicedToArray(_ref2, 2);
+
+      var model = _ref22[0];
+      var schema = _ref22[1];
+
+      if (!model) {
+        return cmeasy.createModel(schema).getModelController().indexClean();
+      } else {
+        return model.getModelController().indexClean();
+      }
+    }).map(function (index) {
+      return index.then(function (indexResult) {
+        //TODO should probably handle singleton differently here
+        if (indexResult.length > 0) {
+          return _defineProperty({}, indexResult[0][cmeasy.getIdKey()], indexResult);
+        } else {
+          return {};
+        }
+      });
+    }).value()).then(function (indexes) {
+      return (0, _lodash2['default'])(indexes).reduce(_lodash2['default'].merge);
+    });
+  });
 }
 
 /**

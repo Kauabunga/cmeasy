@@ -10,24 +10,24 @@ var _supertest = require('supertest');
 
 var _supertest2 = _interopRequireDefault(_supertest);
 
-var cmeasy = require('../..');
+var cmeasy = require('../../app');
+var express = require('express');
 
 describe('User API:', function () {
 
   this.timeout(10000);
 
-  var user;
-  var adminUser;
-
-  // Clear users before testing
+  var user = undefined;
+  var adminUser = undefined;
+  var app = undefined;
   before(function () {
+    app = express();
     return _userModel2['default'].removeAsync().then(function () {
       user = new _userModel2['default']({
         name: 'Fake User',
         email: 'test@example.com',
         password: 'password'
       });
-
       return user.saveAsync().then(function (savedUser) {
         user = savedUser.toObject();
       });
@@ -38,9 +38,12 @@ describe('User API:', function () {
         password: 'password',
         role: 'admin'
       });
-
       return adminUser.saveAsync().then(function (savedUser) {
         adminUser = savedUser.toObject();
+      });
+    }).then(function () {
+      return cmeasy({
+        express: app
       });
     });
   });
@@ -50,48 +53,36 @@ describe('User API:', function () {
     return _userModel2['default'].removeAsync();
   });
 
-  /**
-   *
-   */
   describe('GET /api/users', function () {
 
-    var token;
-
+    var token = undefined;
     before(function (done) {
-      cmeasy.then(function (app) {
-        (0, _supertest2['default'])(app).post('/admin/auth/local').send({
-          email: 'admin@example.com',
-          password: 'password'
-        }).expect(200).expect('Content-Type', /json/).end(function (err, res) {
-          token = res.body.token;
-          done();
-        });
+      (0, _supertest2['default'])(app).post('/admin/auth/local').send({
+        email: 'admin@example.com',
+        password: 'password'
+      }).expect(200).expect('Content-Type', /json/).end(function (err, res) {
+        token = res.body.token;
+        done();
       });
     });
 
     it('should not get a list of users if they are not authenticated', function (done) {
-      cmeasy.then(function (app) {
-        (0, _supertest2['default'])(app).get('/admin/api/v1/users').expect(403).expect('Content-Type', /json/).end(function (err, res) {
-          done();
-        });
+      (0, _supertest2['default'])(app).get('/admin/api/v1/users').expect(403).expect('Content-Type', /json/).end(function (err, res) {
+        done();
       });
     });
 
     it('should get a list of all users', function (done) {
-      cmeasy.then(function (app) {
-        (0, _supertest2['default'])(app).get('/admin/api/v1/users').set('authorization', 'Bearer ' + token).expect(200).expect('Content-Type', /json/).end(function (err, res) {
-          res.body.length.should.equal(2);
-          done();
-        });
+      (0, _supertest2['default'])(app).get('/admin/api/v1/users').set('authorization', 'Bearer ' + token).expect(200).expect('Content-Type', /json/).end(function (err, res) {
+        res.body.length.should.equal(2);
+        done();
       });
     });
 
     it('should get a single user', function (done) {
-      cmeasy.then(function (app) {
-        (0, _supertest2['default'])(app).get('/admin/api/v1/users/' + user._id).set('authorization', 'Bearer ' + token).expect(200).expect('Content-Type', /json/).end(function (err, res) {
-          res.body.name.should.equal(user.name);
-          done();
-        });
+      (0, _supertest2['default'])(app).get('/admin/api/v1/users/' + user._id).set('authorization', 'Bearer ' + token).expect(200).expect('Content-Type', /json/).end(function (err, res) {
+        res.body.name.should.equal(user.name);
+        done();
       });
     });
   });
@@ -99,16 +90,13 @@ describe('User API:', function () {
   describe('POST /api/users', function () {
 
     var token;
-
     before(function (done) {
-      cmeasy.then(function (app) {
-        (0, _supertest2['default'])(app).post('/admin/auth/local').send({
-          email: 'test@example.com',
-          password: 'password'
-        }).expect(200).expect('Content-Type', /json/).end(function (err, res) {
-          token = res.body.token;
-          done();
-        });
+      (0, _supertest2['default'])(app).post('/admin/auth/local').send({
+        email: 'test@example.com',
+        password: 'password'
+      }).expect(200).expect('Content-Type', /json/).end(function (err, res) {
+        token = res.body.token;
+        done();
       });
     });
 
@@ -116,14 +104,12 @@ describe('User API:', function () {
       var createUser = {
         email: 'create@create.com'
       };
-      cmeasy.then(function (app) {
-        (0, _supertest2['default'])(app).post('/admin/api/v1/users').set('authorization', 'Bearer ' + token).send(createUser).expect(422).expect('Content-Type', /json/).end(function (err, res) {
+      (0, _supertest2['default'])(app).post('/admin/api/v1/users').set('authorization', 'Bearer ' + token).send(createUser).expect(422).expect('Content-Type', /json/).end(function (err, res) {
 
-          console.log(res.statusCode);
-          console.log(res.status);
+        console.log(res.statusCode);
+        console.log(res.status);
 
-          done();
-        });
+        done();
       });
     });
 
@@ -131,10 +117,8 @@ describe('User API:', function () {
       var createUser = {
         email: 'test@example.com'
       };
-      cmeasy.then(function (app) {
-        (0, _supertest2['default'])(app).post('/admin/api/v1/users').set('authorization', 'Bearer ' + token).send(createUser).expect(422).expect('Content-Type', /json/).end(function (err, res) {
-          done();
-        });
+      (0, _supertest2['default'])(app).post('/admin/api/v1/users').set('authorization', 'Bearer ' + token).send(createUser).expect(422).expect('Content-Type', /json/).end(function (err, res) {
+        done();
       });
     });
 
@@ -144,93 +128,74 @@ describe('User API:', function () {
         email: 'create@create.com',
         password: 'create'
       };
-      cmeasy.then(function (app) {
-        (0, _supertest2['default'])(app).post('/admin/api/v1/users').set('authorization', 'Bearer ' + token).send(createUser).expect(201).expect('Content-Type', /json/).end(function (err, res) {
+      (0, _supertest2['default'])(app).post('/admin/api/v1/users').set('authorization', 'Bearer ' + token).send(createUser).expect(201).expect('Content-Type', /json/).end(function (err, res) {
 
-          res.body.token.should.not.equal(undefined);
-          res.body.email.should.equal(createUser.email);
+        res.body.token.should.not.equal(undefined);
+        res.body.email.should.equal(createUser.email);
 
-          done();
-        });
+        done();
       });
     });
   });
 
-  /**
-   *
-   */
   describe('DELETE /api/users', function () {
 
     var token;
     var deleteUser;
 
     before(function (done) {
-      cmeasy.then(function (app) {
-        (0, _supertest2['default'])(app).post('/admin/auth/local').send({
-          email: 'admin@example.com',
+      (0, _supertest2['default'])(app).post('/admin/auth/local').send({
+        email: 'admin@example.com',
+        password: 'password'
+      }).expect(200).expect('Content-Type', /json/).end(function (err, res) {
+        token = res.body.token;
+
+        //Create a user to delete
+        deleteUser = new _userModel2['default']({
+          name: 'Delete User',
+          email: 'delete@delete.com',
           password: 'password'
-        }).expect(200).expect('Content-Type', /json/).end(function (err, res) {
-          token = res.body.token;
+        });
 
-          //Create a user to delete
-          deleteUser = new _userModel2['default']({
-            name: 'Delete User',
-            email: 'delete@delete.com',
-            password: 'password'
-          });
-
-          return deleteUser.saveAsync().then(function (savedUser) {
-            deleteUser = savedUser.toObject();
-            done();
-          });
+        return deleteUser.saveAsync().then(function (savedUser) {
+          deleteUser = savedUser.toObject();
+          done();
         });
       });
     });
 
     it('should destroy a user', function (done) {
-      cmeasy.then(function (app) {
-        (0, _supertest2['default'])(app)['delete']('/admin/api/v1/users/' + deleteUser._id).set('authorization', 'Bearer ' + token).expect(204).expect('Content-Type', /json/).end(function (err, res) {
+      (0, _supertest2['default'])(app)['delete']('/admin/api/v1/users/' + deleteUser._id).set('authorization', 'Bearer ' + token).expect(204).expect('Content-Type', /json/).end(function (err, res) {
 
-          console.log(res.body);
+        console.log(res.body);
 
-          done();
-        });
+        done();
       });
     });
   });
 
-  /**
-   *
-   */
   describe('GET /api/users/me', function () {
 
     var token;
-
     before(function (done) {
-      cmeasy.then(function (app) {
-        (0, _supertest2['default'])(app).post('/admin/auth/local').send({
-          email: 'test@example.com',
-          password: 'password'
-        }).expect(200).expect('Content-Type', /json/).end(function (err, res) {
-          token = res.body.token;
-          done();
-        });
+      (0, _supertest2['default'])(app).post('/admin/auth/local').send({
+        email: 'test@example.com',
+        password: 'password'
+      }).expect(200).expect('Content-Type', /json/).end(function (err, res) {
+        token = res.body.token;
+        done();
       });
     });
 
     it('should respond with a user profile when authenticated', function (done) {
-      cmeasy.then(function (app) {
-        (0, _supertest2['default'])(app).get('/admin/api/v1/users/me').set('authorization', 'Bearer ' + token).expect(200).expect('Content-Type', /json/).end(function (err, res) {
-          res.body._id.toString().should.equal(user._id.toString());
-          done();
-        });
+      (0, _supertest2['default'])(app).get('/admin/api/v1/users/me').set('authorization', 'Bearer ' + token).expect(200).expect('Content-Type', /json/).end(function (err, res) {
+        res.body._id.toString().should.equal(user._id.toString());
+        done();
       });
     });
 
     it('should respond with a 401 when not authenticated', function (done) {
-      cmeasy.then(function (app) {
-        (0, _supertest2['default'])(app).get('/admin/api/v1/users/me').expect(401).end(done);
-      });
+      (0, _supertest2['default'])(app).get('/admin/api/v1/users/me').expect(401).end(done);
     });
   });
 });

@@ -1,8 +1,7 @@
 'use strict';
 
-var path = require('path');
-var _ = require('lodash');
-
+const path = require('path');
+const _ = require('lodash');
 
 /**
  * Export the config object based on the NODE_ENV
@@ -16,12 +15,12 @@ module.exports = _.merge(
   getAllConfig(),
   require('./shared'),
   require('./' + (process.env.NODE_ENV || 'production') + '.js') || {},
-  { version: getProjectVersion() });
+  {version: getProjectVersion()});
 
 /**
  *
  */
-function getAllConfig(){
+function getAllConfig() {
   return {
     env: process.env.NODE_ENV,
 
@@ -53,10 +52,7 @@ function getAllConfig(){
   };
 }
 
-/**
- *
- */
-function getProjectVersion(){
+function getProjectVersion() {
   return require('../../../package.json').version;
 }
 

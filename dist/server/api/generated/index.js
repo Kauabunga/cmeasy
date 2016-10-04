@@ -1,4 +1,3 @@
-
 'use strict';
 
 var _interopRequireDefault = require('babel-runtime/helpers/interop-require-default')['default'];
@@ -19,16 +18,12 @@ var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-/**
- *
- */
 module.exports = function (modelController, formlyController) {
   //TODO user the Router as passed in via options
   return createModelRoute(modelController, formlyController, _express2['default'].Router());
 };
 
 /**
- *
  * @param router
  * @returns {Function}
  */
@@ -51,7 +46,6 @@ function createModelRoute(modelController, formlyController, router) {
 }
 
 /**
- *
  * @param fn
  * @returns {Function}
  */
