@@ -199,7 +199,7 @@ class CmeasyOptions {
     }
   }
 
-  //TODO always seed - i.e. fix tests to handle initial seed
+  // TODO always seed - i.e. fix tests to handle initial seed
   seedMongo() {
     if (config.seedDB) {
       require('./config/seed')();
