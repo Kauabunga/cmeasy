@@ -29,10 +29,10 @@ var _cmeasy2 = _interopRequireDefault(_cmeasy);
  *
  * @type {Function}
  */
-exports = module.exports = function () {
+exports = module.exports = function initialiseCmeasy() {
   var userOptions = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
-  return new _cmeasy2['default'](userOptions).then(function (cmeasy) {
+  return new _cmeasy2['default'](userOptions).then(function cmeasyCallback(cmeasy) {
 
     //TODO move handle mongo connect from cmeasy options here?
 
@@ -40,9 +40,6 @@ exports = module.exports = function () {
 
     var app = _prepareExpressServer.app;
     var server = _prepareExpressServer.server;
-    var socketio = _prepareExpressServer.socketio;
-
-    //require('./config/socketio')(socketio);
 
     require('./config/express').coreExpress(app, cmeasy);
 
@@ -55,16 +52,13 @@ exports = module.exports = function () {
     require('./routes')(app, cmeasy);
 
     if (!cmeasy.getOptions().isUserDefinedExpressApp()) {
-      setImmediate(startExpressServer(app, server));
+      setImmediate(startExpressServer(server));
     }
 
-    return app;
+    return cmeasy;
   });
 };
 
-/**
- *
- */
 function prepareExpressServer(cmeasy) {
 
   var app;
@@ -96,10 +90,10 @@ function prepareExpressServer(cmeasy) {
  * @param server
  * @returns {Function}
  */
-function startExpressServer(app, server) {
-  return function () {
-    server.listen(_configEnvironment2['default'].port, _configEnvironment2['default'].ip, function () {
-      console.log('Express server listening on %d, in %s mode', _configEnvironment2['default'].port, app.get('env'));
+function startExpressServer(server) {
+  return function startServer() {
+    server.listen(_configEnvironment2['default'].port, _configEnvironment2['default'].ip, function listenCallback() {
+      console.log('Express server listening on %d, in %s mode', _configEnvironment2['default'].port, process.env);
     });
   };
 }

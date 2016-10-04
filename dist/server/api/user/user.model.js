@@ -14,6 +14,8 @@ var _mongoose = require('mongoose');
 
 var mongoose = require('bluebird').promisifyAll(require('mongoose'));
 
+var R = require('ramda');
+
 var UserSchema = new _mongoose.Schema({
   name: String,
   email: {
@@ -216,6 +218,13 @@ UserSchema.methods = {
   }
 };
 
-exports['default'] = mongoose.model('User', UserSchema);
+var User = undefined;
+if (R.contains('User', mongoose.modelNames())) {
+  User = mongoose.model('User');
+} else {
+  User = mongoose.model('User', UserSchema);
+}
+
+exports['default'] = User;
 module.exports = exports['default'];
 //# sourceMappingURL=user.model.js.map

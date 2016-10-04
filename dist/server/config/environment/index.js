@@ -48,9 +48,6 @@ function getAllConfig() {
   };
 }
 
-/**
- *
- */
 function getProjectVersion() {
   return require('../../../package.json').version;
 }

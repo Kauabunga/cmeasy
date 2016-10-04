@@ -43,7 +43,7 @@ var generatedIndex = proxyquire('./index.js', {
   }
 })(crudStub, formlyStub);
 
-describe('Generated API Router:', function () {
+describe.only('Generated API Router:', function () {
 
   it('should return an express router instance', function () {
     generatedIndex.should.equal(routerStub);
