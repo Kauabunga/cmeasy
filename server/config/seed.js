@@ -5,10 +5,11 @@
 
 'use strict';
 
+const debug = require('debug')('cmeasy:config:seed');
 import User from '../api/user/user.model';
 
-export default function(){
-
+export default function() {
+  debug('Populating users');
   return User.find({}).removeAsync()
     .then(() => {
       return User.createAsync({
@@ -24,9 +25,8 @@ export default function(){
         password: 'admin'
       })
         .then((users) => {
-          console.log('Finished populating users');
+          debug('Finished populating users');
           return users;
         });
     });
-
 }
