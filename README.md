@@ -204,9 +204,10 @@ Running `npm test` will run the unit tests with karma.
  - Server: `grunt test:server`
  - Client: `grunt test:client`
 
-## Project Structure
+## TODO
 
-TODO
+ - Project Structure
+ - Integrate `nsp` checks with CI
 
 ## Info
 
