@@ -71,7 +71,7 @@ UserSchema
   .path('email')
   .validate(function(value, respond) {
     var self = this;
-    return this.constructor.findOneAsync({ email: value })
+    return this.constructor.findOneAsync({email: value})
       .then(function(user) {
         if (user) {
           if (self.id === user.id) {
@@ -96,7 +96,7 @@ var validatePresenceOf = function(value) {
 UserSchema
   .pre('save', function(next) {
     // Handle new/update passwords
-    if (! this.isModified('password') ) {
+    if (!this.isModified('password')) {
       return next();
     }
 
@@ -203,16 +203,16 @@ UserSchema.methods = {
     var salt = new Buffer(this.salt, 'base64');
 
     if (!callback) {
-      return crypto.pbkdf2Sync(password, salt, defaultIterations, defaultKeyLength)
-                   .toString('base64');
+      return crypto.pbkdf2Sync(password, salt, defaultIterations, defaultKeyLength, 'sha1')
+        .toString('base64');
     }
 
-    return crypto.pbkdf2(password, salt, defaultIterations, defaultKeyLength, (err, key) => {
-      if (err) {
-        callback(err);
-      } else {
-        callback(null, key.toString('base64'));
+    return crypto.pbkdf2(password, salt, defaultIterations, defaultKeyLength, 'sha1', (error, key) => {
+      if (error) {
+        return callback(error);
       }
+
+      callback(null, key.toString('base64'));
     });
   }
 };
