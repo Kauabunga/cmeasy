@@ -18,23 +18,21 @@
 ### Define your content
 
 ```js
-require('cmeasy')(
-  { 
-    models: [ 
-      {
-        name: 'Home Page',
-        singleton: true,
-        definition: {
-          title: {
-            type: 'String',
-            label: 'Home Page Title',
-            default: 'Default Home Page Title'
-          }
+require('cmeasy')({ 
+  models: [ 
+    {
+      name: 'Home Page',
+      singleton: true,
+      definition: {
+        title: {
+          type: 'String',
+         label: 'Home Page Title',
+           default: 'Default Home Page Title'
         }
       }
-    ] 
-  }
-);
+    }
+  ] 
+});
 ```
 
 ### Access your content
@@ -87,18 +85,6 @@ ___
 
 See [server/options.js](https://github.com/Kauabunga/cmeasy/blob/master/server/options.js) for the complete demo configuration
 
-
-
-## Features
-
-TODO
-
- - Define content models via config or web client
- - Content and content model CRUD API
- - User management - with + without email service
- - 
-
-
 ## Options
 
 
@@ -108,13 +94,11 @@ TODO
 var express = require('express');
 var app = express();
 
-require('cmeasy')(
-  {
-    // ...
-    express: app
-    // ...
-  }
-);
+require('cmeasy')({
+  // ...
+  express: app
+  // ...
+});
 
 var server = require('http').createServer(app);
 server.listen(9000, '127.0.0.1');
@@ -127,13 +111,11 @@ server.listen(9000, '127.0.0.1');
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/cmeasy');
 
-require('cmeasy')(
-  {
-    // ...
-    mongoose: mongoose
-    // ...
-  }
-);
+require('cmeasy')({
+  // ...
+  mongoose: mongoose
+  // ...
+});
   
 ```
 
@@ -188,14 +170,16 @@ TODO - Give these a priority
 ### Developing
 
 1. Run `git clone https://github.com/Kauabunga/cmeasy.git` to clone the repository
-
 2. Run `npm install` to install server dependencies.
-
 3. Run `bower install` to install front-end dependencies.
-
 4. Run `mongod` in a separate shell to keep an instance of the MongoDB Daemon running
-
 5. Run `grunt serve` to start the development server. It should automatically open the client in your browser when ready.
+
+### Contributing
+
+Contributing is awesome!
+
+Please ensure your contributions come with tests.
 
 ### Build
 
@@ -205,10 +189,17 @@ Run `grunt build` to build the project
 
 Running `npm test` will run the unit tests with karma.
 
-## Project Structure
+ - Server: `grunt test:server`
+ - Client: `grunt test:client`
 
-TODO
+## TODO
 
-## Info
+ - Project Structure
+ - Integrate `nsp` checks with CI
+ - Migrate to Pug
 
-This project was generated with the [Angular Full-Stack Generator](https://github.com/DaftMonk/generator-angular-fullstack) version 3.1.1.
+*Features*
+
+ - Define content models via config or web client
+ - Content and content model CRUD API
+ - User management - with + without email service
