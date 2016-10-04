@@ -3,6 +3,7 @@
 import crypto from 'crypto';
 var mongoose = require('bluebird').promisifyAll(require('mongoose'));
 import {Schema} from 'mongoose';
+const R = require('ramda');
 
 var UserSchema = new Schema({
   name: String,
@@ -216,4 +217,11 @@ UserSchema.methods = {
   }
 };
 
-export default mongoose.model('User', UserSchema);
+let User;
+if (R.contains('User', mongoose.modelNames())) {
+  User = mongoose.model('User');
+} else {
+  User = mongoose.model('User', UserSchema);
+}
+
+export default User;
