@@ -1,7 +1,8 @@
 'use strict';
 
 import crypto from 'crypto';
-var mongoose = require('bluebird').promisifyAll(require('mongoose'));
+const mongoose = require('mongoose');
+mongoose.Promise = require('bluebird');
 import {Schema} from 'mongoose';
 const R = require('ramda');
 
@@ -95,25 +96,30 @@ var validatePresenceOf = function(value) {
  */
 UserSchema
   .pre('save', function(next) {
-    // Handle new/update passwords
+    const debug = require('debug')('cmeasy:user:preSave');
     if (!this.isModified('password')) {
+      debug('Password has not been modified');
       return next();
     }
 
     if (!validatePresenceOf(this.password) && this.provider === 'local') {
+      debug('No password present on user with provider = local');
       next(new Error('Invalid password'));
     }
 
-    // Make salt with a callback
+    debug('Creating salt');
     this.makeSalt((saltErr, salt) => {
       if (saltErr) {
         next(saltErr);
       }
+
+      debug('Encrypting password');
       this.salt = salt;
       this.encryptPassword(this.password, (encryptErr, hashedPassword) => {
         if (encryptErr) {
           next(encryptErr);
         }
+        debug('Password encrypted');
         this.password = hashedPassword;
         next();
       });
@@ -124,19 +130,15 @@ UserSchema
  * Methods
  */
 UserSchema.methods = {
+
   /**
    * Authenticate - check if the passwords are the same
    *
    * @param {String} password
    * @param {Function} callback
-   * @return {Boolean}
    * @api public
    */
   authenticate(password, callback) {
-    if (!callback) {
-      return this.password === this.encryptPassword(password);
-    }
-
     this.encryptPassword(password, (err, pwdGen) => {
       if (err) {
         return callback(err);
@@ -158,30 +160,12 @@ UserSchema.methods = {
    * @return {String}
    * @api public
    */
-  makeSalt(byteSize, callback) {
-    var defaultByteSize = 16;
-
-    if (typeof arguments[0] === 'function') {
-      callback = arguments[0];
-      byteSize = defaultByteSize;
-    } else if (typeof arguments[1] === 'function') {
-      callback = arguments[1];
-    }
-
-    if (!byteSize) {
-      byteSize = defaultByteSize;
-    }
-
-    if (!callback) {
-      return crypto.randomBytes(byteSize).toString('base64');
-    }
-
-    return crypto.randomBytes(byteSize, (err, salt) => {
+  makeSalt(callback) {
+    return crypto.randomBytes(16, (err, salt) => {
       if (err) {
-        callback(err);
-      } else {
-        callback(null, salt.toString('base64'));
+        return callback(err);
       }
+      callback(null, salt.toString('base64'));
     });
   },
 
@@ -194,7 +178,9 @@ UserSchema.methods = {
    * @api public
    */
   encryptPassword(password, callback) {
+    const debug = require('debug')('cmeasy:user:encryptPassword');
     if (!password || !this.salt) {
+      debug('salt or password are missing, aborting');
       return null;
     }
 
@@ -202,16 +188,15 @@ UserSchema.methods = {
     var defaultKeyLength = 64;
     var salt = new Buffer(this.salt, 'base64');
 
-    if (!callback) {
-      return crypto.pbkdf2Sync(password, salt, defaultIterations, defaultKeyLength, 'sha1')
-        .toString('base64');
-    }
-
-    return crypto.pbkdf2(password, salt, defaultIterations, defaultKeyLength, 'sha1', (error, key) => {
+    debug('Encrypting');
+    crypto.pbkdf2(password, salt, defaultIterations, defaultKeyLength, 'sha512', (error, key) => {
+      debug('Encryption complete');
       if (error) {
+        debug('Encryption error');
         return callback(error);
       }
 
+      debug('Encrypted');
       callback(null, key.toString('base64'));
     });
   }
