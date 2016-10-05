@@ -1,7 +1,6 @@
 'use strict';
 
 import User from './user.model';
-import passport from 'passport';
 import config from '../../config/environment';
 import jwt from 'jsonwebtoken';
 
@@ -32,7 +31,7 @@ function respondWith(res, statusCode) {
  * restriction: 'admin'
  */
 export function index(req, res) {
-  return User.findAsync({}, '-salt -password')
+  return User.find({}, '-salt -password')
     .then(users => {
       res.status(200).json(users);
     })
@@ -48,7 +47,7 @@ export function create(req, res, next) {
   newUser.provider = 'local';
   newUser.role = 'user';
 
-  return newUser.saveAsync()
+  return newUser.save()
     .then(function(user) {
       var token = jwt.sign({ _id: user._id }, config.secrets.session, {
         expiresIn: 60 * 60 * 5
@@ -65,7 +64,7 @@ export function create(req, res, next) {
 export function show(req, res, next) {
   var userId = req.params.id;
 
-  return User.findByIdAsync(userId)
+  return User.findById(userId)
     .then(user => {
       if (!user) {
         return res.status(404).end();
@@ -80,7 +79,7 @@ export function show(req, res, next) {
  * restriction: 'admin'
  */
 export function destroy(req, res) {
-  return User.findByIdAndRemoveAsync(req.params.id)
+  return User.findByIdAndRemove(req.params.id)
     .then(function() {
       res.status(204).end();
     })
@@ -95,11 +94,11 @@ export function changePassword(req, res, next) {
   var oldPass = String(req.body.oldPassword);
   var newPass = String(req.body.newPassword);
 
-  return User.findByIdAsync(userId)
+  return User.findById(userId)
     .then(user => {
       if (user.authenticate(oldPass)) {
         user.password = newPass;
-        return user.saveAsync()
+        return user.save()
           .then(() => {
             return res.status(204).end();
           })
@@ -116,7 +115,7 @@ export function changePassword(req, res, next) {
 export function me(req, res, next) {
   var userId = req.user._id;
 
-  return User.findOneAsync({ _id: userId }, '-salt -password')
+  return User.findOne({ _id: userId }, '-salt -password')
     .then(user => { // don't ever give out the password or salt
       if (!user) {
         return res.status(401).end();
