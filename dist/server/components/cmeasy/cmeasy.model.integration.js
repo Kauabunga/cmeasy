@@ -50,7 +50,6 @@ describe('Cmeasy blogPost model API:', function () {
     it('should create a blog post entry', function (done) {
       var newBlogPost = _lodash2['default'].merge(blogPostItem, getDefaultBlogPost());
       (0, _supertest2['default'])(app).post('/admin/api/v1/content/blogPost').send(newBlogPost).expect(200).expect('Content-Type', /json/).end(function (err, res) {
-        console.log(res.body);
         res.body.title.toString().should.equal(newBlogPost.title.toString());
         res.body.content.toString().should.equal(newBlogPost.content.toString());
         done();
@@ -86,8 +85,6 @@ describe('Cmeasy blogPost model API:', function () {
   function createDummyBlogPost() {
     return new _bluebird2['default'](function (success) {
       return (0, _supertest2['default'])(app).post('/admin/api/v1/content/blogPost').send(getDefaultBlogPost()).expect(200).expect('Content-Type', /json/).end(function (err, res) {
-        console.log(res.statusCode);
-        console.log(res.body);
         blogPostItem = res.body;
         success(res.body);
       });

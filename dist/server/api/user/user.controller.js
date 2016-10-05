@@ -17,10 +17,6 @@ var _userModel = require('./user.model');
 
 var _userModel2 = _interopRequireDefault(_userModel);
 
-var _passport = require('passport');
-
-var _passport2 = _interopRequireDefault(_passport);
-
 var _configEnvironment = require('../../config/environment');
 
 var _configEnvironment2 = _interopRequireDefault(_configEnvironment);
@@ -57,7 +53,7 @@ function respondWith(res, statusCode) {
  */
 
 function index(req, res) {
-  return _userModel2['default'].findAsync({}, '-salt -password').then(function (users) {
+  return _userModel2['default'].find({}, '-salt -password').then(function (users) {
     res.status(200).json(users);
   })['catch'](handleError(res));
 }
@@ -72,7 +68,7 @@ function create(req, res, next) {
   newUser.provider = 'local';
   newUser.role = 'user';
 
-  return newUser.saveAsync().then(function (user) {
+  return newUser.save().then(function (user) {
     var token = _jsonwebtoken2['default'].sign({ _id: user._id }, _configEnvironment2['default'].secrets.session, {
       expiresIn: 60 * 60 * 5
     });
@@ -87,7 +83,7 @@ function create(req, res, next) {
 function show(req, res, next) {
   var userId = req.params.id;
 
-  return _userModel2['default'].findByIdAsync(userId).then(function (user) {
+  return _userModel2['default'].findById(userId).then(function (user) {
     if (!user) {
       return res.status(404).end();
     }
@@ -103,7 +99,7 @@ function show(req, res, next) {
  */
 
 function destroy(req, res) {
-  return _userModel2['default'].findByIdAndRemoveAsync(req.params.id).then(function () {
+  return _userModel2['default'].findByIdAndRemove(req.params.id).then(function () {
     res.status(204).end();
   })['catch'](handleError(res));
 }
@@ -117,10 +113,10 @@ function changePassword(req, res, next) {
   var oldPass = String(req.body.oldPassword);
   var newPass = String(req.body.newPassword);
 
-  return _userModel2['default'].findByIdAsync(userId).then(function (user) {
+  return _userModel2['default'].findById(userId).then(function (user) {
     if (user.authenticate(oldPass)) {
       user.password = newPass;
-      return user.saveAsync().then(function () {
+      return user.save().then(function () {
         return res.status(204).end();
       })['catch'](validationError(res));
     } else {
@@ -136,7 +132,7 @@ function changePassword(req, res, next) {
 function me(req, res, next) {
   var userId = req.user._id;
 
-  return _userModel2['default'].findOneAsync({ _id: userId }, '-salt -password').then(function (user) {
+  return _userModel2['default'].findOne({ _id: userId }, '-salt -password').then(function (user) {
     // don't ever give out the password or salt
     if (!user) {
       return res.status(401).end();

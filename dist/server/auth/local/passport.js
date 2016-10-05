@@ -13,8 +13,10 @@ var _passport2 = _interopRequireDefault(_passport);
 
 var _passportLocal = require('passport-local');
 
+var debug = require('debug')('cmeasy:auth:local:passport');
+
 function localAuthenticate(User, email, password, done) {
-  User.findOneAsync({
+  User.findOne({
     email: email.toLowerCase()
   }).then(function (user) {
     if (!user) {

@@ -45,7 +45,7 @@ exports['default'] = function (cmeasy) {
    * Gets a list of Generateds
    */
   function index() {
-    return cmeasy.getSchema().find({}).sort(getSchemaSortQuery()).execAsync().then(getUniqueIds(cmeasy)).then(removeMetaSchema(cmeasy));
+    return cmeasy.getSchema().find({}).sort(getSchemaSortQuery()).exec().then(getUniqueIds(cmeasy)).then(removeMetaSchema(cmeasy));
   }
 
   /**
@@ -54,7 +54,7 @@ exports['default'] = function (cmeasy) {
   function show(id) {
     debug('show:start:' + id);
 
-    return cmeasy.getSchema().find(getSchemaShowQuery(id)).sort(getSchemaSortQuery()).execAsync().then(function (items) {
+    return cmeasy.getSchema().find(getSchemaShowQuery(id)).sort(getSchemaSortQuery()).exec().then(function (items) {
       return (0, _lodash2['default'])(items).first();
     }).then(function () {
       var item = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
@@ -85,7 +85,7 @@ exports['default'] = function (cmeasy) {
         return _bluebird2['default'].reject(new Error(400));
       }
 
-    return cmeasy.getSchema().createAsync(getDefaultSchema(cmeasy, item)).then(function (item) {
+    return cmeasy.getSchema().create(getDefaultSchema(cmeasy, item)).then(function (item) {
       debug('create:finish:' + (item.meta && item.meta._cmeasyId));
       return item;
     });
@@ -95,14 +95,14 @@ exports['default'] = function (cmeasy) {
    * Gets the history of an item
    */
   function history(id) {
-    return cmeasy.getSchema().find(getSchemaShowQuery(id)).sort(getSchemaSortQuery()).execAsync();
+    return cmeasy.getSchema().find(getSchemaShowQuery(id)).sort(getSchemaSortQuery()).exec();
   }
 
   /**
    * Deletes a Schema from the DB
    */
   function destroy(id) {
-    return cmeasy.getSchema().find(getSchemaShowQuery(id)).execAsync().then(destroyAll);
+    return cmeasy.getSchema().find(getSchemaShowQuery(id)).exec().then(destroyAll);
   }
 
   /**
@@ -111,7 +111,7 @@ exports['default'] = function (cmeasy) {
    */
   function destroyAll(items) {
     return _bluebird2['default'].all((0, _lodash2['default'])(items).map(function (item) {
-      return item.removeAsync();
+      return item.remove();
     }).value());
   }
 
