@@ -47,7 +47,7 @@ export default function(model, schemaController){
         }
         else {
           return model.getModel().find({})
-            .sort(getSortQuery()).execAsync()
+            .sort(getSortQuery()).exec()
             .then(getUniqueIds(model, schema));
         }
       });
@@ -84,7 +84,7 @@ export default function(model, schemaController){
    */
   function showSingleton(id){
 
-    return model.getModel().find(getIdQuery(id, {meta: {singleton: true}})).sort(getSortQuery()).execAsync()
+    return model.getModel().find(getIdQuery(id, {meta: {singleton: true}})).sort(getSortQuery()).exec()
       .then(function(items){
         //if this item is a singleton and there isn't one -> go and create it
         if(! items || items.length === 0 ){
@@ -102,7 +102,7 @@ export default function(model, schemaController){
    * @param schema
    */
   function showInstance(id){
-    return model.getModel().find(getIdQuery(id, {meta: {singleton: false}})).sort(getSortQuery()).execAsync()
+    return model.getModel().find(getIdQuery(id, {meta: {singleton: false}})).sort(getSortQuery()).exec()
       .then(function(items){
         return _(items).first();
       });
@@ -119,7 +119,7 @@ export default function(model, schemaController){
 
     return getCreateResolve(item)
       .then(function([schema, currentItem]){
-        return model.getModel().createAsync(getCreateItem(schema, item, currentItem));
+        return model.getModel().create(getCreateItem(schema, item, currentItem));
       })
       .then(function(createdItem){
         console.log(`Model:Create:Finish:${model.getId()}:${item[model.getInstanceKey()] || ''}:${createdItem || ''}`);
@@ -259,7 +259,7 @@ export default function(model, schemaController){
   function history(id) {
     return getModelSchema()
       .then(function(schema) {
-        return model.getModel().find(getIdQuery(id, schema)).sort(getSortQuery()).execAsync();
+        return model.getModel().find(getIdQuery(id, schema)).sort(getSortQuery()).exec();
       });
   }
 
@@ -271,7 +271,7 @@ export default function(model, schemaController){
   function destroy(id) {
     return getModelSchema()
       .then(function(schema){
-        return model.getModel().find(getIdQuery(id, schema)).execAsync().then(destroyAll);
+        return model.getModel().find(getIdQuery(id, schema)).exec().then(destroyAll);
       });
 
 
@@ -303,7 +303,7 @@ export default function(model, schemaController){
    * @returns {*}
    */
   function destroyAll(items){
-    return Promise.all(_(items).map((item) => {return item.removeAsync();}).value());
+    return Promise.all(_(items).map((item) => {return item.remove();}).value());
   }
 
 

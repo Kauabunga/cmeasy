@@ -25,7 +25,7 @@ describe('Signup View', function() {
   });
 
   after(function() {
-    return UserModel.removeAsync();
+    return UserModel.remove();
   });
 
   it('should include signup form with correct inputs and submit button', function() {
@@ -49,7 +49,7 @@ describe('Signup View', function() {
   describe('with local auth', function() {
 
     before(function() {
-      return UserModel.removeAsync();
+      return UserModel.remove();
     })
 
     it('should signup a new user, log them in, and redirecting to "/"', function() {

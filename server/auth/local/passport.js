@@ -1,8 +1,9 @@
 import passport from 'passport';
 import {Strategy as LocalStrategy} from 'passport-local';
+const debug = require('debug')('cmeasy:auth:local:passport');
 
 function localAuthenticate(User, email, password, done) {
-  User.findOneAsync({
+  User.findOne({
     email: email.toLowerCase()
   })
     .then(user => {
@@ -16,7 +17,7 @@ function localAuthenticate(User, email, password, done) {
           return done(authError);
         }
         if (!authenticated) {
-          return done(null, false, { message: 'This password is not correct.' });
+          return done(null, false, {message: 'This password is not correct.'});
         } else {
           return done(null, user);
         }

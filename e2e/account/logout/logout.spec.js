@@ -18,9 +18,9 @@ describe('Logout View', function() {
 
   beforeEach(function() {
     return UserModel
-      .removeAsync()
+      .remove()
       .then(function() {
-        return UserModel.createAsync(testUser);
+        return UserModel.create(testUser);
       })
       .then(function() {
         return login(testUser);
@@ -28,7 +28,7 @@ describe('Logout View', function() {
   });
 
   after(function() {
-    return UserModel.removeAsync();
+    return UserModel.remove();
   });
 
   describe('with local auth', function() {

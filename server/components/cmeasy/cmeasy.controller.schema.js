@@ -29,7 +29,7 @@ export default function(cmeasy) {
    */
   function index() {
     return cmeasy.getSchema().find({})
-      .sort(getSchemaSortQuery()).execAsync()
+      .sort(getSchemaSortQuery()).exec()
       .then(getUniqueIds(cmeasy))
       .then(removeMetaSchema(cmeasy));
   }
@@ -43,7 +43,7 @@ export default function(cmeasy) {
     return cmeasy.getSchema()
       .find(getSchemaShowQuery(id))
       .sort(getSchemaSortQuery())
-      .execAsync()
+      .exec()
       .then(function(items) {
         return _(items).first();
       })
@@ -75,7 +75,7 @@ export default function(cmeasy) {
     }
 
     return cmeasy.getSchema()
-      .createAsync(getDefaultSchema(cmeasy, item))
+      .create(getDefaultSchema(cmeasy, item))
       .then(function(item) {
         debug(`create:finish:${item.meta && item.meta._cmeasyId}`);
         return item;
@@ -89,7 +89,7 @@ export default function(cmeasy) {
     return cmeasy.getSchema()
       .find(getSchemaShowQuery(id))
       .sort(getSchemaSortQuery())
-      .execAsync();
+      .exec();
   }
 
   /**
@@ -98,7 +98,7 @@ export default function(cmeasy) {
   function destroy(id) {
     return cmeasy.getSchema()
       .find(getSchemaShowQuery(id))
-      .execAsync()
+      .exec()
       .then(destroyAll);
   }
 
@@ -108,7 +108,7 @@ export default function(cmeasy) {
    */
   function destroyAll(items) {
     return Promise.all(_(items).map((item) => {
-      return item.removeAsync();
+      return item.remove();
     }).value());
   }
 

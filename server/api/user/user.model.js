@@ -71,7 +71,7 @@ UserSchema
   .path('email')
   .validate(function(value, respond) {
     var self = this;
-    return this.constructor.findOneAsync({email: value})
+    return this.constructor.findOne({email: value})
       .then(function(user) {
         if (user) {
           if (self.id === user.id) {

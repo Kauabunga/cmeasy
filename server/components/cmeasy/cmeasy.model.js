@@ -22,7 +22,7 @@ export default function(cmeasy, mongoose, model) {
 
 function cleanModel(cmeasy, model) {
   return model.find({})
-    .execAsync()
+    .exec()
     .then(removeModelsWithoutProperty(cmeasy.getIdKey()))
     .then(removeModelsWithoutProperty(cmeasy.getInstanceKey()));
 }
@@ -49,7 +49,7 @@ function removeModelsWithoutProperty(property) {
   return function(items) {
     return _(items).map(function(item) {
       if (!item[property] || item[property] === '') {
-        item.removeAsync();
+        item.remove();
         return undefined;
       }
       else {
