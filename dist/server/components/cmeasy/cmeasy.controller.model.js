@@ -59,7 +59,7 @@ exports['default'] = function (model, schemaController) {
           return [].concat(singleton);
         });
       } else {
-        return model.getModel().find({}).sort(getSortQuery()).execAsync().then(getUniqueIds(model, schema));
+        return model.getModel().find({}).sort(getSortQuery()).exec().then(getUniqueIds(model, schema));
       }
     });
   }
@@ -91,7 +91,7 @@ exports['default'] = function (model, schemaController) {
    */
   function showSingleton(id) {
 
-    return model.getModel().find(getIdQuery(id, { meta: { singleton: true } })).sort(getSortQuery()).execAsync().then(function (items) {
+    return model.getModel().find(getIdQuery(id, { meta: { singleton: true } })).sort(getSortQuery()).exec().then(function (items) {
       //if this item is a singleton and there isn't one -> go and create it
       if (!items || items.length === 0) {
         return create({});
@@ -107,7 +107,7 @@ exports['default'] = function (model, schemaController) {
    * @param schema
    */
   function showInstance(id) {
-    return model.getModel().find(getIdQuery(id, { meta: { singleton: false } })).sort(getSortQuery()).execAsync().then(function (items) {
+    return model.getModel().find(getIdQuery(id, { meta: { singleton: false } })).sort(getSortQuery()).exec().then(function (items) {
       return (0, _lodash2['default'])(items).first();
     });
   }
@@ -127,7 +127,7 @@ exports['default'] = function (model, schemaController) {
       var schema = _ref82[0];
       var currentItem = _ref82[1];
 
-      return model.getModel().createAsync(getCreateItem(schema, item, currentItem));
+      return model.getModel().create(getCreateItem(schema, item, currentItem));
     }).then(function (createdItem) {
       console.log('Model:Create:Finish:' + model.getId() + ':' + (item[model.getInstanceKey()] || '') + ':' + (createdItem || ''));
       return createdItem;
@@ -253,7 +253,7 @@ exports['default'] = function (model, schemaController) {
    */
   function history(id) {
     return getModelSchema().then(function (schema) {
-      return model.getModel().find(getIdQuery(id, schema)).sort(getSortQuery()).execAsync();
+      return model.getModel().find(getIdQuery(id, schema)).sort(getSortQuery()).exec();
     });
   }
 
@@ -263,7 +263,7 @@ exports['default'] = function (model, schemaController) {
    */
   function destroy(id) {
     return getModelSchema().then(function (schema) {
-      return model.getModel().find(getIdQuery(id, schema)).execAsync().then(destroyAll);
+      return model.getModel().find(getIdQuery(id, schema)).exec().then(destroyAll);
     });
   }
 
@@ -292,7 +292,7 @@ exports['default'] = function (model, schemaController) {
    */
   function destroyAll(items) {
     return _bluebird2['default'].all((0, _lodash2['default'])(items).map(function (item) {
-      return item.removeAsync();
+      return item.remove();
     }).value());
   }
 

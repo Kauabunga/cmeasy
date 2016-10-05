@@ -25,9 +25,9 @@ require('cmeasy')({
       singleton: true,
       definition: {
         title: {
-          type: 'String',
+         type: 'String',
          label: 'Home Page Title',
-           default: 'Default Home Page Title'
+         default: 'Default Home Page Title'
         }
       }
     }
@@ -118,29 +118,77 @@ require('cmeasy')({
 });
   
 ```
+### Config documentation
 
-(Changes planned to define a mongoose-like plugin interface)
+```
+// null values indicate that the given property is optional
 
+// By default no models are defined. The following is an example
+const models = [
+  {
+    name: string,
+    // If true, more than one instance of this model may exist. If false, only one instance
+    // can be created
+    singleton: null | boolean,
+    disableDelete: null | boolean,
+    disableCreate: null | boolean,
+    definition: {
+      title: {
+        type: 'String',
+        label: null | string,
+        displayColumn: null | boolean
+      },
+      category: {
+        type: 'Select',
+        label: null | string,
+        enum: string[]
+      }
+    }
+  }
+];
 
-### Config doc
+// The following shows the default value for options.initalUsers
+const initialUsers = {
+  // If true, cmeasy will remove all users at startup
+  clean: boolean,
+  data: [
+    {
+      name: 'Test User',
+      email: 'test@test.com',
+      password: 'test'
+    },
+    {
+      name: 'Admin',
+      role: 'admin',
+      email: 'admin@admin.com',
+      password: 'admin'
+    }
+  ]
+};
+
+// Every parameter is optional
+const options = {
+  name: null | string,
+  mongoose: null | mongoose.Connection,
+  express: null | express.Application,
+  rootRoute: null | string,
+  models: models,
+  initialUsers: null | initalUsers
+}
+const cmeasy = require('cmeasy')(options);
+```
+
+### API documentation
 
 TODO
 
-### API doc
+### Controller documentation
 
 TODO
-
-### Controller doc
-
-TODO
-
 
 [See website for complete API (TODO)](https://cmeasy.herokuapp.com/admin/login)
 
-
 ## Roadmap
-
-TODO - Give these a priority
 
 - Demo site showing the decouple presentation app using this library - Home Page + Blog.
 - Default to using in memory database and remove Mongo requirement. Mongo support via dao plugin.

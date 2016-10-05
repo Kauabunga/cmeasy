@@ -12,7 +12,8 @@ var _crypto2 = _interopRequireDefault(_crypto);
 
 var _mongoose = require('mongoose');
 
-var mongoose = require('bluebird').promisifyAll(require('mongoose'));
+var mongoose = require('mongoose');
+mongoose.Promise = require('bluebird');
 
 var R = require('ramda');
 
@@ -72,7 +73,7 @@ UserSchema.path('password').validate(function (password) {
 // Validate email is not taken
 UserSchema.path('email').validate(function (value, respond) {
   var self = this;
-  return this.constructor.findOneAsync({ email: value }).then(function (user) {
+  return this.constructor.findOne({ email: value }).then(function (user) {
     if (user) {
       if (self.id === user.id) {
         return respond(true);
@@ -95,25 +96,30 @@ var validatePresenceOf = function validatePresenceOf(value) {
 UserSchema.pre('save', function (next) {
   var _this = this;
 
-  // Handle new/update passwords
+  var debug = require('debug')('cmeasy:user:preSave');
   if (!this.isModified('password')) {
+    debug('Password has not been modified');
     return next();
   }
 
   if (!validatePresenceOf(this.password) && this.provider === 'local') {
+    debug('No password present on user with provider = local');
     next(new Error('Invalid password'));
   }
 
-  // Make salt with a callback
+  debug('Creating salt');
   this.makeSalt(function (saltErr, salt) {
     if (saltErr) {
       next(saltErr);
     }
+
+    debug('Encrypting password');
     _this.salt = salt;
     _this.encryptPassword(_this.password, function (encryptErr, hashedPassword) {
       if (encryptErr) {
         next(encryptErr);
       }
+      debug('Password encrypted');
       _this.password = hashedPassword;
       next();
     });
@@ -124,20 +130,16 @@ UserSchema.pre('save', function (next) {
  * Methods
  */
 UserSchema.methods = {
+
   /**
    * Authenticate - check if the passwords are the same
    *
    * @param {String} password
    * @param {Function} callback
-   * @return {Boolean}
    * @api public
    */
   authenticate: function authenticate(password, callback) {
     var _this2 = this;
-
-    if (!callback) {
-      return this.password === this.encryptPassword(password);
-    }
 
     this.encryptPassword(password, function (err, pwdGen) {
       if (err) {
@@ -160,30 +162,12 @@ UserSchema.methods = {
    * @return {String}
    * @api public
    */
-  makeSalt: function makeSalt(byteSize, callback) {
-    var defaultByteSize = 16;
-
-    if (typeof arguments[0] === 'function') {
-      callback = arguments[0];
-      byteSize = defaultByteSize;
-    } else if (typeof arguments[1] === 'function') {
-      callback = arguments[1];
-    }
-
-    if (!byteSize) {
-      byteSize = defaultByteSize;
-    }
-
-    if (!callback) {
-      return _crypto2['default'].randomBytes(byteSize).toString('base64');
-    }
-
-    return _crypto2['default'].randomBytes(byteSize, function (err, salt) {
+  makeSalt: function makeSalt(callback) {
+    return _crypto2['default'].randomBytes(16, function (err, salt) {
       if (err) {
-        callback(err);
-      } else {
-        callback(null, salt.toString('base64'));
+        return callback(err);
       }
+      callback(null, salt.toString('base64'));
     });
   },
 
@@ -196,7 +180,9 @@ UserSchema.methods = {
    * @api public
    */
   encryptPassword: function encryptPassword(password, callback) {
+    var debug = require('debug')('cmeasy:user:encryptPassword');
     if (!password || !this.salt) {
+      debug('salt or password are missing, aborting');
       return null;
     }
 
@@ -204,15 +190,15 @@ UserSchema.methods = {
     var defaultKeyLength = 64;
     var salt = new Buffer(this.salt, 'base64');
 
-    if (!callback) {
-      return _crypto2['default'].pbkdf2Sync(password, salt, defaultIterations, defaultKeyLength, 'sha1').toString('base64');
-    }
-
-    return _crypto2['default'].pbkdf2(password, salt, defaultIterations, defaultKeyLength, 'sha1', function (error, key) {
+    debug('Encrypting');
+    _crypto2['default'].pbkdf2(password, salt, defaultIterations, defaultKeyLength, 'sha512', function (error, key) {
+      debug('Encryption complete');
       if (error) {
+        debug('Encryption error');
         return callback(error);
       }
 
+      debug('Encrypted');
       callback(null, key.toString('base64'));
     });
   }

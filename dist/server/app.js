@@ -17,9 +17,9 @@ var _cmeasy2 = _interopRequireDefault(_cmeasy);
 exports = module.exports = function initialiseCmeasy() {
   var userOptions = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
-  return new _cmeasy2['default'](userOptions).then(function cmeasyCallback(cmeasy) {
+  return _cmeasy2['default'].create(userOptions).then(function cmeasyCallback(cmeasy) {
 
-    //TODO move handle mongo connect from cmeasy options here?
+    // TODO move handle mongo connect from cmeasy options here?
 
     var _prepareExpressServer = prepareExpressServer(cmeasy);
 
@@ -28,7 +28,7 @@ exports = module.exports = function initialiseCmeasy() {
 
     require('./config/express').coreExpress(app, cmeasy);
 
-    //TODO serve up static routes base on rootRoute configuration....
+    // TODO serve up static routes base on rootRoute configuration....
     // i.e. /assets/fonts/xyz.font needs to be served up as /rootRoute/assets/fonts/xyz.font
     require('./config/express').staticExpress(app, cmeasy);
 
@@ -36,7 +36,6 @@ exports = module.exports = function initialiseCmeasy() {
 
     require('./routes')(app, cmeasy);
 
-    console.log(cmeasy.getOptions().isUserDefinedExpressApp());
     if (!cmeasy.getOptions().isUserDefinedExpressApp()) {
       setImmediate(startExpressServer(server));
     }

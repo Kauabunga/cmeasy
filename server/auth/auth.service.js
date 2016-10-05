@@ -29,7 +29,7 @@ export function isAuthenticated() {
     })
     // Attach user to request
     .use(function(req, res, next) {
-      return User.findByIdAsync(req.user._id)
+      return User.findById(req.user._id)
         .then(user => {
           if (!user) {
             return res.status(401).end();

@@ -27,7 +27,7 @@ exports['default'] = function (cmeasy, mongoose, model) {
 };
 
 function cleanModel(cmeasy, model) {
-  return model.find({}).execAsync().then(removeModelsWithoutProperty(cmeasy.getIdKey())).then(removeModelsWithoutProperty(cmeasy.getInstanceKey()));
+  return model.find({}).exec().then(removeModelsWithoutProperty(cmeasy.getIdKey())).then(removeModelsWithoutProperty(cmeasy.getInstanceKey()));
 }
 
 function getOptions() {
@@ -52,7 +52,7 @@ function removeModelsWithoutProperty(property) {
   return function (items) {
     return (0, _lodash2['default'])(items).map(function (item) {
       if (!item[property] || item[property] === '') {
-        item.removeAsync();
+        item.remove();
         return undefined;
       } else {
         return item;

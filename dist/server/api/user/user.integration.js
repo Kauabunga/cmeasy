@@ -22,35 +22,25 @@ describe('User API:', function () {
   var app = undefined;
   before(function () {
     app = express();
-    return _userModel2['default'].removeAsync().then(function () {
-      user = new _userModel2['default']({
-        name: 'Fake User',
-        email: 'test@example.com',
-        password: 'password'
-      });
-      return user.saveAsync().then(function (savedUser) {
-        user = savedUser.toObject();
-      });
+    return cmeasy({
+      express: app
     }).then(function () {
-      adminUser = new _userModel2['default']({
-        name: 'Admin User',
-        email: 'admin@example.com',
-        password: 'password',
-        role: 'admin'
+      return _userModel2['default'].findOne({
+        email: 'test@test.com'
       });
-      return adminUser.saveAsync().then(function (savedUser) {
-        adminUser = savedUser.toObject();
+    }).then(function (_user_) {
+      user = _user_;
+      return _userModel2['default'].findOne({
+        email: 'admin@admin.com'
       });
-    }).then(function () {
-      return cmeasy({
-        express: app
-      });
+    }).then(function (_adminUser_) {
+      console.log(_adminUser_);
+      adminUser = _adminUser_;
     });
   });
 
-  // Clear users after testing
   after(function () {
-    return _userModel2['default'].removeAsync();
+    return _userModel2['default'].remove();
   });
 
   describe('GET /api/users', function () {
@@ -58,8 +48,8 @@ describe('User API:', function () {
     var token = undefined;
     before(function (done) {
       (0, _supertest2['default'])(app).post('/admin/auth/local').send({
-        email: 'admin@example.com',
-        password: 'password'
+        email: 'admin@admin.com',
+        password: 'admin'
       }).expect(200).expect('Content-Type', /json/).end(function (err, res) {
         token = res.body.token;
         done();
@@ -68,13 +58,14 @@ describe('User API:', function () {
 
     it('should not get a list of users if they are not authenticated', function (done) {
       (0, _supertest2['default'])(app).get('/admin/api/v1/users').expect(403).expect('Content-Type', /json/).end(function (err, res) {
-        done();
+        return done();
       });
     });
 
     it('should get a list of all users', function (done) {
+      console.log(token);
       (0, _supertest2['default'])(app).get('/admin/api/v1/users').set('authorization', 'Bearer ' + token).expect(200).expect('Content-Type', /json/).end(function (err, res) {
-        res.body.length.should.equal(2);
+        res.body.length.should.be.at.least(2);
         done();
       });
     });
@@ -92,9 +83,10 @@ describe('User API:', function () {
     var token;
     before(function (done) {
       (0, _supertest2['default'])(app).post('/admin/auth/local').send({
-        email: 'test@example.com',
-        password: 'password'
+        email: 'test@test.com',
+        password: 'test'
       }).expect(200).expect('Content-Type', /json/).end(function (err, res) {
+        console.log(res.statusCode);
         token = res.body.token;
         done();
       });
@@ -105,20 +97,16 @@ describe('User API:', function () {
         email: 'create@create.com'
       };
       (0, _supertest2['default'])(app).post('/admin/api/v1/users').set('authorization', 'Bearer ' + token).send(createUser).expect(422).expect('Content-Type', /json/).end(function (err, res) {
-
-        console.log(res.statusCode);
-        console.log(res.status);
-
-        done();
+        return done();
       });
     });
 
     it('should fail to create a user with the same email', function (done) {
       var createUser = {
-        email: 'test@example.com'
+        email: 'test@test.com'
       };
       (0, _supertest2['default'])(app).post('/admin/api/v1/users').set('authorization', 'Bearer ' + token).send(createUser).expect(422).expect('Content-Type', /json/).end(function (err, res) {
-        done();
+        return done();
       });
     });
 
@@ -129,10 +117,8 @@ describe('User API:', function () {
         password: 'create'
       };
       (0, _supertest2['default'])(app).post('/admin/api/v1/users').set('authorization', 'Bearer ' + token).send(createUser).expect(201).expect('Content-Type', /json/).end(function (err, res) {
-
         res.body.token.should.not.equal(undefined);
         res.body.email.should.equal(createUser.email);
-
         done();
       });
     });
@@ -142,11 +128,10 @@ describe('User API:', function () {
 
     var token;
     var deleteUser;
-
     before(function (done) {
       (0, _supertest2['default'])(app).post('/admin/auth/local').send({
-        email: 'admin@example.com',
-        password: 'password'
+        email: 'admin@admin.com',
+        password: 'admin'
       }).expect(200).expect('Content-Type', /json/).end(function (err, res) {
         token = res.body.token;
 
@@ -157,7 +142,7 @@ describe('User API:', function () {
           password: 'password'
         });
 
-        return deleteUser.saveAsync().then(function (savedUser) {
+        return deleteUser.save().then(function (savedUser) {
           deleteUser = savedUser.toObject();
           done();
         });
@@ -166,10 +151,7 @@ describe('User API:', function () {
 
     it('should destroy a user', function (done) {
       (0, _supertest2['default'])(app)['delete']('/admin/api/v1/users/' + deleteUser._id).set('authorization', 'Bearer ' + token).expect(204).expect('Content-Type', /json/).end(function (err, res) {
-
-        console.log(res.body);
-
-        done();
+        return done();
       });
     });
   });
@@ -179,8 +161,8 @@ describe('User API:', function () {
     var token;
     before(function (done) {
       (0, _supertest2['default'])(app).post('/admin/auth/local').send({
-        email: 'test@example.com',
-        password: 'password'
+        email: 'test@test.com',
+        password: 'test'
       }).expect(200).expect('Content-Type', /json/).end(function (err, res) {
         token = res.body.token;
         done();

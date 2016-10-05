@@ -6,15 +6,15 @@ import Cmeasy from './cmeasy';
 
 exports = module.exports = function initialiseCmeasy(userOptions = {}) {
 
-  return new Cmeasy(userOptions)
+  return Cmeasy.create(userOptions)
     .then(function cmeasyCallback(cmeasy) {
 
-      //TODO move handle mongo connect from cmeasy options here?
+      // TODO move handle mongo connect from cmeasy options here?
       var {app, server} = prepareExpressServer(cmeasy);
 
       require('./config/express').coreExpress(app, cmeasy);
 
-      //TODO serve up static routes base on rootRoute configuration....
+      // TODO serve up static routes base on rootRoute configuration....
       // i.e. /assets/fonts/xyz.font needs to be served up as /rootRoute/assets/fonts/xyz.font
       require('./config/express').staticExpress(app, cmeasy);
 
@@ -22,15 +22,12 @@ exports = module.exports = function initialiseCmeasy(userOptions = {}) {
 
       require('./routes')(app, cmeasy);
 
-      console.log(cmeasy.getOptions().isUserDefinedExpressApp());
       if (!cmeasy.getOptions().isUserDefinedExpressApp()) {
         setImmediate(startExpressServer(server));
       }
 
       return cmeasy;
     });
-
-
 };
 
 function prepareExpressServer(cmeasy) {

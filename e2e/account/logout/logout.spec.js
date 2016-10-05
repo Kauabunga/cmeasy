@@ -1,34 +1,18 @@
 'use strict';
 
-var config = browser.params;
-var UserModel = require(config.serverConfig.root + '/server/api/user/user.model');
-
+const config = browser.params;
 describe('Logout View', function() {
-  var login = function(user) {
-    let promise = browser.get(config.baseUrl + '/login');
-    require('../login/login.po').login(user);
-    return promise;
-  };
 
-  var testUser = {
+  const testUser = {
     name: 'Test User',
-    email: 'test@example.com',
+    email: 'test@test.com',
     password: 'test'
   };
 
-  beforeEach(function() {
-    return UserModel
-      .removeAsync()
-      .then(function() {
-        return UserModel.createAsync(testUser);
-      })
-      .then(function() {
-        return login(testUser);
-      });
-  });
-
-  after(function() {
-    return UserModel.removeAsync();
+  before(() => {
+    let promise = browser.get(config.baseUrl + '/login');
+    require('../login/login.po').login(testUser);
+    return promise;
   });
 
   describe('with local auth', function() {

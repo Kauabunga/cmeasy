@@ -55,7 +55,7 @@ function isAuthenticated() {
   })
   // Attach user to request
   .use(function (req, res, next) {
-    return _apiUserUserModel2['default'].findByIdAsync(req.user._id).then(function (user) {
+    return _apiUserUserModel2['default'].findById(req.user._id).then(function (user) {
       if (!user) {
         return res.status(401).end();
       } else {

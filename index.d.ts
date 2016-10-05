@@ -26,11 +26,28 @@ export interface ICmeasyModel {
 }
 
 export interface ICmeasyParameters {
-  name: string;
+  name?: string;
   mongoose?: any;
   express?: express.Application;
   rootRoute?: string;
-  models: ICmeasyModel[]
+  models: ICmeasyModel[],
+  initialUsers?: ICmeasyInitialUsers
+}
+
+export type ICmeasyUserRole = 'admin';
+export type ICmeasyUserProvider = 'local';
+
+export interface ICmeasyUser {
+  name: string;
+  email: string;
+  password: string;
+  provider?: ICmeasyUserProvider;
+  role?: ICmeasyUserRole
+}
+
+export interface ICmeasyInitialUsers {
+  clean: boolean;
+  data?: ICmeasyUser[]
 }
 
 export interface ICmeasyModelInstance {

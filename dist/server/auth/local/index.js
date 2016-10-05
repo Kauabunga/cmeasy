@@ -20,6 +20,7 @@ var router = _express2['default'].Router();
 
 router.post('/', function (req, res, next) {
   _passport2['default'].authenticate('local', function (err, user, info) {
+    console.log('AUTHENTICATE');
     var error = err || info;
     if (error) {
       return res.status(401).json(error);

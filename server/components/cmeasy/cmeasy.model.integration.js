@@ -42,14 +42,12 @@ describe('Cmeasy blogPost model API:', function() {
         .expect(200)
         .expect('Content-Type', /json/)
         .end((err, res) => {
-          console.log(res.body);
           res.body.title.toString().should.equal(newBlogPost.title.toString());
           res.body.content.toString().should.equal(newBlogPost.content.toString());
           done();
         });
     });
   });
-
 
   describe('GET /api/v1/content/blogPost', function() {
     before(createDummyBlogPost);
@@ -66,7 +64,6 @@ describe('Cmeasy blogPost model API:', function() {
         });
     });
   });
-
 
   describe('GET /api/v1/content/blogPost', function() {
     before(() => {
@@ -89,7 +86,6 @@ describe('Cmeasy blogPost model API:', function() {
     });
   });
 
-
   function createDummyBlogPost() {
     return new Promise((success) => {
       return request(app)
@@ -98,8 +94,6 @@ describe('Cmeasy blogPost model API:', function() {
         .expect(200)
         .expect('Content-Type', /json/)
         .end((err, res) => {
-          console.log(res.statusCode);
-          console.log(res.body);
           blogPostItem = res.body;
           success(res.body);
         });

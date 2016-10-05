@@ -19,7 +19,7 @@ describe('User Model', function() {
 
   before(function() {
     // Clear users before testing
-    return User.removeAsync();
+    return User.remove();
   });
 
   beforeEach(function() {
@@ -27,32 +27,32 @@ describe('User Model', function() {
   });
 
   afterEach(function() {
-    return User.removeAsync();
+    return User.remove();
   });
 
   it('should begin with no users', function() {
-    return User.findAsync({}).should
+    return User.find({}).should
       .eventually.have.length(0);
   });
 
   it('should fail when saving a duplicate user', function() {
-    return user.saveAsync()
+    return user.save()
       .then(function() {
         var userDup = genUser();
-        return userDup.saveAsync();
+        return userDup.save();
       }).should.be.rejected;
   });
 
   describe('#email', function() {
     it('should fail when saving without an email', function() {
       user.email = '';
-      return user.saveAsync().should.be.rejected;
+      return user.save().should.be.rejected;
     });
   });
 
   describe('#password', function() {
     beforeEach(function() {
-      return user.saveAsync();
+      return user.save();
     });
 
     it('should authenticate user if valid', function() {

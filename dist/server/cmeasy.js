@@ -1,7 +1,3 @@
-/**
- * Cmeasy
- */
-
 'use strict';
 
 var _createClass = require('babel-runtime/helpers/create-class')['default'];
@@ -56,41 +52,24 @@ var _apiGeneratedIndex = require('./api/generated/index');
 
 var _apiGeneratedIndex2 = _interopRequireDefault(_apiGeneratedIndex);
 
-var mongoose = _bluebird2['default'].promisifyAll(require('mongoose'));
+var _serverApiUserUserModel = require('../server/api/user/user.model');
+
+var _serverApiUserUserModel2 = _interopRequireDefault(_serverApiUserUserModel);
+
+var mongoose = require('mongoose');
 mongoose.Promise = _bluebird2['default'];
+
+var debug = require('debug')('cmeasy:cmeasy');
 
 var CMEASY_ID = '_cmeasyId';
 var CMEASY_INSTANCE_ID = '_cmeasyInstanceId';
 
-/**
- *
- */
-
 var Cmeasy = (function () {
   function Cmeasy() {
-    var _this = this;
-
     var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
     _classCallCheck(this, Cmeasy);
-
-    this.name = options.name || 'Cmeasy';
-    this.options = new CmeasyOptions(options);
-    this.models = [];
-
-    this._schema = (0, _componentsCmeasyCmeasySchema2['default'])(this.getNamespace(), this.getMongoose(), this);
-    this._schemaController = (0, _componentsCmeasyCmeasyControllerSchema2['default'])(this);
-    this._schemaFormly = (0, _componentsCmeasyCmeasyControllerFormly2['default'])(this.getSchemaMetaId(), this.getSchemaController());
-    this._schemaCrud = (0, _apiGeneratedIndex2['default'])(this.getSchemaController(), this.getSchemaFormly());
-
-    return _bluebird2['default'].all(this.generateModels(options.models)).then(function (models) {
-      return _this;
-    });
   }
-
-  /**
-   * TODO
-   */
 
   _createClass(Cmeasy, [{
     key: 'generateModels',
@@ -137,7 +116,7 @@ var Cmeasy = (function () {
     value: function getDefaultDefinition(definition) {
       var index = 0;
 
-      //Add a default order to the items
+      // Add a default order to the items
       (0, _lodash2['default'])(definition).map(function (definitionItem) {
         definitionItem.order = definitionItem.order || ++index * 10;
       }).value();
@@ -221,6 +200,64 @@ var Cmeasy = (function () {
     value: function getInstanceKey() {
       return CMEASY_INSTANCE_ID;
     }
+  }, {
+    key: 'seedDatabase',
+    value: function seedDatabase() {
+      var debug = require('debug')('cmeasy:cmeasy:seedDatabase');
+      debug('Seeding database');
+      if (!_configEnvironmentIndex2['default'].initialUsers) {
+        debug('options.initialUsers is null or undefined, using defaults');
+        _configEnvironmentIndex2['default'].initialUsers = {
+          clean: true,
+          data: [{
+            name: 'Test User',
+            email: 'test@test.com',
+            password: 'test'
+          }, {
+            name: 'Admin',
+            role: 'admin',
+            email: 'admin@admin.com',
+            password: 'admin'
+          }]
+        };
+      }
+
+      var seedActions = _bluebird2['default'].resolve();
+      if (_configEnvironmentIndex2['default'].initialUsers.clean) {
+        debug('Erasing all users from db');
+        seedActions = _serverApiUserUserModel2['default'].find({}).remove();
+      }
+
+      return seedActions.then(function () {
+        return _serverApiUserUserModel2['default'].create(_configEnvironmentIndex2['default'].initialUsers.data);
+      })['catch'](function (error) {
+        debug('Seed database failed');
+        console.error(error);
+        process.exit(1);
+      });
+    }
+  }], [{
+    key: 'create',
+    value: function create(options) {
+      var instance = new Cmeasy(options);
+      debug('Initialising');
+      instance.name = options.name || 'Cmeasy';
+      instance.options = new CmeasyOptions(options);
+      instance.models = [];
+
+      instance._schema = (0, _componentsCmeasyCmeasySchema2['default'])(instance.getNamespace(), instance.getMongoose(), instance);
+      instance._schemaController = (0, _componentsCmeasyCmeasyControllerSchema2['default'])(instance);
+      instance._schemaFormly = (0, _componentsCmeasyCmeasyControllerFormly2['default'])(instance.getSchemaMetaId(), instance.getSchemaController());
+      instance._schemaCrud = (0, _apiGeneratedIndex2['default'])(instance.getSchemaController(), instance.getSchemaFormly());
+
+      debug('Generating models');
+      return _bluebird2['default'].all(instance.generateModels(options.models)).then(function () {
+        return instance.seedDatabase();
+      }).then(function () {
+        debug('Initialisation complete');
+        return instance;
+      });
+    }
   }]);
 
   return Cmeasy;
@@ -237,18 +274,11 @@ var CmeasyOptions = (function () {
     if (!this.isUserDefinedMongoose()) {
       this.connectToMongo();
     }
+
     if (!this.isUserDefinedEnvironment()) {
       this.options.environment = 'production';
     }
-
-    this.seedMongo();
   }
-
-  /**
-   *
-   */
-
-  //TODO config urls
 
   _createClass(CmeasyOptions, [{
     key: 'connectToMongo',
@@ -261,19 +291,10 @@ var CmeasyOptions = (function () {
         });
       }
     }
-
-    // TODO always seed - i.e. fix tests to handle initial seed
-  }, {
-    key: 'seedMongo',
-    value: function seedMongo() {
-      if (_configEnvironmentIndex2['default'].seedDB) {
-        require('./config/seed')();
-      }
-    }
   }, {
     key: 'getMongoose',
     value: function getMongoose() {
-      return this.options.mongoose && _bluebird2['default'].promisifyAll(this.options.mongoose) || _bluebird2['default'].promisifyAll(mongoose);
+      return this.options.mongoose || mongoose;
     }
   }, {
     key: 'isUserDefinedEnvironment',
@@ -291,6 +312,11 @@ var CmeasyOptions = (function () {
       return !!this.options.express;
     }
   }, {
+    key: 'isUserDefinedInitialUsers',
+    value: function isUserDefinedInitialUsers() {
+      return Boolean(this.options.initialUsers);
+    }
+  }, {
     key: 'getExpress',
     value: function getExpress() {
       return this.options.express || _express2['default'];
@@ -299,6 +325,11 @@ var CmeasyOptions = (function () {
     key: 'getRootRoute',
     value: function getRootRoute() {
       return this.options.rootRoute || 'admin';
+    }
+  }, {
+    key: 'getUserModel',
+    value: function getUserModel() {
+      return _serverApiUserUserModel2['default'];
     }
   }]);
 

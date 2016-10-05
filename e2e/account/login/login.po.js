@@ -11,13 +11,11 @@ var LoginPage = function() {
   form.email = form.element(by.model('user.email'));
   form.password = form.element(by.model('user.password'));
   form.submit = form.element(by.css('.login-button'));
-  //form.oauthButtons = require('../../components/oauth-buttons/oauth-buttons.po').oauthButtons;
 
   this.login = function(data) {
     for (var prop in data) {
       var formElem = form[prop];
       if (data.hasOwnProperty(prop) && formElem && typeof formElem.sendKeys === 'function') {
-
         formElem.clear();
         formElem.sendKeys(data[prop]);
       }

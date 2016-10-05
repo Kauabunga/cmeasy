@@ -14,39 +14,25 @@ describe('User API:', function() {
   let app;
   before(function() {
     app = express();
-    return User.removeAsync().then(function() {
-      user = new User({
-        name: 'Fake User',
-        email: 'test@example.com',
-        password: 'password'
-      });
-      return user.saveAsync()
-        .then(function(savedUser) {
-          user = savedUser.toObject();
-        });
+    return cmeasy({
+      express: app
     })
-      .then(function() {
-        adminUser = new User({
-          name: 'Admin User',
-          email: 'admin@example.com',
-          password: 'password',
-          role: 'admin'
+      .then(() => {
+        return User.findOne({
+          email: 'test@test.com'
         });
-        return adminUser.saveAsync()
-          .then(function(savedUser) {
-            adminUser = savedUser.toObject();
-          });
       })
-      .then(function() {
-        return cmeasy({
-          express: app
+      .then((_user_) => {
+        user = _user_;
+        return User.findOne({
+          email: 'admin@admin.com'
         });
-      });
+      })
+      .then((_adminUser_) => adminUser = _adminUser_);
   });
 
-  // Clear users after testing
   after(function() {
-    return User.removeAsync();
+    return User.remove();
   });
 
   describe('GET /api/users', function() {
@@ -56,8 +42,8 @@ describe('User API:', function() {
       request(app)
         .post('/admin/auth/local')
         .send({
-          email: 'admin@example.com',
-          password: 'password'
+          email: 'admin@admin.com',
+          password: 'admin'
         })
         .expect(200)
         .expect('Content-Type', /json/)
@@ -72,19 +58,18 @@ describe('User API:', function() {
         .get('/admin/api/v1/users')
         .expect(403)
         .expect('Content-Type', /json/)
-        .end((err, res) => {
-          done();
-        });
+        .end((err, res) => done());
     });
 
     it('should get a list of all users', function(done) {
+      console.log(token);
       request(app)
         .get('/admin/api/v1/users')
         .set('authorization', 'Bearer ' + token)
         .expect(200)
         .expect('Content-Type', /json/)
         .end((err, res) => {
-          res.body.length.should.equal(2);
+          res.body.length.should.be.at.least(2);
           done();
         });
     });
@@ -100,7 +85,6 @@ describe('User API:', function() {
           done();
         });
     });
-
   });
 
   describe('POST /api/users', function() {
@@ -110,12 +94,13 @@ describe('User API:', function() {
       request(app)
         .post('/admin/auth/local')
         .send({
-          email: 'test@example.com',
-          password: 'password'
+          email: 'test@test.com',
+          password: 'test'
         })
         .expect(200)
         .expect('Content-Type', /json/)
         .end((err, res) => {
+          console.log(res.statusCode);
           token = res.body.token;
           done();
         });
@@ -131,19 +116,12 @@ describe('User API:', function() {
         .send(createUser)
         .expect(422)
         .expect('Content-Type', /json/)
-        .end((err, res) => {
-
-          console.log(res.statusCode);
-          console.log(res.status);
-
-          done();
-        });
+        .end((err, res) => done());
     });
-
 
     it('should fail to create a user with the same email', function(done) {
       var createUser = {
-        email: 'test@example.com'
+        email: 'test@test.com'
       };
       request(app)
         .post('/admin/api/v1/users')
@@ -151,9 +129,7 @@ describe('User API:', function() {
         .send(createUser)
         .expect(422)
         .expect('Content-Type', /json/)
-        .end((err, res) => {
-          done();
-        });
+        .end((err, res) => done());
     });
 
     //Note: this needs to run after the GET tests otherwise there will be an added user to the index test
@@ -169,27 +145,23 @@ describe('User API:', function() {
         .expect(201)
         .expect('Content-Type', /json/)
         .end((err, res) => {
-
           res.body.token.should.not.equal(undefined);
           res.body.email.should.equal(createUser.email);
-
           done();
         });
     });
-
   });
 
   describe('DELETE /api/users', function() {
 
     var token;
     var deleteUser;
-
     before(function(done) {
       request(app)
         .post('/admin/auth/local')
         .send({
-          email: 'admin@example.com',
-          password: 'password'
+          email: 'admin@admin.com',
+          password: 'admin'
         })
         .expect(200)
         .expect('Content-Type', /json/)
@@ -203,7 +175,7 @@ describe('User API:', function() {
             password: 'password'
           });
 
-          return deleteUser.saveAsync()
+          return deleteUser.save()
             .then(function(savedUser) {
               deleteUser = savedUser.toObject();
               done();
@@ -218,14 +190,8 @@ describe('User API:', function() {
         .set('authorization', 'Bearer ' + token)
         .expect(204)
         .expect('Content-Type', /json/)
-        .end((err, res) => {
-
-          console.log(res.body);
-
-          done();
-        });
+        .end((err, res) => done());
     });
-
   });
 
   describe('GET /api/users/me', function() {
@@ -235,8 +201,8 @@ describe('User API:', function() {
       request(app)
         .post('/admin/auth/local')
         .send({
-          email: 'test@example.com',
-          password: 'password'
+          email: 'test@test.com',
+          password: 'test'
         })
         .expect(200)
         .expect('Content-Type', /json/)

@@ -90,7 +90,7 @@ function getOptions() {
 }
 
 function addMetaSchema(schemaModel, cmeasy) {
-  schemaModel.createAsync(getMetaSchema(cmeasy));
+  schemaModel.create(getMetaSchema(cmeasy));
   return schemaModel;
 }
 

@@ -1,35 +1,22 @@
 'use strict';
 
-var config = browser.params;
-var UserModel = require(config.serverConfig.root + '/server/api/user/user.model');
-
+const config = browser.params;
 describe('Login View', function() {
-  var page;
 
-  var loadPage = function() {
-    let promise = browser.get(config.baseUrl + '/login');
-    page = require('./login.po');
-    return promise;
-  };
-
-  var testUser = {
+  const testUser = {
     name: 'Test User',
     email: 'admin@admin.com',
     password: 'admin'
   };
 
-  before(function() {
-    return UserModel
-      .removeAsync()
-      .then(function() {
-        return UserModel.createAsync(testUser);
-      })
-      .then(loadPage);
-  });
+  let page;
+  function loadPage() {
+    let promise = browser.get(config.baseUrl + '/login');
+    page = require('./login.po');
+    return promise;
+  }
 
-  after(function() {
-    return UserModel.removeAsync();
-  });
+  before(() => loadPage());
 
   it('should include login form with correct inputs and submit button', function() {
     page.form.email.getAttribute('type').should.eventually.equal('email');
@@ -40,11 +27,6 @@ describe('Login View', function() {
     page.form.submit.getText().should.eventually.equal('Login');
   });
 
-  //it('should include oauth buttons with correct classes applied', function() {
-  //  page.form.oauthButtons.google.getText().should.eventually.equal('Connect with Google+');
-  //  page.form.oauthButtons.google.getAttribute('class').should.eventually.contain('btn-block');
-  //});
-
   describe('with local auth', function() {
 
     it('should login a user and redirecting to "/content"', function() {
@@ -54,9 +36,7 @@ describe('Login View', function() {
 
     describe('and invalid credentials', function() {
 
-      before(function() {
-        return loadPage();
-      });
+      before(() => loadPage());
 
       it('should indicate login failures', function() {
         page.login({
@@ -65,13 +45,7 @@ describe('Login View', function() {
         });
 
         browser.getCurrentUrl().should.eventually.equal(config.baseUrl + '/login');
-
-        //TODO validate error message
-        //var helpBlock = page.form.element(by.css('.form-group.has-error .help-block.ng-binding'));
-        //helpBlock.getText().should.eventually.equal('This password is not correct.');
       });
-
     });
-
   });
 });
