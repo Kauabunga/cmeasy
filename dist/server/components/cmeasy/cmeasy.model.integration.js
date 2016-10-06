@@ -74,7 +74,7 @@ describe('Cmeasy blogPost model API:', function () {
       return createDummyBlogPost().then(createDummyBlogPost).then(createDummyBlogPost).then(createDummyBlogPost).then(createDummyBlogPost);
     });
     after(deleteAllDummyBlogPost);
-    it('should get a all blog post entry', function (done) {
+    it('should get all blog post entry', function (done) {
       (0, _supertest2['default'])(app).get('/admin/api/v1/content/blogPost').expect(200).expect('Content-Type', /json/).end(function (err, res) {
         res.body.length.should.equal(5);
         done();
@@ -100,20 +100,22 @@ describe('Cmeasy blogPost model API:', function () {
   }
 
   function deleteAllDummyBlogPost() {
-    return new _bluebird2['default'](function (success) {
+    return new _bluebird2['default'](function (outerResolve) {
       (0, _supertest2['default'])(app).get('/admin/api/v1/content/blogPost').expect(200).expect('Content-Type', /json/).end(function (err, res) {
         return _bluebird2['default'].all((0, _lodash2['default'])(res.body).map(function (item) {
-          return new _bluebird2['default'](function (success, failure) {
+          return new _bluebird2['default'](function (resolve, reject) {
             (0, _supertest2['default'])(app)['delete']('/admin/api/v1/content/blogPost/' + item._cmeasyInstanceId.toString()).expect(200).expect('Content-Type', /json/).end(function (err, res) {
               if (err) {
-                failure();
-              } else {
-                success(res.body);
+                return reject();
               }
+
+              resolve(res.body);
             });
           });
         }).value()).then(function (res) {
-          return success(res);
+          return outerResolve(res);
+        })['catch'](function (error) {
+          throw error;
         });
       });
     });
@@ -186,7 +188,7 @@ describe('Cmeasy blogPost model API:', function () {
     describe('GET /api/v1/content/homePage without prior instance', function () {
       after(deleteDummyHomePage);
       it('should get a home page entry', function (done) {
-        (0, _supertest2['default'])(app).get('/admin/api/v1/content/homePage/' + 'homePage').expect(200).expect('Content-Type', /json/).end(function (err, res) {
+        (0, _supertest2['default'])(app).get('/admin/api/v1/content/homePage/homePage').expect(200).expect('Content-Type', /json/).end(function (err, res) {
           res.body.title.toString().should.equal('Default Home Page Title');
           done();
         });

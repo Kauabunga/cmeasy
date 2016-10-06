@@ -1,6 +1,6 @@
 {
   "name": "cmeasy",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "main": "dist/server/app.js",
   "description": "Content API Library",
   "repository": {

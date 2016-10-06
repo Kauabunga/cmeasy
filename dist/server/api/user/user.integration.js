@@ -34,8 +34,7 @@ describe('User API:', function () {
         email: 'admin@admin.com'
       });
     }).then(function (_adminUser_) {
-      console.log(_adminUser_);
-      adminUser = _adminUser_;
+      return adminUser = _adminUser_;
     });
   });
 

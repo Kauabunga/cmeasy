@@ -29,6 +29,8 @@ var _bluebird = require('bluebird');
 
 var _bluebird2 = _interopRequireDefault(_bluebird);
 
+var _cmeasyFunctions = require('./cmeasy.functions');
+
 var debug = require('debug')('cmeasy:controller:schema');
 
 exports['default'] = function (cmeasy) {
@@ -45,7 +47,7 @@ exports['default'] = function (cmeasy) {
    * Gets a list of Generateds
    */
   function index() {
-    return cmeasy.getSchema().find({}).sort(getSchemaSortQuery()).exec().then(getUniqueIds(cmeasy)).then(removeMetaSchema(cmeasy));
+    return cmeasy.getSchema().find({}).sort((0, _cmeasyFunctions.getSchemaSortQuery)()).exec().then(getUniqueIds(cmeasy)).then(removeMetaSchema(cmeasy));
   }
 
   /**
@@ -54,7 +56,7 @@ exports['default'] = function (cmeasy) {
   function show(id) {
     debug('show:start:' + id);
 
-    return cmeasy.getSchema().find(getSchemaShowQuery(id)).sort(getSchemaSortQuery()).exec().then(function (items) {
+    return cmeasy.getSchema().find((0, _cmeasyFunctions.getSchemaShowQuery)(id)).sort((0, _cmeasyFunctions.getSchemaSortQuery)()).exec().then(function (items) {
       return (0, _lodash2['default'])(items).first();
     }).then(function () {
       var item = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
@@ -95,14 +97,14 @@ exports['default'] = function (cmeasy) {
    * Gets the history of an item
    */
   function history(id) {
-    return cmeasy.getSchema().find(getSchemaShowQuery(id)).sort(getSchemaSortQuery()).exec();
+    return cmeasy.getSchema().find((0, _cmeasyFunctions.getSchemaShowQuery)(id)).sort((0, _cmeasyFunctions.getSchemaSortQuery)()).exec();
   }
 
   /**
    * Deletes a Schema from the DB
    */
   function destroy(id) {
-    return cmeasy.getSchema().find(getSchemaShowQuery(id)).exec().then(destroyAll);
+    return cmeasy.getSchema().find((0, _cmeasyFunctions.getSchemaShowQuery)(id)).exec().then(destroyAll);
   }
 
   /**
@@ -113,19 +115,6 @@ exports['default'] = function (cmeasy) {
     return _bluebird2['default'].all((0, _lodash2['default'])(items).map(function (item) {
       return item.remove();
     }).value());
-  }
-
-  function getSchemaSortQuery() {
-    return { 'meta.dateCreated': -1 };
-  }
-
-  /**
-   * TODO get by _cmeasyInstanceId so the _cmeasyId can be changed
-   *
-   * @param id
-   */
-  function getSchemaShowQuery(id) {
-    return { 'meta._cmeasyId': id };
   }
 
   /**

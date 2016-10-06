@@ -16,6 +16,10 @@ var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
+var _ramda = require('ramda');
+
+var _ramda2 = _interopRequireDefault(_ramda);
+
 var _bluebird = require('bluebird');
 
 var _bluebird2 = _interopRequireDefault(_bluebird);
@@ -35,6 +39,8 @@ var _componentsCmeasyCmeasyModel2 = _interopRequireDefault(_componentsCmeasyCmea
 var _componentsCmeasyCmeasySchema = require('./components/cmeasy/cmeasy.schema');
 
 var _componentsCmeasyCmeasySchema2 = _interopRequireDefault(_componentsCmeasyCmeasySchema);
+
+var _componentsCmeasyCmeasyFunctionsModels = require('./components/cmeasy/cmeasy.functions.models');
 
 var _componentsCmeasyCmeasyControllerModel = require('./components/cmeasy/cmeasy.controller.model');
 
@@ -203,11 +209,14 @@ var Cmeasy = (function () {
   }, {
     key: 'seedDatabase',
     value: function seedDatabase() {
+      var _this = this;
+
       var debug = require('debug')('cmeasy:cmeasy:seedDatabase');
+      var localOptions = this.getOptions().options;
       debug('Seeding database');
-      if (!_configEnvironmentIndex2['default'].initialUsers) {
+      if (!localOptions.initialUsers) {
         debug('options.initialUsers is null or undefined, using defaults');
-        _configEnvironmentIndex2['default'].initialUsers = {
+        localOptions.initialUsers = {
           clean: true,
           data: [{
             name: 'Test User',
@@ -223,18 +232,93 @@ var Cmeasy = (function () {
       }
 
       var seedActions = _bluebird2['default'].resolve();
-      if (_configEnvironmentIndex2['default'].initialUsers.clean) {
+      if (localOptions.initialUsers.clean) {
         debug('Erasing all users from db');
         seedActions = _serverApiUserUserModel2['default'].find({}).remove();
       }
 
-      return seedActions.then(function () {
-        return _serverApiUserUserModel2['default'].create(_configEnvironmentIndex2['default'].initialUsers.data);
+      seedActions = seedActions.then(function () {
+        return _serverApiUserUserModel2['default'].create(localOptions.initialUsers.data);
       })['catch'](function (error) {
         debug('Seed database failed');
         console.error(error);
         process.exit(1);
       });
+
+      if (!_ramda2['default'].isNil(localOptions.models)) {
+        (function () {
+          debug('Checking for model initialData');
+
+          var modelsToSeed = _ramda2['default'].filter(function (model) {
+            return model.initialData;
+          })(localOptions.models);
+
+          if (!_ramda2['default'].isNil(modelsToSeed)) {
+            debug('Models with initialData: ' + modelsToSeed.length);
+            seedActions = seedActions.then(function () {
+              return _this.createInitialModelData(modelsToSeed);
+            });
+          }
+        })();
+      }
+
+      return seedActions;
+    }
+  }, {
+    key: 'createInitialModelData',
+    value: function createInitialModelData(modelsToSeed) {
+      var _this2 = this;
+
+      return _bluebird2['default'].all(modelsToSeed.map(function (modelDefinition) {
+        var cmeasyModelName = modelDefinition.definition._cmeasyId['default'];
+        var modelDefinitionData = modelDefinition.initialData.data;
+
+        debug('Enforcing initialData for: ' + cmeasyModelName);
+
+        var modelActions = _bluebird2['default'].resolve();
+        var cmeasyModel = _this2.getModel(cmeasyModelName);
+        var mongooseModel = cmeasyModel.getModel();
+
+        // Erase all current model data
+        if (modelDefinition.initialData.clean) {
+          debug(cmeasyModelName + ' has "clean" set, clearing all current model data');
+          modelActions = modelActions.then(function () {
+            return cmeasyModel.getModel().find({}).remove();
+          });
+        }
+
+        // Check for instances with matching properties & do not update them if present
+        debug(cmeasyModelName + ' checking for instances with properties matching "initialData.data"');
+        modelActions = modelActions.then(function () {
+          return mongooseModel.find({
+            $or: modelDefinition.initialData.data
+          });
+        }).then(function (modelInstances) {
+          debug(cmeasyModelName + ' found ' + modelInstances.length + ' matching instances against definition data');
+
+          return _bluebird2['default'].all(_ramda2['default'].map(function (modelDefinitionDataItem) {
+            debug(cmeasyModelName + ' checking for presence of ' + JSON.stringify(modelDefinitionDataItem));
+
+            // Determine whether one of the returned instances matches the modelDefinition
+            var matchingInstance = _ramda2['default'].find(function (modelInstance) {
+              var propertyComparison = _ramda2['default'].map(function (modelDefinitionPair) {
+                return _ramda2['default'].propEq.apply(_ramda2['default'], modelDefinitionPair);
+              })(_ramda2['default'].toPairs(modelDefinitionDataItem));
+              return _ramda2['default'].allPass(propertyComparison)(modelInstance);
+            })(modelInstances);
+
+            if (!matchingInstance) {
+              debug(cmeasyModelName + ' no instance found, creating');
+              return (0, _componentsCmeasyCmeasyFunctionsModels.createInstance)(_this2, cmeasyModel, modelDefinitionDataItem);
+            } else {
+              debug(cmeasyModelName + ' instance found, ignoring');
+              return _bluebird2['default'].resolve();
+            }
+          })(modelDefinitionData));
+        });
+
+        return modelActions;
+      }));
     }
   }], [{
     key: 'create',
@@ -312,11 +396,6 @@ var CmeasyOptions = (function () {
       return !!this.options.express;
     }
   }, {
-    key: 'isUserDefinedInitialUsers',
-    value: function isUserDefinedInitialUsers() {
-      return Boolean(this.options.initialUsers);
-    }
-  }, {
     key: 'getExpress',
     value: function getExpress() {
       return this.options.express || _express2['default'];
@@ -346,7 +425,7 @@ var CmeasyModel = (function () {
     this.cmeasy = cmeasy;
 
     this._model = (0, _componentsCmeasyCmeasyModel2['default'])(cmeasy, cmeasy.getMongoose(), this);
-    this._modelController = (0, _componentsCmeasyCmeasyControllerModel2['default'])(this, cmeasy.getSchemaController());
+    this._modelController = (0, _componentsCmeasyCmeasyControllerModel2['default'])(this, cmeasy);
     this._modelFormly = (0, _componentsCmeasyCmeasyControllerFormly2['default'])(this.getId(), cmeasy.getSchemaController());
     this._modelCrud = (0, _apiGeneratedIndex2['default'])(this.getModelController(), this.getModelFormly());
   }
