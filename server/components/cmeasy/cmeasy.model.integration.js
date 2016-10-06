@@ -74,7 +74,7 @@ describe('Cmeasy blogPost model API:', function() {
         .then(createDummyBlogPost);
     });
     after(deleteAllDummyBlogPost);
-    it('should get a all blog post entry', function(done) {
+    it('should get all blog post entry', function(done) {
       request(app)
         .get('/admin/api/v1/content/blogPost')
         .expect(200)
@@ -113,7 +113,7 @@ describe('Cmeasy blogPost model API:', function() {
   }
 
   function deleteAllDummyBlogPost() {
-    return new Promise((success) => {
+    return new Promise((outerResolve) => {
       request(app)
         .get('/admin/api/v1/content/blogPost')
         .expect(200)
@@ -121,26 +121,25 @@ describe('Cmeasy blogPost model API:', function() {
         .end((err, res) => {
           return Promise.all(
             _(res.body).map((item) => {
-              return new Promise((success, failure) => {
+              return new Promise((resolve, reject) => {
                 request(app)
                   .delete('/admin/api/v1/content/blogPost/' + item._cmeasyInstanceId.toString())
                   .expect(200)
                   .expect('Content-Type', /json/)
                   .end((err, res) => {
                     if (err) {
-                      failure();
+                      return reject();
                     }
-                    else {
-                      success(res.body);
-                    }
+
+                    resolve(res.body);
                   });
               });
-            }).value()
-          ).then((res) => {
-            return success(res);
-          });
-
-        })
+            }).value())
+            .then((res) => outerResolve(res))
+            .catch((error) => {
+              throw error;
+            });
+        });
     });
   }
 
@@ -231,11 +230,11 @@ describe('Cmeasy blogPost model API:', function() {
       });
     });
 
-    describe('GET /api/v1/content/homePage without prior instance', function() {
+    describe('GET /api/v1/content/homePage without prior instance', () => {
       after(deleteDummyHomePage);
-      it('should get a home page entry', function(done) {
+      it('should get a home page entry', (done) => {
         request(app)
-          .get('/admin/api/v1/content/homePage/' + 'homePage')
+          .get('/admin/api/v1/content/homePage/homePage')
           .expect(200)
           .expect('Content-Type', /json/)
           .end((err, res) => {
