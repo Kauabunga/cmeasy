@@ -12,9 +12,10 @@
 import _ from 'lodash';
 import uuid from 'uuid';
 import Promise from 'bluebird';
+import {getSchemaShowQuery, getSchemaSortQuery} from './cmeasy.functions';
 const debug = require('debug')('cmeasy:controller:schema');
 
-export default function(cmeasy) {
+export default function (cmeasy) {
 
   return {
     index: index,
@@ -28,8 +29,10 @@ export default function(cmeasy) {
    * Gets a list of Generateds
    */
   function index() {
-    return cmeasy.getSchema().find({})
-      .sort(getSchemaSortQuery()).exec()
+    return cmeasy.getSchema()
+      .find({})
+      .sort(getSchemaSortQuery())
+      .exec()
       .then(getUniqueIds(cmeasy))
       .then(removeMetaSchema(cmeasy));
   }
@@ -44,10 +47,11 @@ export default function(cmeasy) {
       .find(getSchemaShowQuery(id))
       .sort(getSchemaSortQuery())
       .exec()
-      .then(function(items) {
-        return _(items).first();
+      .then(function (items) {
+        return _(items)
+          .first();
       })
-      .then(function(item = {}) {
+      .then(function (item = {}) {
         debug(`show:finish:${id}:${item}`);
         return item;
       });
@@ -76,7 +80,7 @@ export default function(cmeasy) {
 
     return cmeasy.getSchema()
       .create(getDefaultSchema(cmeasy, item))
-      .then(function(item) {
+      .then(function (item) {
         debug(`create:finish:${item.meta && item.meta._cmeasyId}`);
         return item;
       });
@@ -107,29 +111,20 @@ export default function(cmeasy) {
    * @returns {*}
    */
   function destroyAll(items) {
-    return Promise.all(_(items).map((item) => {
-      return item.remove();
-    }).value());
+    return Promise.all(_(items)
+      .map((item) => {
+        return item.remove();
+      })
+      .value());
   }
-
-  function getSchemaSortQuery() {
-    return {'meta.dateCreated': -1};
-  }
-
-  /**
-   * TODO get by _cmeasyInstanceId so the _cmeasyId can be changed
-   *
-   * @param id
-   */
-  function getSchemaShowQuery(id) {
-    return {'meta._cmeasyId': id};
-  }
-
 
   /**
    * TODO api check on definition
    */
-  function getDefaultSchema(cmeasy, item) {
+  function getDefaultSchema(
+    cmeasy,
+    item
+  ) {
     return {
       meta: _.omit(item.meta, ['dateCreated', 'author', 'comment']), //TODO we should be filtering the values in here using isSchemaEditDisabled
       definition: _.merge(item.definition, getBaseSchema(cmeasy, item))
@@ -139,7 +134,10 @@ export default function(cmeasy) {
   /**
    * TODO use this to protect some of the core meta properties
    */
-  function isSchemaEditDisabled(schema, key) {
+  function isSchemaEditDisabled(
+    schema,
+    key
+  ) {
     return ['_id', '__v'].indexOf(key) !== -1 || !schema[key] || schema[key].disableSchemaEdit;
   }
 
@@ -147,7 +145,10 @@ export default function(cmeasy) {
    * TODO this should be grabbed from the meta schema meta?
    * TODO create public content types that can be submitted to
    */
-  function getBaseSchema(cmeasy, item) {
+  function getBaseSchema(
+    cmeasy,
+    item
+  ) {
     return {
       dateCreated: {
         type: 'Date',
@@ -197,12 +198,15 @@ export default function(cmeasy) {
 
 }
 
-function getIdFromItem(item, cmeasy) {
+function getIdFromItem(
+  item,
+  cmeasy
+) {
   return item && item.meta && item.meta[cmeasy.getIdKey()];
 }
 
 function getUniqueIds(cmeasy) {
-  return function(entity) {
+  return function (entity) {
     return _(entity)
       .map((item) => {
         return item.toObject();
@@ -216,13 +220,15 @@ function getUniqueIds(cmeasy) {
 }
 
 function removeMetaSchema(cmeasy) {
-  return function(items = []) {
-    return _([].concat(items)).filter(isMetaSchema(cmeasy)).value();
+  return function (items = []) {
+    return _([].concat(items))
+      .filter(isMetaSchema(cmeasy))
+      .value();
   }
 }
 
 function isMetaSchema(cmeasy) {
-  return function(item) {
+  return function (item) {
     return !item.meta || item.meta[cmeasy.getIdKey()] !== cmeasy.getSchemaMetaId();
   }
 }

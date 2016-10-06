@@ -7,9 +7,5 @@ module.exports = {
   // MongoDB connection options
   mongo: {
     uri: 'mongodb://localhost/cmeasy-dev'
-  },
-
-  // Seed database on startup
-  seedDB: true
-
+  }
 };

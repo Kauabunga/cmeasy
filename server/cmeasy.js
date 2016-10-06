@@ -1,6 +1,7 @@
 'use strict';
 
 import _ from 'lodash';
+import R from 'ramda';
 import Promise from 'bluebird';
 const mongoose = require('mongoose');
 mongoose.Promise = Promise;
@@ -11,6 +12,7 @@ import config from './config/environment/index';
 
 import createModel from './components/cmeasy/cmeasy.model';
 import createSchema from './components/cmeasy/cmeasy.schema';
+import {createInstance} from './components/cmeasy/cmeasy.functions.models';
 
 import createModelController from './components/cmeasy/cmeasy.controller.model';
 import createSchemaController from './components/cmeasy/cmeasy.controller.schema';
@@ -53,7 +55,9 @@ export default class Cmeasy {
   }
 
   generateModels(models) {
-    return _(models).map(this.initModel.bind(this)).value();
+    return _(models)
+      .map(this.initModel.bind(this))
+      .value();
   }
 
   initModel(model) {
@@ -61,7 +65,7 @@ export default class Cmeasy {
       .create(this.getModelSchema(model))
       .then(this.getAsObject.bind(this))
       .then(this.createModel.bind(this))
-      .catch(function(error) {
+      .catch(function (error) {
         console.error('error', error);
       });
   }
@@ -101,9 +105,11 @@ export default class Cmeasy {
     var index = 0;
 
     // Add a default order to the items
-    _(definition).map(function(definitionItem) {
-      definitionItem.order = definitionItem.order || (++index) * 10;
-    }).value();
+    _(definition)
+      .map(function (definitionItem) {
+        definitionItem.order = definitionItem.order || (++index) * 10;
+      })
+      .value();
 
     return definition;
   }
@@ -120,7 +126,8 @@ export default class Cmeasy {
     return _(this.models)
       .filter((model) => {
         return model.getId() === id;
-      }).first();
+      })
+      .first();
   }
 
   getNamespace() {
@@ -128,15 +135,18 @@ export default class Cmeasy {
   }
 
   getMongoose() {
-    return this.getOptions().getMongoose();
+    return this.getOptions()
+      .getMongoose();
   }
 
   getExpress() {
-    return this.getOptions().getExpress();
+    return this.getOptions()
+      .getExpress();
   }
 
   getRootRoute() {
-    return this.getOptions().getRootRoute();
+    return this.getOptions()
+      .getRootRoute();
   }
 
   getApiRoute() {
@@ -173,10 +183,11 @@ export default class Cmeasy {
 
   seedDatabase() {
     const debug = require('debug')('cmeasy:cmeasy:seedDatabase');
+    const localOptions = this.getOptions().options;
     debug('Seeding database');
-    if (!config.initialUsers) {
+    if (!localOptions.initialUsers) {
       debug('options.initialUsers is null or undefined, using defaults');
-      config.initialUsers = {
+      localOptions.initialUsers = {
         clean: true,
         data: [
           {
@@ -195,18 +206,89 @@ export default class Cmeasy {
     }
 
     let seedActions = Promise.resolve();
-    if (config.initialUsers.clean) {
+    if (localOptions.initialUsers.clean) {
       debug('Erasing all users from db');
-      seedActions = User.find({}).remove();
+      seedActions = User.find({})
+        .remove();
     }
 
-    return seedActions
-      .then(() => User.create(config.initialUsers.data))
+    seedActions = seedActions
+      .then(() => User.create(localOptions.initialUsers.data))
       .catch((error) => {
         debug('Seed database failed');
         console.error(error);
         process.exit(1);
       });
+
+    if (!R.isNil(localOptions.models)) {
+      debug('Checking for model initialData');
+
+      const modelsToSeed = R.filter((model) => {
+        return model.initialData;
+      })(localOptions.models);
+
+      if (!R.isNil(modelsToSeed)) {
+        debug(`Models with initialData: ${modelsToSeed.length}`);
+        seedActions = seedActions.then(() => this.createInitialModelData(modelsToSeed));
+      }
+    }
+
+    return seedActions;
+  }
+
+  createInitialModelData(modelsToSeed) {
+    return Promise.all(modelsToSeed.map((modelDefinition) => {
+      const cmeasyModelName = modelDefinition.definition._cmeasyId.default;
+      const modelDefinitionData = modelDefinition.initialData.data;
+
+      debug(`Enforcing initialData for: ${cmeasyModelName}`);
+
+      let modelActions = Promise.resolve();
+      const cmeasyModel = this.getModel(cmeasyModelName);
+      const mongooseModel = cmeasyModel.getModel();
+
+      // Erase all current model data
+      if (modelDefinition.initialData.clean) {
+        debug(`${cmeasyModelName} has "clean" set, clearing all current model data`);
+        modelActions = modelActions.then(() => cmeasyModel.getModel()
+          .find({})
+          .remove());
+      }
+
+      // Check for instances with matching properties & do not update them if present
+      debug(`${cmeasyModelName} checking for instances with properties matching "initialData.data"`);
+      modelActions = modelActions.then(() => {
+        return mongooseModel.find({
+          $or: modelDefinition.initialData.data
+        });
+      })
+        .then((modelInstances) => {
+          debug(`${cmeasyModelName} found ${modelInstances.length} matching instances against definition data`);
+
+          return Promise.all(R.map((modelDefinitionDataItem) => {
+            debug(`${cmeasyModelName} checking for presence of ${JSON.stringify(modelDefinitionDataItem)}`);
+
+            // Determine whether one of the returned instances matches the modelDefinition
+            const matchingInstance = R.find((modelInstance) => {
+              const propertyComparison = R.map((modelDefinitionPair) => {
+                return R.propEq.apply(R, modelDefinitionPair);
+              })(R.toPairs(modelDefinitionDataItem));
+              return R.allPass(propertyComparison)(modelInstance);
+            })(modelInstances);
+
+            if (!matchingInstance) {
+              debug(`${cmeasyModelName} no instance found, creating`);
+              return createInstance(this, cmeasyModel, modelDefinitionDataItem);
+            } else {
+              debug(`${cmeasyModelName} instance found, ignoring`);
+              return Promise.resolve();
+            }
+          })(modelDefinitionData));
+
+        });
+
+      return modelActions;
+    }));
   }
 
 }
@@ -228,7 +310,7 @@ class CmeasyOptions {
   connectToMongo() {
     if (!mongoose.connection.readyState) {
       mongoose.connect(config.mongo.uri, config.mongo.options);
-      mongoose.connection.on('error', function(err) {
+      mongoose.connection.on('error', function (err) {
         console.error('MongoDB connection error: ' + err);
         process.exit(-1);
       });
@@ -251,10 +333,6 @@ class CmeasyOptions {
     return !!this.options.express;
   }
 
-  isUserDefinedInitialUsers() {
-    return Boolean(this.options.initialUsers);
-  }
-
   getExpress() {
     return this.options.express || express;
   }
@@ -270,14 +348,17 @@ class CmeasyOptions {
 
 class CmeasyModel {
 
-  constructor(cmeasy, model) {
+  constructor(
+    cmeasy,
+    model
+  ) {
     this.meta = model.meta;
     this.definition = model.definition;
 
     this.cmeasy = cmeasy;
 
     this._model = createModel(cmeasy, cmeasy.getMongoose(), this);
-    this._modelController = createModelController(this, cmeasy.getSchemaController());
+    this._modelController = createModelController(this, cmeasy);
     this._modelFormly = createFormlyController(this.getId(), cmeasy.getSchemaController());
     this._modelCrud = createCrudController(this.getModelController(), this.getModelFormly());
   }
