@@ -17,12 +17,17 @@ export interface ICmeasyDefinition {
   [properties: string]: ICmeasyDefinitionProperty;
 }
 
+export interface ICmeasyModelInitialData {
+  [properties: string]: string | number | string[];
+}
+
 export interface ICmeasyModel {
   name: string;
   singleton?: boolean;
   disableDelete?: boolean;
   disableCreate?: boolean;
   definition?: ICmeasyDefinition;
+  initialData?: ICmeasyModelInitialData;
 }
 
 export interface ICmeasyParameters {
