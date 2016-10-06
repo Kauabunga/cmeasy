@@ -9,9 +9,7 @@
 [![Test Coverage](https://codeclimate.com/github/Kauabunga/cmeasy/badges/coverage.svg)](https://codeclimate.com/github/Kauabunga/cmeasy/coverage)
 [![Sauce Test Status](https://saucelabs.com/buildstatus/Kauabunga)](https://saucelabs.com/u/Kauabunga)
 
-
 > Content API Library
-
 
 ## Getting Started
 
@@ -136,13 +134,23 @@ const models = [
       title: {
         type: 'String',
         label: null | string,
-        displayColumn: null | boolean
+        displayColumn: null | boolean,
       },
       category: {
         type: 'Select',
         label: null | string,
         enum: string[]
-      }
+      },
+      
+    },
+    initialData: {
+      clean: boolean, // Clear all existing models at startup
+      data: [
+        {
+          title: 'A title',
+          category: 'Category'
+        }
+       ]
     }
   }
 ];
