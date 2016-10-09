@@ -5,67 +5,67 @@
 import * as express from 'express';
 import * as mongoose from 'mongoose';
 
-export type ICmeasyDefinitionProprtyType = 'String' | 'Select';
+export type IBruceDefinitionProprtyType = 'String' | 'Select';
 
-export interface ICmeasyDefinitionProperty {
-  type: ICmeasyDefinitionProprtyType;
+export interface IBruceDefinitionProperty {
+  type: IBruceDefinitionProprtyType;
   label?: string;
   displayColumn?: boolean;
 }
 
-export interface ICmeasyDefinition {
-  [properties: string]: ICmeasyDefinitionProperty;
+export interface IBruceDefinition {
+  [properties: string]: IBruceDefinitionProperty;
 }
 
-export interface ICmeasyModelInitialData {
+export interface IBruceModelInitialData {
   [properties: string]: string | number | string[];
 }
 
-export interface ICmeasyModel {
+export interface IBruceModel {
   name: string;
   singleton?: boolean;
   disableDelete?: boolean;
   disableCreate?: boolean;
-  definition?: ICmeasyDefinition;
-  initialData?: ICmeasyModelInitialData;
+  definition?: IBruceDefinition;
+  initialData?: IBruceModelInitialData;
 }
 
-export interface ICmeasyParameters {
+export interface IBruceParameters {
   name?: string;
   mongoose?: any;
   express?: express.Application;
   rootRoute?: string;
-  models: ICmeasyModel[],
-  initialUsers?: ICmeasyInitialUsers
+  models: IBruceModel[],
+  initialUsers?: IBruceInitialUsers
 }
 
-export type ICmeasyUserRole = 'admin';
-export type ICmeasyUserProvider = 'local';
+export type IBruceUserRole = 'admin';
+export type IBruceUserProvider = 'local';
 
-export interface ICmeasyUser {
+export interface IBruceUser {
   name: string;
   email: string;
   password: string;
-  provider?: ICmeasyUserProvider;
-  role?: ICmeasyUserRole
+  provider?: IBruceUserProvider;
+  role?: IBruceUserRole
 }
 
-export interface ICmeasyInitialUsers {
+export interface IBruceInitialUsers {
   clean: boolean;
-  data?: ICmeasyUser[]
+  data?: IBruceUser[]
 }
 
-export interface ICmeasyModelInstance {
+export interface IBruceModelInstance {
   getModel(): mongoose.Model<any>;
 }
 
-export interface ICmeasyInstance {
-  getModel(name: string): ICmeasyModelInstance;
-  getModels(): ICmeasyModelInstance[];
+export interface IBruceInstance {
+  getModel(name: string): IBruceModelInstance;
+  getModels(): IBruceModelInstance[];
 }
 
-export interface ICmeasyStatic {
-  (parameters: ICmeasyParameters): Promise<ICmeasyInstance>;
+export interface IBruceStatic {
+  (parameters: IBruceParameters): Promise<IBruceInstance>;
 }
 
-export function cmeasy(parameters: ICmeasyParameters): Promise<ICmeasyInstance>;
+export function Bruce(parameters: IBruceParameters): Promise<IBruceInstance>;
