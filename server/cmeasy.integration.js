@@ -2,7 +2,7 @@ const expect = require('chai').expect;
 import Cmeasy from './cmeasy';
 import R from 'ramda';
 
-describe('cmeasy', function () {
+describe('cmeasy', function() {
 
   let cmeasy;
   const data = [
@@ -16,8 +16,8 @@ describe('cmeasy', function () {
     }
   ];
 
-  beforeEach(() => {
-    return Cmeasy.create({
+  beforeEach((done) => {
+    Cmeasy.create({
       models: [
         {
           name: 'Test Schema',
@@ -37,11 +37,12 @@ describe('cmeasy', function () {
       ]
     })
       .then((_cmeasy_) => {
-        cmeasy = _cmeasy_;
+        cmeasy = _cmeasy_
+        done();
       });
   });
 
-  it('should create one and one only instance of each item in a model\'s inital data', function (done) {
+  it('should create one and one only instance of each item in a model\'s initial data', function(done) {
     cmeasy.getModel('testSchema')
       .getModel()
       .find({})
@@ -67,6 +68,7 @@ describe('cmeasy', function () {
         expect(ensureDatumPresent(secondDatum, secondDatum.title))
           .to
           .equal(true);
+
         done();
       });
   });
