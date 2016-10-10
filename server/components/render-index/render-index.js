@@ -1,20 +1,13 @@
-
-
 'use strict';
-
 
 import Promise from 'bluebird';
 import path from 'path';
 import fs from 'fs';
-import config from '../../config/environment';
+import config from '../../config';
 import uuid from 'uuid';
 import { minify } from 'html-minifier';
 import ejs from 'ejs';
 
-
-/**
- *
- */
 export default function(app, cmeasy) {
 
   let indexDotHtml;
@@ -35,9 +28,6 @@ export default function(app, cmeasy) {
 
   };
 
-  /**
-   *
-   */
   function getInjectedVariables(cspNonce, req){
     return Promise.all([cmeasy.getSchemaController().index()])
       .then(function([models]){
@@ -58,9 +48,6 @@ export default function(app, cmeasy) {
       });
   }
 
-  /**
-   *
-   */
   function getIndexAsString(){
     if( ! indexDotHtml || config.env === 'development'){
       return new Promise((success, failure) => {
@@ -79,10 +66,6 @@ export default function(app, cmeasy) {
     }
   }
 
-  /**
-   *
-   * @param template
-   */
   function minifyTemplate(template){
     return minify(template, {
       minifyJS: true,
@@ -91,14 +74,8 @@ export default function(app, cmeasy) {
     });
   }
 
-  /**
-   *
-   */
   function getIndexFilePath(){
     return path.resolve(app.get('appPath') + '/index.template.html');
   }
-
 }
-
-
 
