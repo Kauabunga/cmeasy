@@ -1,5 +1,4 @@
-# cmeasy beta
-
+# Bluefish
 
 [![Npm Version](https://img.shields.io/npm/dm/cmeasy.svg)](https://www.npmjs.com/package/cmeasy)
 [![Build Status](https://travis-ci.org/Kauabunga/cmeasy.svg)](https://travis-ci.org/Kauabunga/cmeasy)
@@ -10,6 +9,8 @@
 [![Sauce Test Status](https://saucelabs.com/buildstatus/Kauabunga)](https://saucelabs.com/u/Kauabunga)
 
 > Content API Library
+
+![bluefish-01](https://cloud.githubusercontent.com/assets/1000759/19225395/2739c4fc-8ef8-11e6-99c4-1dfb64f45106.png)
 
 ## Getting Started
 
