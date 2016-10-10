@@ -2,10 +2,6 @@
 
 var _interopRequireDefault = require('babel-runtime/helpers/interop-require-default')['default'];
 
-var _configEnvironment = require('./config/environment');
-
-var _configEnvironment2 = _interopRequireDefault(_configEnvironment);
-
 var _http = require('http');
 
 var _http2 = _interopRequireDefault(_http);
@@ -13,6 +9,8 @@ var _http2 = _interopRequireDefault(_http);
 var _cmeasy = require('./cmeasy');
 
 var _cmeasy2 = _interopRequireDefault(_cmeasy);
+
+var config = require('./config/config');
 
 exports = module.exports = function initialiseCmeasy() {
   var userOptions = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
@@ -37,7 +35,7 @@ exports = module.exports = function initialiseCmeasy() {
     require('./routes')(app, cmeasy);
 
     if (!cmeasy.getOptions().isUserDefinedExpressApp()) {
-      setImmediate(startExpressServer(server));
+      setImmediate(startExpressServer(server, userOptions));
     }
 
     return cmeasy;
@@ -68,10 +66,10 @@ function prepareExpressServer(cmeasy) {
  * @param server
  * @returns {Function}
  */
-function startExpressServer(server) {
+function startExpressServer(server, userOptions) {
   return function startServer() {
-    server.listen(_configEnvironment2['default'].port, _configEnvironment2['default'].ip, function listenCallback() {
-      console.log('Express server listening on ' + _configEnvironment2['default'].port + ', in ' + process.env.NODE_ENV + ' mode');
+    server.listen(userOptions.port, userOptions.ip, function listenCallback() {
+      console.log('Express server listening on ' + userOptions.port + ', in ' + userOptions.ip + ' mode');
     });
   };
 }

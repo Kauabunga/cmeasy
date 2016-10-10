@@ -9,13 +9,9 @@ exports.isAuthenticated = isAuthenticated;
 exports.hasRole = hasRole;
 exports.signToken = signToken;
 
-var _passport = require('passport');
+var _config = require('../config');
 
-var _passport2 = _interopRequireDefault(_passport);
-
-var _configEnvironment = require('../config/environment');
-
-var _configEnvironment2 = _interopRequireDefault(_configEnvironment);
+var _config2 = _interopRequireDefault(_config);
 
 var _jsonwebtoken = require('jsonwebtoken');
 
@@ -34,7 +30,7 @@ var _apiUserUserModel = require('../api/user/user.model');
 var _apiUserUserModel2 = _interopRequireDefault(_apiUserUserModel);
 
 var validateJwt = (0, _expressJwt2['default'])({
-  secret: _configEnvironment2['default'].secrets.session
+  secret: _config2['default'].secrets.session
 });
 
 /**
@@ -80,7 +76,7 @@ function hasRole(roleRequired) {
   }
 
   return (0, _composableMiddleware2['default'])().use(isAuthenticated()).use(function meetsRequirements(req, res, next) {
-    if (_configEnvironment2['default'].userRoles.indexOf(req.user.role) >= _configEnvironment2['default'].userRoles.indexOf(roleRequired)) {
+    if (_config2['default'].userRoles.indexOf(req.user.role) >= _config2['default'].userRoles.indexOf(roleRequired)) {
       return next();
     } else {
       return res.status(403).send('Forbidden');
@@ -93,7 +89,7 @@ function hasRole(roleRequired) {
  */
 
 function signToken(id, role) {
-  return _jsonwebtoken2['default'].sign({ _id: id, role: role }, _configEnvironment2['default'].secrets.session, {
+  return _jsonwebtoken2['default'].sign({ _id: id, role: role }, _config2['default'].secrets.session, {
     expiresIn: 60 * 60 * 5
   });
 }

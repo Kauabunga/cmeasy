@@ -1,5 +1,3 @@
-
-
 'use strict';
 
 var _slicedToArray = require('babel-runtime/helpers/sliced-to-array')['default'];
@@ -22,9 +20,9 @@ var _fs = require('fs');
 
 var _fs2 = _interopRequireDefault(_fs);
 
-var _configEnvironment = require('../../config/environment');
+var _config = require('../../config');
 
-var _configEnvironment2 = _interopRequireDefault(_configEnvironment);
+var _config2 = _interopRequireDefault(_config);
 
 var _uuid = require('uuid');
 
@@ -35,10 +33,6 @@ var _htmlMinifier = require('html-minifier');
 var _ejs = require('ejs');
 
 var _ejs2 = _interopRequireDefault(_ejs);
-
-/**
- *
- */
 
 exports['default'] = function (app, cmeasy) {
 
@@ -61,9 +55,6 @@ exports['default'] = function (app, cmeasy) {
     });
   };
 
-  /**
-   *
-   */
   function getInjectedVariables(cspNonce, req) {
     return _bluebird2['default'].all([cmeasy.getSchemaController().index()]).then(function (_ref3) {
       var _ref32 = _slicedToArray(_ref3, 1);
@@ -72,8 +63,8 @@ exports['default'] = function (app, cmeasy) {
 
       return {
         cmeasy: JSON.stringify({
-          env: _configEnvironment2['default'].env,
-          version: _configEnvironment2['default'].version,
+          env: _config2['default'].env,
+          version: _config2['default'].version,
           rootRoute: cmeasy.getRootRoute(),
           models: models
         }),
@@ -85,11 +76,8 @@ exports['default'] = function (app, cmeasy) {
     });
   }
 
-  /**
-   *
-   */
   function getIndexAsString() {
-    if (!indexDotHtml || _configEnvironment2['default'].env === 'development') {
+    if (!indexDotHtml || _config2['default'].env === 'development') {
       return new _bluebird2['default'](function (success, failure) {
         return _fs2['default'].readFile(getIndexFilePath(), 'utf8', function (err, indexTemplate) {
           if (err) {
@@ -104,10 +92,6 @@ exports['default'] = function (app, cmeasy) {
     }
   }
 
-  /**
-   *
-   * @param template
-   */
   function minifyTemplate(template) {
     return (0, _htmlMinifier.minify)(template, {
       minifyJS: true,
@@ -116,9 +100,6 @@ exports['default'] = function (app, cmeasy) {
     });
   }
 
-  /**
-   *
-   */
   function getIndexFilePath() {
     return _path2['default'].resolve(app.get('appPath') + '/index.template.html');
   }

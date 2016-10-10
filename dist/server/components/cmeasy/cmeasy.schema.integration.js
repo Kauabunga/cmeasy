@@ -33,7 +33,7 @@ describe('Cmeasy blogPost schema API:', function () {
       if (error) {
         return done(error);
       }
-      process.env.PORT = port;
+      process.env.CMS_PORT = port;
       cmeasy(options).then(function () {
         done();
       });
@@ -133,7 +133,7 @@ describe('Cmeasy meta schema API:', function () {
       if (error) {
         return done(error);
       }
-      process.env.PORT = port;
+      process.env.CMS_PORT = port;
       cmeasy(options).then(function () {
         done();
       });

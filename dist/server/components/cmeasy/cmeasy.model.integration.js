@@ -20,7 +20,6 @@ var _lodash2 = _interopRequireDefault(_lodash);
 
 var cmeasy = require('../../app');
 var express = require('express');
-var options = require('../../options')();
 var portfinder = require('portfinder');
 
 describe('Cmeasy blogPost model API:', function () {
@@ -29,15 +28,17 @@ describe('Cmeasy blogPost model API:', function () {
 
   var app = undefined;
   var blogPostItem = undefined;
+  var options = undefined;
   before(function (done) {
     app = express();
-    options.express = app;
 
     portfinder.getPort(function (error, port) {
       if (error) {
         return done(error);
       }
-      process.env.PORT = port;
+      process.env.CMS_PORT = port;
+      options = require('../../options')();
+      options.express = app;
       cmeasy(options).then(function () {
         done();
       });

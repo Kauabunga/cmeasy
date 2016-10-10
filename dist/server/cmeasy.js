@@ -28,9 +28,9 @@ var _express = require('express');
 
 var _express2 = _interopRequireDefault(_express);
 
-var _configEnvironmentIndex = require('./config/environment/index');
+var _configIndex = require('./config/index');
 
-var _configEnvironmentIndex2 = _interopRequireDefault(_configEnvironmentIndex);
+var _configIndex2 = _interopRequireDefault(_configIndex);
 
 var _componentsCmeasyCmeasyModel = require('./components/cmeasy/cmeasy.model');
 
@@ -368,7 +368,7 @@ var CmeasyOptions = (function () {
     key: 'connectToMongo',
     value: function connectToMongo() {
       if (!mongoose.connection.readyState) {
-        mongoose.connect(_configEnvironmentIndex2['default'].mongo.uri, _configEnvironmentIndex2['default'].mongo.options);
+        mongoose.connect(_configIndex2['default'].mongo.uri, _configIndex2['default'].mongo.options);
         mongoose.connection.on('error', function (err) {
           console.error('MongoDB connection error: ' + err);
           process.exit(-1);

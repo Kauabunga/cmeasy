@@ -17,9 +17,9 @@ var _userModel = require('./user.model');
 
 var _userModel2 = _interopRequireDefault(_userModel);
 
-var _configEnvironment = require('../../config/environment');
+var _config = require('../../config');
 
-var _configEnvironment2 = _interopRequireDefault(_configEnvironment);
+var _config2 = _interopRequireDefault(_config);
 
 var _jsonwebtoken = require('jsonwebtoken');
 
@@ -69,7 +69,7 @@ function create(req, res, next) {
   newUser.role = 'user';
 
   return newUser.save().then(function (user) {
-    var token = _jsonwebtoken2['default'].sign({ _id: user._id }, _configEnvironment2['default'].secrets.session, {
+    var token = _jsonwebtoken2['default'].sign({ _id: user._id }, _config2['default'].secrets.session, {
       expiresIn: 60 * 60 * 5
     });
     return res.status(201).json({ token: token, email: user.email });

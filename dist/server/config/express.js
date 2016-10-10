@@ -1,7 +1,3 @@
-/**
- * Express configuration
- */
-
 'use strict';
 
 var _interopRequireDefault = require('babel-runtime/helpers/interop-require-default')['default'];
@@ -50,9 +46,9 @@ var _lusca = require('lusca');
 
 var _lusca2 = _interopRequireDefault(_lusca);
 
-var _environmentIndex = require('./environment/index');
+var _index = require('./index');
 
-var _environmentIndex2 = _interopRequireDefault(_environmentIndex);
+var _index2 = _interopRequireDefault(_index);
 
 var _passport = require('passport');
 
@@ -72,22 +68,16 @@ var _mongoose2 = _interopRequireDefault(_mongoose);
 
 var mongoStore = (0, _connectMongo2['default'])(_expressSession2['default']);
 
-/**
- *
- */
 exports['default'] = {
   coreExpress: coreExpress,
   staticExpress: staticExpress
 };
 
-/**
- *
- */
 function coreExpress(app, cmeasy) {
   var env = app.get('env');
 
   //TODO what can we do with this - do we need to set a view engine? Can we see if one is already set?
-  app.set('views', _environmentIndex2['default'].root + '/server/views');
+  app.set('views', _index2['default'].root + '/server/views');
   app.set('view engine', 'jade');
 
   app.use('/' + cmeasy.getRootRoute(), (0, _compression2['default'])());
@@ -101,7 +91,7 @@ function coreExpress(app, cmeasy) {
   // We need to enable sessions for passport-twitter because it's an
   // oauth 1.0 strategy, and Lusca depends on sessions
   app.use('/' + cmeasy.getRootRoute(), (0, _expressSession2['default'])({
-    secret: _environmentIndex2['default'].secrets.session,
+    secret: _index2['default'].secrets.session,
     saveUninitialized: true,
     resave: false,
     store: new mongoStore({
@@ -140,26 +130,22 @@ function coreExpress(app, cmeasy) {
   }
 }
 
-/**
- *
- * @param app
- */
 function staticExpress(app, cmeasy) {
 
   var env = app.get('env');
 
   //TODO what does this do to the other app?
-  app.set('appPath', _path2['default'].join(_environmentIndex2['default'].root, 'client'));
+  app.set('appPath', _path2['default'].join(_index2['default'].root, 'client'));
 
   /* istanbul ignore if */
   if ('production' === env) {
-    app.use('/' + cmeasy.getRootRoute(), (0, _serveFavicon2['default'])(_path2['default'].join(_environmentIndex2['default'].root, 'client', 'favicon.ico')));
+    app.use('/' + cmeasy.getRootRoute(), (0, _serveFavicon2['default'])(_path2['default'].join(_index2['default'].root, 'client', 'favicon.ico')));
     app.use('/' + cmeasy.getRootRoute(), _express2['default']['static'](app.get('appPath')));
     app.use('/' + cmeasy.getRootRoute(), (0, _morgan2['default'])('dev'));
   }
 
   if ('development' === env || 'test' === env) {
-    app.use('/' + cmeasy.getRootRoute(), _express2['default']['static'](_path2['default'].join(_environmentIndex2['default'].root, '.tmp')));
+    app.use('/' + cmeasy.getRootRoute(), _express2['default']['static'](_path2['default'].join(_index2['default'].root, '.tmp')));
     app.use('/' + cmeasy.getRootRoute(), _express2['default']['static'](app.get('appPath')));
     app.use('/' + cmeasy.getRootRoute(), (0, _morgan2['default'])('dev'));
     app.use('/' + cmeasy.getRootRoute(), (0, _errorhandler2['default'])()); // Error handler - has to be last

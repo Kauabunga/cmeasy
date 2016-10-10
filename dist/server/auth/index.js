@@ -10,20 +10,16 @@ var _express = require('express');
 
 var _express2 = _interopRequireDefault(_express);
 
-var _passport = require('passport');
+var _config = require('../config');
 
-var _passport2 = _interopRequireDefault(_passport);
-
-var _configEnvironment = require('../config/environment');
-
-var _configEnvironment2 = _interopRequireDefault(_configEnvironment);
+var _config2 = _interopRequireDefault(_config);
 
 var _apiUserUserModel = require('../api/user/user.model');
 
 var _apiUserUserModel2 = _interopRequireDefault(_apiUserUserModel);
 
 // Passport Configuration
-require('./local/passport').setup(_apiUserUserModel2['default'], _configEnvironment2['default']);
+require('./local/passport').setup(_apiUserUserModel2['default'], _config2['default']);
 
 var router = _express2['default'].Router();
 

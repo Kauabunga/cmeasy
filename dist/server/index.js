@@ -1,11 +1,9 @@
 'use strict';
 
+var config = require('./config/config');
 console.log('Cmeasy entry at server/index.js');
 
-// Set default node environment to development
-var env = process.env.NODE_ENV = process.env.NODE_ENV || 'development';
-
-if (env === 'development' || env === 'test') {
+if (config.get('NODE_ENV') === 'development' || config.get('NODE_ENV') === 'test') {
   // Register the Babel require hook
   require('babel-core/register');
 }

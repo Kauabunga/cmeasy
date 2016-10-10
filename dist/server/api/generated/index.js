@@ -6,9 +6,9 @@ var _express = require('express');
 
 var _express2 = _interopRequireDefault(_express);
 
-var _configEnvironment = require('../../config/environment');
+var _config = require('../../config');
 
-var _configEnvironment2 = _interopRequireDefault(_configEnvironment);
+var _config2 = _interopRequireDefault(_config);
 
 var _generatedControllerCrud = require('./generated.controller.crud');
 
@@ -31,8 +31,8 @@ function createModelRoute(modelController, formlyController, router) {
 
   var crudController = (0, _generatedControllerCrud2['default'])(modelController);
 
-  router.get('/' + _configEnvironment2['default'].modelFormlyRoute, gettifyPromise(formlyController.createModelFormlyFields));
-  router.get('/' + _configEnvironment2['default'].modelColumnRoute, gettifyPromise(formlyController.createModelColumns));
+  router.get('/' + _config2['default'].modelFormlyRoute, gettifyPromise(formlyController.createModelFormlyFields));
+  router.get('/' + _config2['default'].modelColumnRoute, gettifyPromise(formlyController.createModelColumns));
 
   router.get('/', crudController.index);
   router.get('/:id/history', crudController.history);

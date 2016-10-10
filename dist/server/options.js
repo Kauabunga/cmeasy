@@ -12,9 +12,9 @@ var _mongoose2 = _interopRequireDefault(_mongoose);
 
 // TODO remove the idea of a cmeasy config file
 
-var _configEnvironment = require('./config/environment');
+var _config = require('./config');
 
-var _configEnvironment2 = _interopRequireDefault(_configEnvironment);
+var _config2 = _interopRequireDefault(_config);
 
 _mongoose2['default'].Promise = require('bluebird');
 exports['default'] = function () {
@@ -23,6 +23,10 @@ exports['default'] = function () {
 
     // Use a mongoose instance defined outside of the Cmeasy scope
     mongoose: getMongoose(),
+
+    port: _config2['default'].port,
+
+    ip: _config2['default'].ip,
 
     rootRoute: 'admin',
 
@@ -76,7 +80,7 @@ function getHomePageModel() {
 
 function getMongoose() {
   if (!_mongoose2['default'].connection.readyState) {
-    _mongoose2['default'].connect(_configEnvironment2['default'].mongo.uri, _configEnvironment2['default'].mongo.options);
+    _mongoose2['default'].connect(_config2['default'].mongo.uri, _config2['default'].mongo.options);
     _mongoose2['default'].connection.on('error', function (err) {
       console.error('MongoDB connection error: ' + err);
       process.exit(-1);
