@@ -1,7 +1,3 @@
-/**
- * Express configuration
- */
-
 'use strict';
 
 import express from 'express';
@@ -14,24 +10,18 @@ import cookieParser from 'cookie-parser';
 import errorHandler from 'errorhandler';
 import path from 'path';
 import lusca from 'lusca';
-import config from './environment/index';
+import config from './index';
 import passport from 'passport';
 import session from 'express-session';
 import connectMongo from 'connect-mongo';
 import mongoose from 'mongoose';
 var mongoStore = connectMongo(session);
 
-/**
- *
- */
 export default {
   coreExpress: coreExpress,
   staticExpress: staticExpress
 }
 
-/**
- *
- */
 function coreExpress(app, cmeasy){
   var env = app.get('env');
 
@@ -86,11 +76,7 @@ function coreExpress(app, cmeasy){
   }
 }
 
-/**
- *
- * @param app
- */
-function staticExpress(app, cmeasy){
+function staticExpress(app, cmeasy) {
 
   var env = app.get('env');
 

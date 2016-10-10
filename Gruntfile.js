@@ -6,7 +6,9 @@ module.exports = function (grunt) {
   try {
     localConfig = require('./server/config/local.env');
   } catch(e) {
-    localConfig = {};
+    localConfig = {
+      CMS_SESSION_SECRET: 'wow such secret'
+    };
   }
 
   // Load grunt tasks automatically, when needed
@@ -62,7 +64,7 @@ module.exports = function (grunt) {
         tasks: ['newer:babel:client']
       },
       ngconstant: {
-        files: ['<%= yeoman.server %>/config/environment/shared.js'],
+        files: ['<%= yeoman.server %>/config/shared.js'],
         tasks: ['ngconstant']
       },
       injectJS: {
@@ -335,14 +337,14 @@ module.exports = function (grunt) {
     },
 
     // Dynamically generate angular constant `appConfig` from
-    // `server/config/environment/shared.js`
+    // `server/config/shared.js`
     ngconstant: {
       options: {
         name: 'cmeasyApp.constants',
         dest: '<%= yeoman.client %>/app/app.constant.js',
         deps: [],
         wrap: true,
-        configPath: '<%= yeoman.server %>/config/environment/shared'
+        configPath: '<%= yeoman.server %>/config/index.js'
       },
       app: {
         constants: function() {

@@ -1,6 +1,6 @@
 'use strict';
 
-import config from './config/environment';
+const config = require('./config/config');
 import http from 'http';
 import Cmeasy from './cmeasy';
 
@@ -23,7 +23,7 @@ exports = module.exports = function initialiseCmeasy(userOptions = {}) {
       require('./routes')(app, cmeasy);
 
       if (!cmeasy.getOptions().isUserDefinedExpressApp()) {
-        setImmediate(startExpressServer(server));
+        setImmediate(startExpressServer(server, userOptions));
       }
 
       return cmeasy;
@@ -37,8 +37,7 @@ function prepareExpressServer(cmeasy) {
   if (cmeasy.getOptions().isUserDefinedExpressApp()) {
     // TODO validate correctly configured express app?
     app = cmeasy.getOptions().getExpress();
-  }
-  else {
+  } else {
     app = cmeasy.getOptions().getExpress()();
     server = http.createServer(app);
   }
@@ -55,10 +54,10 @@ function prepareExpressServer(cmeasy) {
  * @param server
  * @returns {Function}
  */
-function startExpressServer(server) {
+function startExpressServer(server, userOptions) {
   return function startServer() {
-    server.listen(config.port, config.ip, function listenCallback() {
-      console.log(`Express server listening on ${config.port}, in ${process.env.NODE_ENV} mode`);
+    server.listen(userOptions.port, userOptions.ip, function listenCallback() {
+      console.log(`Express server listening on ${userOptions.port}, in ${userOptions.ip} mode`);
     });
   }
 }
