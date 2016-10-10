@@ -1,8 +1,7 @@
 'use strict';
 
 import express from 'express';
-import passport from 'passport';
-import config from '../config/environment';
+import config from '../config';
 import User from '../api/user/user.model';
 
 // Passport Configuration

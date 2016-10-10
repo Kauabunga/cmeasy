@@ -18,7 +18,7 @@ describe('Render index api:', function(done) {
       if (error) {
         return done(error);
       }
-      process.env.PORT = port;
+      process.env.CMS_PORT = port;
       cmeasy(options)
         .then(function() {
           done();

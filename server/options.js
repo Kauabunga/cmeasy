@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 mongoose.Promise = require('bluebird');
 
 // TODO remove the idea of a cmeasy config file
-import config from './config/environment';
+import config from './config';
 
 export default function() {
   return {
@@ -12,6 +12,10 @@ export default function() {
 
     // Use a mongoose instance defined outside of the Cmeasy scope
     mongoose: getMongoose(),
+
+    port: config.port,
+
+    ip: config.ip,
 
     rootRoute: 'admin',
 

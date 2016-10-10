@@ -2,7 +2,6 @@
 
 const cmeasy = require('../../app');
 const express = require('express');
-const options = require('../../options')();
 const portfinder = require('portfinder');
 import request from 'supertest';
 import Promise from 'bluebird';
@@ -15,15 +14,17 @@ describe('Cmeasy blogPost model API:', function() {
 
   let app;
   let blogPostItem;
+  let options;
   before(function(done) {
     app = express();
-    options.express = app;
 
     portfinder.getPort(function(error, port) {
       if (error) {
         return done(error);
       }
-      process.env.PORT = port;
+      process.env.CMS_PORT = port;
+      options = require('../../options')();
+      options.express = app;
       cmeasy(options)
         .then(function() {
           done();

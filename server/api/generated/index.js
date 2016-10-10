@@ -1,7 +1,7 @@
 'use strict';
 
 import express from 'express';
-import config from '../../config/environment';
+import config from '../../config';
 import createCrudController from './generated.controller.crud';
 import _ from 'lodash';
 

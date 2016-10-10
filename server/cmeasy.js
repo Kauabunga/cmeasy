@@ -8,7 +8,7 @@ mongoose.Promise = Promise;
 
 import express from 'express';
 
-import config from './config/environment/index';
+import config from './config/index';
 
 import createModel from './components/cmeasy/cmeasy.model';
 import createSchema from './components/cmeasy/cmeasy.schema';
